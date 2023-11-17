@@ -80,7 +80,13 @@ const CongkakBoard = () => {
       seedsInHand--;
       setSeeds([...newSeeds]); // Update the state with the new distribution of seeds
 
-      await new Promise(resolve => setTimeout(resolve, 600)); // 300ms delay for each sowing step
+      await new Promise(resolve => setTimeout(resolve, 500)); // 300ms delay for each sowing step
+
+      // If the current hole has more seeds, continue the sowing process
+      if (seedsInHand === 0 && newSeeds[currentIndex] > 1) {
+        seedsInHand = newSeeds[currentIndex]; // Pick up all seeds from the current hole
+        newSeeds[currentIndex] = 0; // Leave no seed in the current hole
+      }
     }
   };
 
