@@ -1,12 +1,60 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './CongkakBoard.css';
 
 const CongkakBoard = () => {
   const initialSeedCount = 7;
   const [seeds, setSeeds] = useState(new Array(14).fill(initialSeedCount)); // 14 holes excluding houses
-  const [cursorTop, setCursorTop] = useState(0); // Initialize cursorTop state
-  const [cursorLeft, setCursorLeft] = useState(0); // Initialize cursorLeft state
+  
+  const holeRefs = useRef([]);
   const [cursorVisible, setCursorVisible] = useState(true); // Initialize cursor visibility
+  const [cursorLeft, setCursorLeft] = useState(0);
+  const [cursorTop, setCursorTop] = useState(0);
+  
+  const gameContainerRef = useRef(null);
+  
+  useEffect(() => {
+    if (holeRefs.current[13]) { // Accessing hole number 8 (index 13)
+      const holeRect = holeRefs.current[13].getBoundingClientRect();
+      setCursorLeft(holeRect.left + window.scrollX + (holeRect.width / 5)); // Adjust for 1/3 position
+      setCursorTop(holeRect.top + window.scrollY + (0.6*holeRect.height)); // Adjust for 1/3 position
+    }
+
+    const handleMouseMove = (event) => {
+      const mouseX = event.clientX;
+  
+      let closestHoleIndex = 0;
+      let closestDistance = Infinity;
+  
+      holeRefs.current.forEach((hole, index) => {
+        if (hole) {
+          const holeRect = hole.getBoundingClientRect();
+          const holeCenterX = holeRect.left + window.scrollX + (holeRect.width / 2);
+          const distance = Math.abs(mouseX - holeCenterX);
+  
+          if (distance < closestDistance) {
+            closestDistance = distance;
+            closestHoleIndex = index;
+          }
+        }
+      });
+  
+      // Snap cursor to the specific position within the closest hole
+      if (holeRefs.current[closestHoleIndex]) {
+        const closestHoleRect = holeRefs.current[closestHoleIndex].getBoundingClientRect();
+        const cursorLeftOffset = closestHoleRect.left + window.scrollX + (closestHoleRect.width / 5);
+        const cursorTopOffset = closestHoleRect.top + window.scrollY + (0.6 * closestHoleRect.height);
+  
+        setCursorLeft(cursorLeftOffset + 'px');
+        setCursorTop(cursorTopOffset + 'px');
+      }
+    };
+  
+    const gameContainer = gameContainerRef.current;
+    gameContainer.addEventListener('mousemove', handleMouseMove);
+  
+    return () => gameContainer.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
 
   const handleHoleClick = (index) => {
     if (seeds[index] === 0) return; // Prevent picking from empty hole
@@ -46,7 +94,7 @@ const CongkakBoard = () => {
   };
 
   return (
-    <div className="game-container">
+    <div ref={gameContainerRef} className="game-container">
       <div className="house left-house">{0}</div>
       <div className="rows-container">
         <div className="circles-row">
@@ -57,7 +105,12 @@ const CongkakBoard = () => {
         </div>
         <div className="circles-row">
           {seeds.slice(7).map((seedCount, index) => (
-            <div key={`bottom-${index + 7}`} className="circle" onClick={() => handleHoleClick(index + 7)}>
+            <div 
+              ref={el => holeRefs.current[index + 7] = el} // Assign refs to holes
+              key={`bottom-${index + 7}`} 
+              className="circle" 
+              onClick={() => handleHoleClick(index + 7)}
+            >
             <div className="circle-index">{14-index}</div>{seedCount}</div>
           ))}
         </div>
