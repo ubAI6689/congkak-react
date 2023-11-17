@@ -56,7 +56,7 @@ const CongkakBoard = () => {
   }, []);
 
 
-  const handleHoleClick = (index) => {
+  const handleHoleClick = async (index) => {
     if (seeds[index] === 0) return; // Prevent picking from empty hole
 
     let newSeeds = [...seeds];
@@ -68,54 +68,56 @@ const CongkakBoard = () => {
     while (seedsInHand > 0) {
       currentIndex = (currentIndex + 1) % 14; // Move to next hole in a circular way
       if (currentIndex === index) continue; // Skip the starting hole
+      
+      // Move the hand cursor to the current hole
+      if (holeRefs.current[currentIndex]) {
+        const holeRect = holeRefs.current[currentIndex].getBoundingClientRect();
+        setCursorLeft(holeRect.left + window.scrollX + 'px');
+        setCursorTop(holeRect.top + window.scrollY + (0.6 * holeRect.height) + 'px'); // Keeping the vertical position at 60% of the hole's height
+      }
+      
       newSeeds[currentIndex]++;
       seedsInHand--;
+      setSeeds([...newSeeds]); // Update the state with the new distribution of seeds
+
+      await new Promise(resolve => setTimeout(resolve, 600)); // 300ms delay for each sowing step
     }
-
-    setSeeds(newSeeds); // Update the state
-
-      // Logic to animate cursor movement
-    const animateSowing = async (startIndex, seedCount) => {
-      for (let i = 0; i < seedCount; i++) {
-        const currentIndex = (startIndex + i) % 14;
-        // Logic to calculate cursor position based on currentIndex
-        // Update state to move cursor
-        setCursorTop(/* calculated top position */);
-        setCursorLeft(/* calculated left position */);
-        setCursorVisible(true);
-
-        // Wait for a bit before moving to the next hole
-        await new Promise(resolve => setTimeout(resolve, 300)); // Adjust timing as needed
-      }
-      setCursorVisible(false); // Hide cursor at the end
-    };
-
-    animateSowing(index, seedsInHand);
   };
 
   return (
     <div ref={gameContainerRef} className="game-container">
-      <div className="house left-house">{0}</div>
+      <div className="house left-house">
+        <span className='circle-index'>LOW</span>
+        {0}
+      </div>
       <div className="rows-container">
         <div className="circles-row">
           {seeds.slice(0, 7).map((seedCount, index) => (
-            <div key={`top-${index + 1}`} className="circle" onClick={() => handleHoleClick(index)}>
-              <div className="circle-index">{index + 1}</div>{seedCount}</div>
+            <div 
+            ref={el => holeRefs.current[index] = el}
+              key={`top-${index}`} 
+              className="circle" 
+              onClick={() => handleHoleClick(index)}
+            >
+            <div className="circle-index">{index + 1}</div>{seedCount}</div>
           ))}
         </div>
         <div className="circles-row">
-          {seeds.slice(7).map((seedCount, index) => (
+          {seeds.slice(7).reverse().map((seedCount, index) => (
             <div 
-              ref={el => holeRefs.current[14 - index] = el} // Assign refs to holes
-              key={`bottom-${14 - index}`} 
+              ref={el => holeRefs.current[13 - index] = el} // Assign refs to holes
+              key={`bottom-${13 - index}`} 
               className="circle" 
-              onClick={() => handleHoleClick(14 - index)}
+              onClick={() => handleHoleClick(13 - index)}
             >
-            <div className="circle-index">{14-index}</div>{seedCount}</div>
+            <div className="circle-index">{14 - index}</div>{seedCount}</div>
           ))}
         </div>
       </div>
-      <div className="house right-house">{0}</div>
+      <div className="house right-house">
+        <span className='circle-index'>TOP</span>
+        {0}
+      </div>
       <div 
         className="hand-cursor" 
         style={{ 
