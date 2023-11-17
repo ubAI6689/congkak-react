@@ -7,21 +7,21 @@ const CongkakBoard = () => {
   
   const holeRefs = useRef([]);
   const [cursorVisible, setCursorVisible] = useState(true); // Initialize cursor visibility
-  const [cursorLeft, setCursorLeft] = useState(0);
-  const [cursorTop, setCursorTop] = useState(0);
+  const [cursorLeft, setCursorLeft] = useState(1200);
+  const [cursorTop, setCursorTop] = useState(550);
   
   const gameContainerRef = useRef(null);
   
   useEffect(() => {
-    if (holeRefs.current[13]) { // Accessing hole number 8 (index 13)
-      const holeRect = holeRefs.current[13].getBoundingClientRect();
+    if (holeRefs.current[8]) { // Accessing hole number 8 (index 13)
+      const holeRect = holeRefs.current[8].getBoundingClientRect();
       setCursorLeft(holeRect.left + window.scrollX + (holeRect.width / 5)); // Adjust for 1/3 position
       setCursorTop(holeRect.top + window.scrollY + (0.6*holeRect.height)); // Adjust for 1/3 position
     }
-
+    
     const handleMouseMove = (event) => {
       const mouseX = event.clientX;
-  
+      
       let closestHoleIndex = 0;
       let closestDistance = Infinity;
   
@@ -30,7 +30,7 @@ const CongkakBoard = () => {
           const holeRect = hole.getBoundingClientRect();
           const holeCenterX = holeRect.left + window.scrollX + (holeRect.width / 2);
           const distance = Math.abs(mouseX - holeCenterX);
-  
+          
           if (distance < closestDistance) {
             closestDistance = distance;
             closestHoleIndex = index;
@@ -106,10 +106,10 @@ const CongkakBoard = () => {
         <div className="circles-row">
           {seeds.slice(7).map((seedCount, index) => (
             <div 
-              ref={el => holeRefs.current[index + 7] = el} // Assign refs to holes
-              key={`bottom-${index + 7}`} 
+              ref={el => holeRefs.current[14 - index] = el} // Assign refs to holes
+              key={`bottom-${14 - index}`} 
               className="circle" 
-              onClick={() => handleHoleClick(index + 7)}
+              onClick={() => handleHoleClick(14 - index)}
             >
             <div className="circle-index">{14-index}</div>{seedCount}</div>
           ))}
