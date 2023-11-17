@@ -31,6 +31,7 @@ body {
 }
 
 .circle, .house {
+  position: relative;
   width: 100px;
   height: 100px;
   border-radius: 50%;
@@ -53,3 +54,26 @@ body {
 .left-house, .right-house {
   /* Additional styling if needed */
 }
+
+.circle:hover, .house:hover {
+  cursor: pointer; /* Hand-shaped cursor on hover */
+}
+
+.hand-cursor {
+  position: absolute;
+  width: 80px; /* Example size */
+  height: 101px;
+  /* background-size: ; */
+  pointer-events: none; /* Ensures it doesn't interfere with clicks */
+  transition: top 0.3s, left 0.3s; /* Smooth transition for movement */
+}
+
+.circle-index {
+  position: absolute;
+  top: 5px; /* Adjust as needed for exact positioning */
+  left: 5px; /* Adjust as needed */
+  font-size: 12px; /* Small font size for clarity */
+  color: black; /* Choose a color that stands out */
+  z-index: 2; /* Ensure it's above other elements in the circle */
+}
+
