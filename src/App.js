@@ -1,25 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import './CongkakBoard.css';
 
-function App() {
+const CongkakBoard = () => {
+  const numberOfCircles = 7;
+  const initialSeedCount = 7; // Each hole starts with 7 seeds
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="game-container">
+      <div className="house left-house"></div> {/* Left House */}
+      <div className="rows-container">
+        <div className="circles-row">
+          {Array.from({ length: numberOfCircles }).map((_, index) => (
+            <div key={`top-${index}`} className="circle">{initialSeedCount}</div> // Displaying 7 seeds in each hole
+          ))}
+        </div>
+        <div className="circles-row">
+          {Array.from({ length: numberOfCircles }).map((_, index) => (
+            <div key={`bottom-${index}`} className="circle">{initialSeedCount}</div> // Displaying 7 seeds in each hole
+          ))}
+        </div>
+      </div>
+      <div className="house right-house"></div> {/* Right House */}
     </div>
   );
-}
+};
 
-export default App;
+export default CongkakBoard;
