@@ -41,7 +41,7 @@ body {
   justify-content: center; /* Center content horizontally */
   align-items: center; /* Center content vertically */
   color: white; /* Seed count text color */
-  font-size: 20px; /* Seed count text size, adjust as needed */
+  font-size: 30px; /* Seed count text size, adjust as needed */
   font-weight: bold; /* Make the seed count more visible */
 }
 

@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './CongkakBoard.css';
 
+const Players = {
+  TOP: 'TOP',
+  LOW: 'LOW'
+}
+
 const CongkakBoard = () => {
   const initialSeedCount = 7;
   const [seeds, setSeeds] = useState(new Array(14).fill(initialSeedCount)); // 14 holes excluding houses
@@ -12,17 +17,19 @@ const CongkakBoard = () => {
 
   const [isSowing, setIsSowing] = useState(false);
   const [currentSeedsInHand, setCurrentSeedsInHand] = useState(0);
+
+  const [currentTurn, setCurrentTurn] = useState(Players.LOW);
   
   const gameContainerRef = useRef(null);
   
   useEffect(() => {
     const gameContainer = gameContainerRef.current;
     
-    if (holeRefs.current[8]) { // Accessing hole number 8 (index 13)
-      const holeRect = holeRefs.current[8].getBoundingClientRect();
-      setCursorLeft(holeRect.left + window.scrollX + (holeRect.width / 5)); // Adjust for 1/3 position
-      setCursorTop(holeRect.top + window.scrollY + (0.6*holeRect.height)); // Adjust for 1/3 position
-    }
+    // if (holeRefs.current[8]) { // Accessing hole number 8 (index 13)
+    //   const holeRect = holeRefs.current[8].getBoundingClientRect();
+    //   setCursorLeft(holeRect.left + window.scrollX + (holeRect.width / 5)); // Adjust for 1/3 position
+    //   setCursorTop(holeRect.top + window.scrollY + (0.6*holeRect.height)); // Adjust for 1/3 position
+    // }
     
     const handleMouseMove = (event) => {
       if (isSowing) return; // Do not update cursor position during sowing
@@ -33,11 +40,16 @@ const CongkakBoard = () => {
       let closestDistance = Infinity;
   
       holeRefs.current.forEach((hole, index) => {
-        if (hole) {
+        // Determine if the hole is in the current turn's row
+        const isTopRowHole = index < 7;
+        const isCurrentTurnRow = (currentTurn === Players.TOP && isTopRowHole) || 
+                                 (currentTurn === Players.LOW && !isTopRowHole);
+    
+        if (hole && isCurrentTurnRow) {
           const holeRect = hole.getBoundingClientRect();
           const holeCenterX = holeRect.left + window.scrollX + (holeRect.width / 2);
           const distance = Math.abs(mouseX - holeCenterX);
-          
+    
           if (distance < closestDistance) {
             closestDistance = distance;
             closestHoleIndex = index;
@@ -68,7 +80,15 @@ const CongkakBoard = () => {
   }, [isSowing]);
 
 
+  const toggleTurn = () => {
+    setCurrentTurn(currentTurn === Players.TOP ? Players.LOW : Players.TOP);
+  };  
+
   const handleHoleClick = async (index) => {
+
+    if (currentTurn === Players.TOP && index > 6) return;
+    if (currentTurn === Players.LOW && index <= 6) return;
+
     if (seeds[index] === 0) return; // Prevent picking from empty hole
 
     setIsSowing(true); // Indicate that sowing has started
@@ -113,10 +133,12 @@ const CongkakBoard = () => {
     }
     setCurrentSeedsInHand(0);
     setIsSowing(false); // Indicate that sowing has finished
+    toggleTurn();
   };
 
   return (
     <div ref={gameContainerRef} className="game-container">
+      Current Turn: {currentTurn}
       <div className="house left-house">
         <span className='circle-index'>LOW</span>
         {0}
