@@ -1,28 +1,12 @@
 import React from 'react';
-import './CongkakBoard.css';
+import CongkakBoard from './components/CongkakBoard'; // Ensure the path is correct
 
-const CongkakBoard = () => {
-  const numberOfCircles = 7;
-  const initialSeedCount = 7; // Each hole starts with 7 seeds
-
+const App = () => {
   return (
-    <div className="game-container">
-      <div className="house left-house"></div> {/* Left House */}
-      <div className="rows-container">
-        <div className="circles-row">
-          {Array.from({ length: numberOfCircles }).map((_, index) => (
-            <div key={`top-${index}`} className="circle">{initialSeedCount}</div> // Displaying 7 seeds in each hole
-          ))}
-        </div>
-        <div className="circles-row">
-          {Array.from({ length: numberOfCircles }).map((_, index) => (
-            <div key={`bottom-${index}`} className="circle">{initialSeedCount}</div> // Displaying 7 seeds in each hole
-          ))}
-        </div>
-      </div>
-      <div className="house right-house"></div> {/* Right House */}
+    <div className="App">
+      <CongkakBoard />
     </div>
   );
 };
 
-export default CongkakBoard;
+export default App;

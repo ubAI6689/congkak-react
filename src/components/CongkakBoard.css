@@ -47,7 +47,7 @@ body {
 .house {
   width: 150px;
   height: 150px;
-  background-color: #6D28D9; /* Optional different color for Houses */
+  background-color: #4B5563; /* Optional different color for Houses */
 }
 
 .left-house, .right-house {
