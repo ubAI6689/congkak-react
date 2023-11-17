@@ -9,10 +9,15 @@ const CongkakBoard = () => {
   const [cursorVisible, setCursorVisible] = useState(true); // Initialize cursor visibility
   const [cursorLeft, setCursorLeft] = useState(1200);
   const [cursorTop, setCursorTop] = useState(550);
+
+  const [isSowing, setIsSowing] = useState(false);
+  const [currentSeedsInHand, setCurrentSeedsInHand] = useState(0);
   
   const gameContainerRef = useRef(null);
   
   useEffect(() => {
+    const gameContainer = gameContainerRef.current;
+    
     if (holeRefs.current[8]) { // Accessing hole number 8 (index 13)
       const holeRect = holeRefs.current[8].getBoundingClientRect();
       setCursorLeft(holeRect.left + window.scrollX + (holeRect.width / 5)); // Adjust for 1/3 position
@@ -20,6 +25,8 @@ const CongkakBoard = () => {
     }
     
     const handleMouseMove = (event) => {
+      if (isSowing) return; // Do not update cursor position during sowing
+      
       const mouseX = event.clientX;
       
       let closestHoleIndex = 0;
@@ -49,15 +56,22 @@ const CongkakBoard = () => {
       }
     };
   
-    const gameContainer = gameContainerRef.current;
-    gameContainer.addEventListener('mousemove', handleMouseMove);
+    if (gameContainer) {
+      gameContainer.addEventListener('mousemove', handleMouseMove);
+    }
   
-    return () => gameContainer.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+    return () => {
+      if (gameContainer) {
+        gameContainer.removeEventListener('mousemove', handleMouseMove);
+      }
+    };
+  }, [isSowing]);
 
 
   const handleHoleClick = async (index) => {
     if (seeds[index] === 0) return; // Prevent picking from empty hole
+
+    setIsSowing(true); // Indicate that sowing has started
 
     let newSeeds = [...seeds];
     let seedsInHand = newSeeds[index];
@@ -67,7 +81,7 @@ const CongkakBoard = () => {
     let currentIndex = index;
     while (seedsInHand > 0) {
       currentIndex = (currentIndex + 1) % 14; // Move to next hole in a circular way
-      if (currentIndex === index) continue; // Skip the starting hole
+      // if (currentIndex === index) continue; // Skip the starting hole
       
       // Move the hand cursor to the current hole
       if (holeRefs.current[currentIndex]) {
@@ -76,18 +90,29 @@ const CongkakBoard = () => {
         setCursorTop(holeRect.top + window.scrollY + (0.6 * holeRect.height) + 'px'); // Keeping the vertical position at 60% of the hole's height
       }
       
-      newSeeds[currentIndex]++;
       seedsInHand--;
+      setCurrentSeedsInHand(seedsInHand);
+      newSeeds[currentIndex]++;
       setSeeds([...newSeeds]); // Update the state with the new distribution of seeds
-
-      await new Promise(resolve => setTimeout(resolve, 500)); // 300ms delay for each sowing step
 
       // If the current hole has more seeds, continue the sowing process
       if (seedsInHand === 0 && newSeeds[currentIndex] > 1) {
+        
+        setCurrentSeedsInHand(0);
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        const holeRect = holeRefs.current[currentIndex].getBoundingClientRect();
+        setCursorTop(holeRect.top + window.scrollY + 'px');
+
         seedsInHand = newSeeds[currentIndex]; // Pick up all seeds from the current hole
+        setCurrentSeedsInHand(seedsInHand);
         newSeeds[currentIndex] = 0; // Leave no seed in the current hole
       }
+      
+      await new Promise(resolve => setTimeout(resolve, 500)); // 300ms delay for each sowing step
     }
+    setCurrentSeedsInHand(0);
+    setIsSowing(false); // Indicate that sowing has finished
   };
 
   return (
@@ -132,7 +157,9 @@ const CongkakBoard = () => {
           opacity: cursorVisible ? 1 : 0,
           backgroundImage: `url('/assets/images/handcursor.png')` // Directly referencing from the public folder
         }}
-      ></div>
+      >
+        <span className="seeds-count">{currentSeedsInHand}</span>
+      </div>
     </div>
   );
 };

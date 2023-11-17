@@ -65,7 +65,17 @@ body {
   height: 101px;
   /* background-size: ; */
   pointer-events: none; /* Ensures it doesn't interfere with clicks */
-  /* transition: top 0.3s, left 0.3s; Smooth transition for movement */
+  transition: top 0.1s, left 0.1s; /*Smooth transition for movement*/
+}
+
+.seeds-count {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 20px;
+  font-weight: bold;
+  /* Additional styling as needed */
 }
 
 .circle-index {
