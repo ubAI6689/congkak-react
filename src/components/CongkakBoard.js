@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './CongkakBoard.css';
 import House from './House';
+import Cursor from './Cursor';
 
 const Players = {
   TOP: 'TOP',
@@ -172,17 +173,7 @@ const CongkakBoard = () => {
         </div>
       </div>
       <House position="top" seedCount={0}/>
-      <div 
-        className="hand-cursor" 
-        style={{ 
-          top: cursorTop, 
-          left: cursorLeft, 
-          opacity: cursorVisible ? 1 : 0,
-          backgroundImage: `url('/assets/images/handcursor.png')` // Directly referencing from the public folder
-        }}
-      >
-        <span className="seeds-count">{currentSeedsInHand}</span>
-      </div>
+      <Cursor top={cursorTop} left={cursorLeft} visible={cursorVisible} seedCount={currentSeedsInHand} />
     </div>
   );
 };
