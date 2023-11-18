@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import './CongkakBoard.css';
 import House from './House';
 import Cursor from './Cursor';
+import Row from './Row';
 
 const Players = {
   TOP: 'TOP',
@@ -149,28 +150,8 @@ const CongkakBoard = () => {
       Current Turn: {currentTurn}
       <House position="low" seedCount={0}/>
       <div className="rows-container">
-        <div className="circles-row">
-          {seeds.slice(0, 7).map((seedCount, index) => (
-            <div 
-            ref={el => holeRefs.current[index] = el}
-              key={`top-${index}`} 
-              className="circle" 
-              onClick={() => handleHoleClick(index)}
-            >
-            <div className="circle-index">{index + 1}</div>{seedCount}</div>
-          ))}
-        </div>
-        <div className="circles-row">
-          {seeds.slice(7).reverse().map((seedCount, index) => (
-            <div 
-              ref={el => holeRefs.current[13 - index] = el} // Assign refs to holes
-              key={`bottom-${13 - index}`} 
-              className="circle" 
-              onClick={() => handleHoleClick(13 - index)}
-            >
-            <div className="circle-index">{14 - index}</div>{seedCount}</div>
-          ))}
-        </div>
+        <Row seeds={seeds.slice(0, 7)} rowType="top" onClick={handleHoleClick} refs={holeRefs.current} />
+        <Row seeds={seeds.slice(7).reverse()} rowType="low" onClick={handleHoleClick} refs={holeRefs.current} />
       </div>
       <House position="top" seedCount={0}/>
       <Cursor top={cursorTop} left={cursorLeft} visible={cursorVisible} seedCount={currentSeedsInHand} />

@@ -59,15 +59,6 @@ body {
   cursor: pointer; /* Hand-shaped cursor on hover */
 }
 
-.hand-cursor {
-  position: absolute;
-  width: 80px; /* Example size */
-  height: 101px;
-  /* background-size: ; */
-  pointer-events: none; /* Ensures it doesn't interfere with clicks */
-  transition: top 0.1s, left 0.1s; /*Smooth transition for movement*/
-}
-
 .seeds-count {
   position: absolute;
   top: 60%;
