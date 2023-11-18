@@ -9,6 +9,8 @@ const Players = {
   LOW: 'LOW'
 }
 
+const posMultiplier = 0.55
+
 const CongkakBoard = () => {
   const initialSeedCount = 7;
   const [seeds, setSeeds] = useState(new Array(14).fill(initialSeedCount)); // 14 holes excluding houses
@@ -17,20 +19,22 @@ const CongkakBoard = () => {
   const [cursorVisible, setCursorVisible] = useState(true); // Initialize cursor visibility
   const [cursorLeft, setCursorLeft] = useState(1200);
   const [cursorTop, setCursorTop] = useState(550);
-
+  
   const [isSowing, setIsSowing] = useState(false);
   const [currentSeedsInHand, setCurrentSeedsInHand] = useState(0);
-
+  
   const [currentTurn, setCurrentTurn] = useState(Players.TOP);
   
   const gameContainerRef = useRef(null);
+  
+  const verticalPos = currentTurn === Players.TOP ? -posMultiplier : posMultiplier;
   
   const updateCursorToRowStart = () => {
     const startIndex = currentTurn === Players.TOP ? 0 : 7; // 0 for TOP, 7 for LOW
     if (holeRefs.current[startIndex]) {
       const holeRect = holeRefs.current[startIndex].getBoundingClientRect();
       setCursorLeft(holeRect.left + window.scrollX + 'px');
-      setCursorTop(holeRect.top + window.scrollY + (0.6 * holeRect.height) + 'px');
+      setCursorTop(holeRect.top + window.scrollY + (verticalPos * holeRect.height) + 'px');
     }
   };  
 
@@ -70,7 +74,7 @@ const CongkakBoard = () => {
       if (holeRefs.current[closestHoleIndex]) {
         const closestHoleRect = holeRefs.current[closestHoleIndex].getBoundingClientRect();
         const cursorLeftOffset = closestHoleRect.left + window.scrollX + (closestHoleRect.width / 5);
-        const cursorTopOffset = closestHoleRect.top + window.scrollY + (0.55 * closestHoleRect.height);
+        const cursorTopOffset = closestHoleRect.top + window.scrollY + (verticalPos * closestHoleRect.height);
   
         setCursorLeft(cursorLeftOffset + 'px');
         setCursorTop(cursorTopOffset + 'px');
@@ -116,7 +120,7 @@ const CongkakBoard = () => {
       if (holeRefs.current[currentIndex]) {
         const holeRect = holeRefs.current[currentIndex].getBoundingClientRect();
         setCursorLeft(holeRect.left + window.scrollX + 'px');
-        setCursorTop(holeRect.top + window.scrollY + (0.55 * holeRect.height) + 'px'); // Keeping the vertical position at 60% of the hole's height
+        setCursorTop(holeRect.top + window.scrollY + (verticalPos * holeRect.height) + 'px'); // Keeping the vertical position at 60% of the hole's height
       }
       
       seedsInHand--;
@@ -154,7 +158,7 @@ const CongkakBoard = () => {
         <Row seeds={seeds.slice(7).reverse()} rowType="low" onClick={handleHoleClick} refs={holeRefs.current} />
       </div>
       <House position="top" seedCount={0}/>
-      <Cursor top={cursorTop} left={cursorLeft} visible={cursorVisible} seedCount={currentSeedsInHand} />
+      <Cursor top={cursorTop} left={cursorLeft} visible={cursorVisible} seedCount={currentSeedsInHand} isTopTurn={currentTurn===Players.TOP} />
     </div>
   );
 };
