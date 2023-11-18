@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './CongkakBoard.css';
+import House from './House';
 
 const Players = {
   TOP: 'TOP',
@@ -18,19 +19,25 @@ const CongkakBoard = () => {
   const [isSowing, setIsSowing] = useState(false);
   const [currentSeedsInHand, setCurrentSeedsInHand] = useState(0);
 
-  const [currentTurn, setCurrentTurn] = useState(Players.LOW);
+  const [currentTurn, setCurrentTurn] = useState(Players.TOP);
   
   const gameContainerRef = useRef(null);
   
+  const updateCursorToRowStart = () => {
+    const startIndex = currentTurn === Players.TOP ? 0 : 7; // 0 for TOP, 7 for LOW
+    if (holeRefs.current[startIndex]) {
+      const holeRect = holeRefs.current[startIndex].getBoundingClientRect();
+      setCursorLeft(holeRect.left + window.scrollX + 'px');
+      setCursorTop(holeRect.top + window.scrollY + (0.6 * holeRect.height) + 'px');
+    }
+  };  
+
+  useEffect(() => {
+    updateCursorToRowStart();
+  }, [currentTurn]);
+
   useEffect(() => {
     const gameContainer = gameContainerRef.current;
-    
-    // if (holeRefs.current[8]) { // Accessing hole number 8 (index 13)
-    //   const holeRect = holeRefs.current[8].getBoundingClientRect();
-    //   setCursorLeft(holeRect.left + window.scrollX + (holeRect.width / 5)); // Adjust for 1/3 position
-    //   setCursorTop(holeRect.top + window.scrollY + (0.6*holeRect.height)); // Adjust for 1/3 position
-    // }
-    
     const handleMouseMove = (event) => {
       if (isSowing) return; // Do not update cursor position during sowing
       
@@ -61,7 +68,7 @@ const CongkakBoard = () => {
       if (holeRefs.current[closestHoleIndex]) {
         const closestHoleRect = holeRefs.current[closestHoleIndex].getBoundingClientRect();
         const cursorLeftOffset = closestHoleRect.left + window.scrollX + (closestHoleRect.width / 5);
-        const cursorTopOffset = closestHoleRect.top + window.scrollY + (0.6 * closestHoleRect.height);
+        const cursorTopOffset = closestHoleRect.top + window.scrollY + (0.55 * closestHoleRect.height);
   
         setCursorLeft(cursorLeftOffset + 'px');
         setCursorTop(cursorTopOffset + 'px');
@@ -107,7 +114,7 @@ const CongkakBoard = () => {
       if (holeRefs.current[currentIndex]) {
         const holeRect = holeRefs.current[currentIndex].getBoundingClientRect();
         setCursorLeft(holeRect.left + window.scrollX + 'px');
-        setCursorTop(holeRect.top + window.scrollY + (0.6 * holeRect.height) + 'px'); // Keeping the vertical position at 60% of the hole's height
+        setCursorTop(holeRect.top + window.scrollY + (0.55 * holeRect.height) + 'px'); // Keeping the vertical position at 60% of the hole's height
       }
       
       seedsInHand--;
@@ -139,10 +146,7 @@ const CongkakBoard = () => {
   return (
     <div ref={gameContainerRef} className="game-container">
       Current Turn: {currentTurn}
-      <div className="house left-house">
-        <span className='circle-index'>LOW</span>
-        {0}
-      </div>
+      <House position="low" seedCount={0}/>
       <div className="rows-container">
         <div className="circles-row">
           {seeds.slice(0, 7).map((seedCount, index) => (
@@ -167,10 +171,7 @@ const CongkakBoard = () => {
           ))}
         </div>
       </div>
-      <div className="house right-house">
-        <span className='circle-index'>TOP</span>
-        {0}
-      </div>
+      <House position="top" seedCount={0}/>
       <div 
         className="hand-cursor" 
         style={{ 
