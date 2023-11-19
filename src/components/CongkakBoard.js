@@ -110,9 +110,16 @@ const CongkakBoard = () => {
     let newSeeds = [...seeds];
     let seedsInHand = newSeeds[index];
     let justFilledHome = false;
-
+    
+    // Start moving
+    if (holeRefs.current[index]) {
+      const holeRect = holeRefs.current[index].getBoundingClientRect();
+      setCursorTop(holeRect.top + window.scrollY + 'px');
+    }
+    await new Promise(resolve => setTimeout(resolve, 300)); // animation delay
+    
     newSeeds[index] = 0; // Pick up all seeds
-
+    
     // Distribute seeds in a clockwise direction
     let currentIndex = index;
     while (seedsInHand > 0) {
@@ -167,7 +174,7 @@ const CongkakBoard = () => {
       setCurrentSeedsInHand(seedsInHand);
       
       // Update holes
-      await new Promise(resolve => setTimeout(resolve, 300)); // 650ms delay for each sowing step
+      await new Promise(resolve => setTimeout(resolve, 300)); // 300ms delay for each sowing step
       newSeeds[currentIndex]++;
       setSeeds([...newSeeds]);
       
@@ -190,14 +197,14 @@ const CongkakBoard = () => {
 
   return (
     <div ref={gameContainerRef} className="game-container">
-        <div className="current-turn">Current Turn: {currentTurn}</div>
+      <div className="current-turn">Current Turn: {currentTurn}</div>
       <div className='game-content'>
-        <House position="low" seedCount={lowHouseSeeds} ref={lowHouseRef}/>
+        <House position="lower" seedCount={lowHouseSeeds} ref={lowHouseRef}/>
         <div className="rows-container">
-          <Row seeds={seeds.slice(0, 7)} rowType="top" onClick={handleHoleClick} refs={holeRefs.current} />
-          <Row seeds={seeds.slice(7).reverse()} rowType="low" onClick={handleHoleClick} refs={holeRefs.current} />
+          <Row seeds={seeds.slice(0, 7)} rowType="upper" onClick={handleHoleClick} refs={holeRefs.current} />
+          <Row seeds={seeds.slice(7).reverse()} rowType="lower" onClick={handleHoleClick} refs={holeRefs.current} />
         </div>
-        <House position="top" seedCount={topHouseSeeds} ref={topHouseRef}/>
+        <House position="upper" seedCount={topHouseSeeds} ref={topHouseRef}/>
         <Cursor top={cursorTop} left={cursorLeft} visible={cursorVisible} seedCount={currentSeedsInHand} isTopTurn={currentTurn===Players.UPPER} />
       </div>
     </div>

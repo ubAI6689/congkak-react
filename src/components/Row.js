@@ -6,7 +6,7 @@ const Row = ({ seeds, rowType, onClick, refs }) => {
     <div className="circles-row">
       {seeds.map((seedCount, index) => {
         // Adjust the index based on the row type
-        const adjustedIndex = rowType === 'top' ? index : 13 - index;
+        const adjustedIndex = rowType === 'upper' ? index : 13 - index;
 
         return (
           <Hole 
