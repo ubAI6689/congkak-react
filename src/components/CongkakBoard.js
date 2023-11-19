@@ -134,7 +134,7 @@ const CongkakBoard = () => {
             continue;
           }
         }
-      } else if (currentIndex == 13 && currentTurn === Players.LOWERER) {
+      } else if (currentIndex == 13 && currentTurn === Players.LOWER) {
         // Animate cursor to LOWER house and increment seeds
         // Ensure lowHouseRef.current is valid
         if (lowHouseRef.current) {
