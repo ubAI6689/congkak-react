@@ -5,31 +5,35 @@ body {
   display: flex;
   justify-content: center; /* Center horizontally */
   align-items: center; /* Center vertically */
+  overflow: hidden; /* Hide overflow */
 }
 
 .game-container {
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-width: 95vw; /* Max width to avoid overflow */
+  max-height: 95vh; /* Max height to avoid overflow */
 }
 
 .current-turn {
-  margin-bottom: 50px;
-  font-size: 1.5em;
+  margin-bottom: 2vh; /* Responsive vertical spacing */
+  font-size: 2vh; /* Responsive font size */
   /* Additional styling as needed */
 }
 
 .game-content {
   display: flex;
-  justify-content: center;
+  justify-content: center; /* Distribute space between elements */
   align-items: center;
+  width: 100%; /* Full width of the container */
 }
 
 .rows-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 2vw; /* Responsive gap between rows */
 }
 
 .circles-row {
@@ -39,23 +43,23 @@ body {
 
 .circle, .house {
   position: relative;
-  width: 100px;
-  height: 100px;
+  width: 8vw; /* Responsive width */
+  height: 8vw; /* Responsive height, maintaining aspect ratio */
   border-radius: 50%;
   background-color: #4B5563;
-  margin: 10px;
-  display: flex; /* Flexbox to align child elements */
-  justify-content: center; /* Center content horizontally */
-  align-items: center; /* Center content vertically */
-  color: white; /* Seed count text color */
-  font-size: 30px; /* Seed count text size, adjust as needed */
-  font-weight: bold; /* Make the seed count more visible */
+  margin: 1vw; /* Responsive margin */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 2.5vw; /* Responsive font size for seed count */
+  font-weight: bold;
 }
 
 .house {
-  width: 150px;
-  height: 150px;
-  background-color: #4B5563; /* Optional different color for Houses */
+  width: 12vw; /* Larger size for houses */
+  height: 12vw;
+  background-color: #6D28D9; /* Different color for houses */
 }
 
 .left-house, .right-house {
@@ -63,15 +67,15 @@ body {
 }
 
 .circle:hover, .house:hover {
-  cursor: pointer; /* Hand-shaped cursor on hover */
+  cursor: pointer;
 }
 
 .circle-index {
   position: absolute;
-  top: 5px; /* Adjust as needed for exact positioning */
-  left: 5px; /* Adjust as needed */
-  font-size: 12px; /* Small font size for clarity */
-  color: black; /* Choose a color that stands out */
-  z-index: 2; /* Ensure it's above other elements in the circle */
+  top: 1vw;
+  left: 1vw;
+  font-size: 1.5vw; /* Smaller font size for clarity */
+  color: black;
+  z-index: 2;
 }
 
