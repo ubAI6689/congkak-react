@@ -4,5 +4,5 @@
     height: 101px;
     /* background-size: ; */
     pointer-events: none; /* Ensures it doesn't interfere with clicks */
-    transition: top 0.1s, left 0.1s; /*Smooth transition for movement*/
+    transition: top 0.3s, left 0.3s; /*Smooth transition for movement*/
   }
