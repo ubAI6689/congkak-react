@@ -190,7 +190,7 @@ const CongkakBoard = () => {
 
   return (
     <div ref={gameContainerRef} className="game-container">
-      Current Turn: {currentTurn}
+      <div>Current Turn: {currentTurn}</div> 
       <House position="low" seedCount={lowHouseSeeds} ref={lowHouseRef}/>
       <div className="rows-container">
         <Row seeds={seeds.slice(0, 7)} rowType="top" onClick={handleHoleClick} refs={holeRefs.current} />
