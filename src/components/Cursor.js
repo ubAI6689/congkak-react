@@ -26,7 +26,7 @@ const Cursor = ({ top, left, visible, seedCount, isTopTurn }) => {
 
   return (
     <div className="hand-cursor" style={cursorStyle}>
-      <span className="seeds-count" style={seedCountStyle}>{seedCount}</span>
+      {seedCount >= 0 && <span className="seeds-count" style={seedCountStyle}>{seedCount}</span>}
     </div>
   );
 };
