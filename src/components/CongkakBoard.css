@@ -8,15 +8,22 @@ body {
 }
 
 .game-container {
-  /* Your existing styles for game-container */
   display: flex;
+  flex-direction: column;
   align-items: center;
 }
 
-/* Rest of your existing CSS for rows-container, circles-row, circle, house, etc. */
+.current-turn {
+  margin-bottom: 50px;
+  font-size: 1.5em;
+  /* Additional styling as needed */
+}
 
-/* Additional body styles if needed */
-
+.game-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 .rows-container {
   display: flex;

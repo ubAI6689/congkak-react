@@ -190,14 +190,16 @@ const CongkakBoard = () => {
 
   return (
     <div ref={gameContainerRef} className="game-container">
-      <div>Current Turn: {currentTurn}</div> 
-      <House position="low" seedCount={lowHouseSeeds} ref={lowHouseRef}/>
-      <div className="rows-container">
-        <Row seeds={seeds.slice(0, 7)} rowType="top" onClick={handleHoleClick} refs={holeRefs.current} />
-        <Row seeds={seeds.slice(7).reverse()} rowType="low" onClick={handleHoleClick} refs={holeRefs.current} />
+        <div className="current-turn">Current Turn: {currentTurn}</div>
+      <div className='game-content'>
+        <House position="low" seedCount={lowHouseSeeds} ref={lowHouseRef}/>
+        <div className="rows-container">
+          <Row seeds={seeds.slice(0, 7)} rowType="top" onClick={handleHoleClick} refs={holeRefs.current} />
+          <Row seeds={seeds.slice(7).reverse()} rowType="low" onClick={handleHoleClick} refs={holeRefs.current} />
+        </div>
+        <House position="top" seedCount={topHouseSeeds} ref={topHouseRef}/>
+        <Cursor top={cursorTop} left={cursorLeft} visible={cursorVisible} seedCount={currentSeedsInHand} isTopTurn={currentTurn===Players.TOP} />
       </div>
-      <House position="top" seedCount={topHouseSeeds} ref={topHouseRef}/>
-      <Cursor top={cursorTop} left={cursorLeft} visible={cursorVisible} seedCount={currentSeedsInHand} isTopTurn={currentTurn===Players.TOP} />
     </div>
   );
 };
