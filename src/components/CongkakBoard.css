@@ -57,9 +57,9 @@ body {
 }
 
 .house {
-  width: 12vw; /* Larger size for houses */
-  height: 12vw;
-  background-color: #6D28D9; /* Different color for houses */
+  width: 15vw; /* Larger size for houses */
+  height: 10vw;
+  background-color: #4B5563; /* Different color for houses */
 }
 
 .left-house, .right-house {
@@ -76,6 +76,6 @@ body {
   left: 1vw;
   font-size: 1.5vw; /* Smaller font size for clarity */
   color: black;
-  z-index: 2;
+  /* z-index: 2; */
 }
 

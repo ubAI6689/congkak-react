@@ -1,8 +1,9 @@
 .hand-cursor {
     position: absolute;
-    width: 80px; /* Example size */
-    height: 101px;
+    width: 5%; /* Example size */
+    height: auto;
     /* background-size: ; */
     pointer-events: none; /* Ensures it doesn't interfere with clicks */
     transition: top 0.23s, left 0.23s; /*Smooth transition for movement*/
+    z-index: 2;
   }

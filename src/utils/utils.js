@@ -1,7 +1,7 @@
 import React from "react";
 
 export const toggleTurn = (setCurrentTurn, currentTurn, Players) => {
-    setCurrentTurn(currentTurn === Players.TOP ? Players.LOW : Players.TOP);
+    setCurrentTurn(currentTurn === Players.UPPER ? Players.LOWER : Players.UPPER);
   };
 
 export const updateCursorPosition = (holeRefs, currentIndex, setCursorLeft, setCursorTop, verticalPos) => {
