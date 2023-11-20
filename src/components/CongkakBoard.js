@@ -108,21 +108,25 @@ const CongkakBoard = () => {
     setIsSowing(true); // Indicate that sowing has started
     
     let newSeeds = [...seeds];
-    let seedsInHand = newSeeds[index];
+    let seedsInHand = 0;
     let justFilledHome = false;
     
-    // Start moving
     if (holeRefs.current[index]) {
+      // Start moving and updating cursor/hole
       const holeRect = holeRefs.current[index].getBoundingClientRect();
       setCursorTop(holeRect.top + window.scrollY + 'px');
+      await new Promise(resolve => setTimeout(resolve, 200)); // Animation delay
+      // Pick up all seeds
+      seedsInHand = newSeeds[index]; 
+      newSeeds[index] = 0; 
+      setCurrentSeedsInHand(seedsInHand);
+      setSeeds([...newSeeds]);
     }
-    await new Promise(resolve => setTimeout(resolve, 300)); // animation delay
-    
-    newSeeds[index] = 0; // Pick up all seeds
-    
+
     // Distribute seeds in a clockwise direction
     let currentIndex = index;
     while (seedsInHand > 0) {
+      /* Filling House */
       // Check if the next hole is House
       if (currentIndex == 6 && currentTurn === Players.UPPER) {
         // Animate cursor to UPPER house and increment seeds
@@ -131,9 +135,10 @@ const CongkakBoard = () => {
           const topHouseRect = topHouseRef.current.getBoundingClientRect();
           setCursorLeft(topHouseRect.left + window.scrollX + 'px');
           setCursorTop(topHouseRect.top + window.scrollY + (-0.1 * topHouseRect.height) + 'px');
-          await new Promise(resolve => setTimeout(resolve, 600)); // Animation delay
+          await new Promise(resolve => setTimeout(resolve, 400)); // Animation delay
           setTopHouseSeeds(prevSeeds => prevSeeds + 1);
           seedsInHand--;
+          setCurrentSeedsInHand(seedsInHand);
           if (seedsInHand > 0) {
             justFilledHome = true;
             currentIndex = 7
@@ -148,9 +153,10 @@ const CongkakBoard = () => {
           const lowHouseRect = lowHouseRef.current.getBoundingClientRect();
           setCursorLeft(lowHouseRect.left + window.scrollX + 'px');
           setCursorTop(lowHouseRect.top + window.scrollY + (0.1 * lowHouseRect.height) + 'px');
-          await new Promise(resolve => setTimeout(resolve, 600)); // Animation delay
+          await new Promise(resolve => setTimeout(resolve, 400)); // Animation delay
           setLowHouseSeeds(prevSeeds => prevSeeds + 1);
           seedsInHand--;
+          setCurrentSeedsInHand(seedsInHand);
           if (seedsInHand > 0) {
             justFilledHome = true;
             currentIndex = 0
@@ -166,29 +172,28 @@ const CongkakBoard = () => {
         justFilledHome = false;
       } else {
         currentIndex = (currentIndex + 1) % 14;
-        seedsInHand--;
       }
       
       // Animate cursor
       updateCursorPosition(holeRefs, currentIndex, setCursorLeft, setCursorTop, verticalPos);
-      setCurrentSeedsInHand(seedsInHand);
+      await new Promise(resolve => setTimeout(resolve, 200)); // Animation delay
       
       // Update holes
-      await new Promise(resolve => setTimeout(resolve, 300)); // 300ms delay for each sowing step
+      seedsInHand--;
+      setCurrentSeedsInHand(seedsInHand);
       newSeeds[currentIndex]++;
       setSeeds([...newSeeds]);
       
       // If the current hole has more seeds, continue the sowing process
       if (seedsInHand === 0 && newSeeds[currentIndex] > 1) {
         seedsInHand = newSeeds[currentIndex]; // Pick up all seeds from the current hole
-        setCurrentSeedsInHand(seedsInHand);
         pickUpAnimation(holeRefs, currentIndex, setCursorTop);
+        await new Promise(resolve => setTimeout(resolve, 200));
         newSeeds[currentIndex] = 0; // Leave no seed in the current hole
+        setCurrentSeedsInHand(seedsInHand);
         setSeeds([...newSeeds]);
-        // await new Promise(resolve => setTimeout(resolve, 200));
       }
-      
-      await new Promise(resolve => setTimeout(resolve, 150)); // 650ms delay for each sowing step
+      await new Promise(resolve => setTimeout(resolve, 200)); // 200ms delay for each sowing step
     }
     setCurrentSeedsInHand(0);
     setIsSowing(false); // Indicate that sowing has finished
