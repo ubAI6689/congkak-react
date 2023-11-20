@@ -196,7 +196,7 @@ const CongkakBoard = () => {
       
       if (seedsInHand === 0 && newSeeds[currentIndex] === 1) {
         // Determine if the row is the current's player's side
-        const isTopRowHole = index < 7;
+        const isTopRowHole = currentIndex < 7;
         const isCurrentTurnRow = (currentTurn === Players.UPPER && isTopRowHole) || 
                                  (currentTurn === Players.LOWER && !isTopRowHole);
 
