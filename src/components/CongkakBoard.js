@@ -3,7 +3,7 @@ import './CongkakBoard.css';
 import House from './House';
 import Cursor from './Cursor';
 import Row from './Row';
-import { updateCursorPosition, pickUpAnimation, toggleTurn } from '../utils/utils';
+import { updateCursorPosition, pickUpAnimation, toggleTurn, updateCursorToRowStart } from '../utils/utils';
 
 const Players = {
   UPPER: 'UPPER',
@@ -35,18 +35,9 @@ const CongkakBoard = () => {
   const gameContainerRef = useRef(null);
   
   const verticalPos = currentTurn === Players.UPPER ? -posMultiplier : posMultiplier;
-  
-  const updateCursorToRowStart = () => {
-    const startIndex = currentTurn === Players.UPPER ? 0 : 7; // 0 for UPPER, 7 for LOWER
-    if (holeRefs.current[startIndex]) {
-      const holeRect = holeRefs.current[startIndex].getBoundingClientRect();
-      setCursorLeft(holeRect.left + window.scrollX + 'px');
-      setCursorTop(holeRect.top + window.scrollY + (verticalPos * holeRect.height) + 'px');
-    }
-  };  
 
   useEffect(() => {
-    updateCursorToRowStart();
+    updateCursorToRowStart(currentTurn, Players, holeRefs, setCursorLeft, setCursorTop, verticalPos);
   }, [currentTurn]);
 
   useEffect(() => {
@@ -110,6 +101,8 @@ const CongkakBoard = () => {
     let newSeeds = [...seeds];
     let seedsInHand = 0;
     let justFilledHome = false;
+    let getAnotherTurn = false;
+    let hasPassedHouse = 0;
     
     if (holeRefs.current[index]) {
       // Start moving and updating cursor/hole
@@ -126,11 +119,16 @@ const CongkakBoard = () => {
     // Distribute seeds in a clockwise direction
     let currentIndex = index;
     while (seedsInHand > 0) {
-      /* Filling House */
+    
+      /** 
+       * Filling House
+      */
+
       // Check if the next hole is House
       if (currentIndex == 6 && currentTurn === Players.UPPER) {
         // Animate cursor to UPPER house and increment seeds
         // Ensure topHouseRef.current is valid
+        hasPassedHouse++;
         if (topHouseRef.current) {
           const topHouseRect = topHouseRef.current.getBoundingClientRect();
           setCursorLeft(topHouseRect.left + window.scrollX + 'px');
@@ -141,14 +139,16 @@ const CongkakBoard = () => {
           setCurrentSeedsInHand(seedsInHand);
           if (seedsInHand > 0) {
             justFilledHome = true;
-            currentIndex = 7
+            currentIndex = 7;
           } else {
+            getAnotherTurn = true;
             continue;
           }
         }
       } else if (currentIndex == 13 && currentTurn === Players.LOWER) {
         // Animate cursor to LOWER house and increment seeds
         // Ensure lowHouseRef.current is valid
+        hasPassedHouse++;
         if (lowHouseRef.current) {
           const lowHouseRect = lowHouseRef.current.getBoundingClientRect();
           setCursorLeft(lowHouseRect.left + window.scrollX + 'px');
@@ -159,8 +159,9 @@ const CongkakBoard = () => {
           setCurrentSeedsInHand(seedsInHand);
           if (seedsInHand > 0) {
             justFilledHome = true;
-            currentIndex = 0
+            currentIndex = 0;
           } else {
+            getAnotherTurn = true;
             continue;
           }
         }
@@ -194,7 +195,17 @@ const CongkakBoard = () => {
         setSeeds([...newSeeds]);
       } 
       
+      /**
+       *  CAPTURING LOGIC
+       */
+
       if (seedsInHand === 0 && newSeeds[currentIndex] === 1) {
+        // Capture only if the player has passed their house at least once
+        if (hasPassedHouse === 0) {
+          setCurrentSeedsInHand(0);
+          setIsSowing(false); // Indicate that sowing has finished
+          toggleTurn(setCurrentTurn, currentTurn, Players);
+        }
         // Determine if the row is the current's player's side
         const isTopRowHole = currentIndex < 7;
         const isCurrentTurnRow = (currentTurn === Players.UPPER && isTopRowHole) || 
@@ -256,7 +267,8 @@ const CongkakBoard = () => {
     }
     setCurrentSeedsInHand(0);
     setIsSowing(false); // Indicate that sowing has finished
-    toggleTurn(setCurrentTurn, currentTurn, Players);
+    if (!getAnotherTurn) toggleTurn(setCurrentTurn, currentTurn, Players);
+    updateCursorToRowStart(currentTurn, Players, holeRefs, setCursorLeft, setCursorTop, verticalPos);
   };
 
   return (
