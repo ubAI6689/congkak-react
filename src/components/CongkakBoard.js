@@ -3,7 +3,7 @@ import './CongkakBoard.css';
 import House from './House';
 import Cursor from './Cursor';
 import Row from './Row';
-import { updateCursorPosition, pickUpAnimation, toggleTurn, updateCursorToRowStart, sumOfSeedsInCurrentRow } from '../utils/utils';
+import { updateCursorPosition, pickUpAnimation, toggleTurn, updateCursorToRowStart, sumOfSeedsInCurrentRow, handleCheckGameEnd } from '../utils/utils';
 import config from '../config/config';
 
 const Players = {
@@ -33,19 +33,38 @@ const CongkakBoard = () => {
   
   const [isSowing, setIsSowing] = useState(false);
   const [currentSeedsInHand, setCurrentSeedsInHand] = useState(0);
-  
   const [currentTurn, setCurrentTurn] = useState(Players.LOWER);
 
   const [topHouseSeeds, setTopHouseSeeds] = useState(0);
   const [lowHouseSeeds, setLowHouseSeeds] = useState(0);
   
+  const [isGameOver, setIsGameOver] = useState(false);
+  const [outcomeMessage, setOutcomeMessage] = useState('');
+
   const gameContainerRef = useRef(null);
   
   const verticalPos = currentTurn === Players.UPPER ? -posMultiplier : posMultiplier;
 
   useEffect(() => {
+    if (!isSowing) {
+      handleCheckGameEnd(seeds, config, topHouseSeeds, lowHouseSeeds, setIsGameOver, setOutcomeMessage);
+    }
+  }, [seeds, topHouseSeeds, lowHouseSeeds, config]); // Make sure to include all dependencies
+
+  useEffect(() => {
+    // Only check for empty rows and toggle turn if sowing is not in progress
+    if (!isSowing && !isGameOver) {
+      let sum = sumOfSeedsInCurrentRow(seeds, currentTurn, config);
+      console.log("Sum of seeds: ", sum);
+      if (sum === 0) {
+        toggleTurn(setCurrentTurn, currentTurn, Players);
+      }
+    }
+  }, [seeds, currentTurn, config, isSowing, isGameOver]); // Include isSowing in the dependency array 
+
+  useEffect(() => {
     updateCursorToRowStart(currentTurn, Players, holeRefs, setCursorLeft, setCursorTop, verticalPos);
-  }, [currentTurn]);
+  }, [currentTurn, Players]); // Include isSowing in the dependency array
 
   useEffect(() => {
     const gameContainer = gameContainerRef.current;
@@ -62,6 +81,7 @@ const CongkakBoard = () => {
         const isTopRowHole = index < MIN_INDEX_LOWER;
         const isCurrentTurnRow = (currentTurn === Players.UPPER && isTopRowHole) || 
                                  (currentTurn === Players.LOWER && !isTopRowHole);
+
     
         if (hole && isCurrentTurnRow) {
           const holeRect = hole.getBoundingClientRect();
@@ -95,7 +115,7 @@ const CongkakBoard = () => {
         gameContainer.removeEventListener('mousemove', handleMouseMove);
       }
     };
-  }, [isSowing]);  
+  }, [isSowing, currentTurn]);  
 
   const handleHoleClick = async (index) => {
     
@@ -148,7 +168,7 @@ const CongkakBoard = () => {
             justFilledHome = true;
             currentIndex = MIN_INDEX_LOWER;
           } else {
-            if (sumOfSeedsInCurrentRow(seeds, currentTurn, Players) > 0) getAnotherTurn = true;
+            getAnotherTurn = true;
             continue;
           }
         }
@@ -168,7 +188,7 @@ const CongkakBoard = () => {
             justFilledHome = true;
             currentIndex = 0;
           } else {
-            if (sumOfSeedsInCurrentRow(seeds, currentTurn, Players) > 0) getAnotherTurn = true;
+            getAnotherTurn = true;
             continue;
           }
         }
@@ -271,23 +291,29 @@ const CongkakBoard = () => {
       await new Promise(resolve => setTimeout(resolve, 200)); // 200ms delay for each sowing step
     }
     setCurrentSeedsInHand(0);
-    setIsSowing(false); // Indicate that sowing has finished
+    setSeeds([...newSeeds]);
     if (!getAnotherTurn) toggleTurn(setCurrentTurn, currentTurn, Players);
     updateCursorToRowStart(currentTurn, Players, holeRefs, setCursorLeft, setCursorTop, verticalPos);
+    setIsSowing(false); // Indicate that sowing has finished
   };
 
   return (
-    <div ref={gameContainerRef} className="game-container">
+    <div ref={gameContainerRef} className={`game-container ${isGameOver ? 'game-over' : ''}`}>
       <div className="current-turn">Current Turn: {currentTurn}</div>
       <div className='game-content'>
         <House position="lower" seedCount={lowHouseSeeds} ref={lowHouseRef}/>
         <div className="rows-container">
-          <Row seeds={seeds.slice(MIN_INDEX_UPPER, MIN_INDEX_LOWER)} rowType="upper" onClick={handleHoleClick} refs={holeRefs.current} />
+          <Row seeds={seeds.slice(MIN_INDEX_UPPER, MIN_INDEX_LOWER)} rowType="upper" isUpper={true} onClick={handleHoleClick} refs={holeRefs.current} />
           <Row seeds={seeds.slice(MIN_INDEX_LOWER).reverse()} rowType="lower" onClick={handleHoleClick} refs={holeRefs.current} />
         </div>
         <House position="upper" seedCount={topHouseSeeds} ref={topHouseRef}/>
         <Cursor top={cursorTop} left={cursorLeft} visible={cursorVisible} seedCount={currentSeedsInHand} isTopTurn={currentTurn===Players.UPPER} />
       </div>
+      {isGameOver && (
+      <div className="game-over-message">
+        {outcomeMessage}
+      </div>
+      )}
     </div>
   );
 };

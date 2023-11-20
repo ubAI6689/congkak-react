@@ -16,6 +16,19 @@ body {
   max-height: 95vh; /* Max height to avoid overflow */
 }
 
+.game-container.game-over {
+  opacity: 0.5; 
+  pointer-events: none; /* Disables all interactions */
+}
+
+.game-over-message {
+  color: #d9534f; /* Example color */
+  font-size: 2em; /* Example font size */
+  margin-top: 20px; /* Example margin */
+  /* Additional styling as needed */
+}
+
+
 .current-turn {
   margin-bottom: 2vh; /* Responsive vertical spacing */
   font-size: 2vh; /* Responsive font size */
@@ -55,6 +68,15 @@ body {
   font-size: 2.5vw; /* Responsive font size for seed count */
   font-weight: bold;
 }
+
+.flipped {
+  transform: rotate(180deg);
+  /* Ensure the text is still positioned correctly after flipping */
+  position: absolute;
+  width: 100%;
+  text-align: center;
+}
+
 
 .house {
   width: 15vw; /* Larger size for houses */

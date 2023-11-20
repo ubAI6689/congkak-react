@@ -2,7 +2,7 @@ import React from 'react';
 import Hole from './Hole';
 import config from '../config/config';
 
-const Row = ({ seeds, rowType, onClick, refs }) => {
+const Row = ({ seeds, isUpper, rowType, onClick, refs }) => {
   return (
     <div className="circles-row">
       {seeds.map((seedCount, index) => {
@@ -13,7 +13,8 @@ const Row = ({ seeds, rowType, onClick, refs }) => {
           <Hole 
             key={adjustedIndex} 
             ref={el => refs[adjustedIndex] = el}
-            index={adjustedIndex} 
+            index={adjustedIndex}
+            isUpper={isUpper}
             seedCount={seedCount} 
             onClick={onClick} 
           />
