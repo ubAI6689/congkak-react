@@ -306,7 +306,7 @@ const CongkakBoard = () => {
           <Row seeds={seeds.slice(MIN_INDEX_UPPER, MIN_INDEX_LOWER)} rowType="upper" isUpper={true} onClick={handleHoleClick} refs={holeRefs.current} />
           <Row seeds={seeds.slice(MIN_INDEX_LOWER).reverse()} rowType="lower" onClick={handleHoleClick} refs={holeRefs.current} />
         </div>
-        <House position="upper" seedCount={topHouseSeeds} ref={topHouseRef}/>
+        <House position="upper" seedCount={topHouseSeeds} ref={topHouseRef} isUpper={true}/>
         <Cursor top={cursorTop} left={cursorLeft} visible={cursorVisible} seedCount={currentSeedsInHand} isTopTurn={currentTurn===Players.UPPER} />
       </div>
       {isGameOver && (
