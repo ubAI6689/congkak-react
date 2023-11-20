@@ -3,18 +3,25 @@ import './CongkakBoard.css';
 import House from './House';
 import Cursor from './Cursor';
 import Row from './Row';
-import { updateCursorPosition, pickUpAnimation, toggleTurn, updateCursorToRowStart } from '../utils/utils';
+import { updateCursorPosition, pickUpAnimation, toggleTurn, updateCursorToRowStart, sumOfSeedsInCurrentRow } from '../utils/utils';
+import config from '../config/config';
 
 const Players = {
   UPPER: 'UPPER',
   LOWER: 'LOWER'
 }
 
-const initialSeedCount = 7;
+const INIT_SEEDS_COUNT = config.INIT_SEEDS_COUNT;
+const HOLE_NUMBERS = config.HOLE_NUMBERS;
+const MIN_INDEX_LOWER = config.MIN_INDEX_LOWER;
+const MAX_INDEX_LOWER = config.MAX_INDEX_LOWER;
+const MIN_INDEX_UPPER = config.MIN_INDEX_UPPER;
+const MAX_INDEX_UPPER = config.MAX_INDEX_UPPER;
+
 const posMultiplier = 0.55;
 
 const CongkakBoard = () => {
-  const [seeds, setSeeds] = useState(new Array(2*initialSeedCount).fill(initialSeedCount)); // 14 holes excluding houses
+  const [seeds, setSeeds] = useState(new Array(HOLE_NUMBERS).fill(INIT_SEEDS_COUNT)); // 14 holes excluding houses
   
   const holeRefs = useRef([]);
   const topHouseRef = useRef(null);
@@ -52,7 +59,7 @@ const CongkakBoard = () => {
   
       holeRefs.current.forEach((hole, index) => {
         // Determine if the hole is in the current turn's row
-        const isTopRowHole = index < 7;
+        const isTopRowHole = index < MIN_INDEX_LOWER;
         const isCurrentTurnRow = (currentTurn === Players.UPPER && isTopRowHole) || 
                                  (currentTurn === Players.LOWER && !isTopRowHole);
     
@@ -93,8 +100,8 @@ const CongkakBoard = () => {
   const handleHoleClick = async (index) => {
     
     if (seeds[index] === 0) return; // Prevent picking from empty hole
-    if (currentTurn === Players.UPPER && index > 6) return;
-    if (currentTurn === Players.LOWER && index <= 6) return;
+    if (currentTurn === Players.UPPER && index > MAX_INDEX_UPPER) return;
+    if (currentTurn === Players.LOWER && index <= MAX_INDEX_UPPER) return;
 
     setIsSowing(true); // Indicate that sowing has started
     
@@ -125,7 +132,7 @@ const CongkakBoard = () => {
       */
 
       // Check if the next hole is House
-      if (currentIndex == 6 && currentTurn === Players.UPPER) {
+      if (currentIndex == MAX_INDEX_UPPER && currentTurn === Players.UPPER) {
         // Animate cursor to UPPER house and increment seeds
         // Ensure topHouseRef.current is valid
         hasPassedHouse++;
@@ -139,13 +146,13 @@ const CongkakBoard = () => {
           setCurrentSeedsInHand(seedsInHand);
           if (seedsInHand > 0) {
             justFilledHome = true;
-            currentIndex = 7;
+            currentIndex = MIN_INDEX_LOWER;
           } else {
-            getAnotherTurn = true;
+            if (sumOfSeedsInCurrentRow(seeds, currentTurn, Players) > 0) getAnotherTurn = true;
             continue;
           }
         }
-      } else if (currentIndex == 13 && currentTurn === Players.LOWER) {
+      } else if (currentIndex == MAX_INDEX_LOWER && currentTurn === Players.LOWER) {
         // Animate cursor to LOWER house and increment seeds
         // Ensure lowHouseRef.current is valid
         hasPassedHouse++;
@@ -161,7 +168,7 @@ const CongkakBoard = () => {
             justFilledHome = true;
             currentIndex = 0;
           } else {
-            getAnotherTurn = true;
+            if (sumOfSeedsInCurrentRow(seeds, currentTurn, Players) > 0) getAnotherTurn = true;
             continue;
           }
         }
@@ -172,7 +179,7 @@ const CongkakBoard = () => {
       if (justFilledHome) {
         justFilledHome = false;
       } else {
-        currentIndex = (currentIndex + 1) % 14;
+        currentIndex = (currentIndex + 1) % HOLE_NUMBERS;
       }
       
       // Animate cursor
@@ -205,13 +212,13 @@ const CongkakBoard = () => {
           continue;
         }
         // Determine if the row is the current's player's side
-        const isTopRowHole = currentIndex < 7;
+        const isTopRowHole = currentIndex < MIN_INDEX_LOWER;
         const isCurrentTurnRow = (currentTurn === Players.UPPER && isTopRowHole) || 
                                  (currentTurn === Players.LOWER && !isTopRowHole);
 
         if (isCurrentTurnRow) {
           // Calculate the opposite index
-          const oppositeIndex = 13 - currentIndex;
+          const oppositeIndex = MAX_INDEX_LOWER - currentIndex;
 
           // Check if the opposite hole has seeds
           if (newSeeds[oppositeIndex] > 0) {
@@ -221,7 +228,7 @@ const CongkakBoard = () => {
             seedsInHand = newSeeds[currentIndex];
             setCurrentSeedsInHand(seedsInHand);
             newSeeds[currentIndex] = 0;
-            setSeeds([...seeds]);
+            setSeeds([...newSeeds]);
 
             // Animate cursor movement from current hole to opposite hole
             updateCursorPosition(holeRefs, oppositeIndex, setCursorLeft, setCursorTop, verticalPos)
@@ -231,7 +238,7 @@ const CongkakBoard = () => {
             seedsInHand = capturedSeeds;
             setCurrentSeedsInHand(seedsInHand);
             newSeeds[oppositeIndex] = 0;
-            setSeeds([...seeds]);
+            setSeeds([...newSeeds]);
 
             if (currentTurn === Players.UPPER) {
               // // TODO: Animate cursor movement from opposite hole to house
@@ -275,8 +282,8 @@ const CongkakBoard = () => {
       <div className='game-content'>
         <House position="lower" seedCount={lowHouseSeeds} ref={lowHouseRef}/>
         <div className="rows-container">
-          <Row seeds={seeds.slice(0, 7)} rowType="upper" onClick={handleHoleClick} refs={holeRefs.current} />
-          <Row seeds={seeds.slice(7).reverse()} rowType="lower" onClick={handleHoleClick} refs={holeRefs.current} />
+          <Row seeds={seeds.slice(MIN_INDEX_UPPER, MIN_INDEX_LOWER)} rowType="upper" onClick={handleHoleClick} refs={holeRefs.current} />
+          <Row seeds={seeds.slice(MIN_INDEX_LOWER).reverse()} rowType="lower" onClick={handleHoleClick} refs={holeRefs.current} />
         </div>
         <House position="upper" seedCount={topHouseSeeds} ref={topHouseRef}/>
         <Cursor top={cursorTop} left={cursorLeft} visible={cursorVisible} seedCount={currentSeedsInHand} isTopTurn={currentTurn===Players.UPPER} />
