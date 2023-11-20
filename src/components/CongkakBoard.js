@@ -1,14 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './CongkakBoard.css';
 import House from './House';
 import Cursor from './Cursor';
 import Row from './Row';
-import { updateCursorPosition, pickUpAnimation, toggleTurn, updateCursorToRowStart, sumOfSeedsInCurrentRow, handleCheckGameEnd } from '../utils/utils';
+import { toggleTurn, sumOfSeedsInCurrentRow, handleCheckGameEnd } from '../utils/utils';
+import { updateCursorPosition, pickUpAnimation, updateCursorToRowStart, handleMouseMovement, animateToHouse } from '../utils/animationUtils';
 import config from '../config/config';
 
 const Players = {
-  UPPER: 'UPPER',
-  LOWER: 'LOWER'
+  UPPER: config.PLAYER_UPPER,
+  LOWER: config.PLAYER_LOWER,
 }
 
 const INIT_SEEDS_COUNT = config.INIT_SEEDS_COUNT;
@@ -45,66 +46,34 @@ const CongkakBoard = () => {
   
   const verticalPos = currentTurn === Players.UPPER ? -posMultiplier : posMultiplier;
 
+  // GameOver Checker
   useEffect(() => {
     if (!isSowing) {
       handleCheckGameEnd(seeds, config, topHouseSeeds, lowHouseSeeds, setIsGameOver, setOutcomeMessage);
     }
-  }, [seeds, topHouseSeeds, lowHouseSeeds, config]); // Make sure to include all dependencies
+  }, [seeds, topHouseSeeds, lowHouseSeeds, config]);
 
+  // Skip turn if the row is empty
   useEffect(() => {
-    // Only check for empty rows and toggle turn if sowing is not in progress
     if (!isSowing && !isGameOver) {
       let sum = sumOfSeedsInCurrentRow(seeds, currentTurn, config);
-      console.log("Sum of seeds: ", sum);
       if (sum === 0) {
         toggleTurn(setCurrentTurn, currentTurn, Players);
       }
     }
-  }, [seeds, currentTurn, config, isSowing, isGameOver]); // Include isSowing in the dependency array 
+  }, [seeds, currentTurn, config, isSowing, isGameOver]);
 
+  // Initiate cursor position in every turn
   useEffect(() => {
     updateCursorToRowStart(currentTurn, Players, holeRefs, setCursorLeft, setCursorTop, verticalPos);
-  }, [currentTurn, Players]); // Include isSowing in the dependency array
+  }, [currentTurn, Players]);
+  
+  // Handle mouse movement
+  const handleMouseMove = useCallback(handleMouseMovement(isSowing, holeRefs, currentTurn, verticalPos, setCursorLeft, setCursorTop, config), 
+  [isSowing, holeRefs, currentTurn, verticalPos, setCursorLeft, setCursorTop, config]);
 
   useEffect(() => {
     const gameContainer = gameContainerRef.current;
-    const handleMouseMove = (event) => {
-      if (isSowing) return; // Do not update cursor position during sowing
-      
-      const mouseX = event.clientX;
-      
-      let closestHoleIndex = 0;
-      let closestDistance = Infinity;
-  
-      holeRefs.current.forEach((hole, index) => {
-        // Determine if the hole is in the current turn's row
-        const isTopRowHole = index < MIN_INDEX_LOWER;
-        const isCurrentTurnRow = (currentTurn === Players.UPPER && isTopRowHole) || 
-                                 (currentTurn === Players.LOWER && !isTopRowHole);
-
-    
-        if (hole && isCurrentTurnRow) {
-          const holeRect = hole.getBoundingClientRect();
-          const holeCenterX = holeRect.left + window.scrollX + (holeRect.width / 2);
-          const distance = Math.abs(mouseX - holeCenterX);
-    
-          if (distance < closestDistance) {
-            closestDistance = distance;
-            closestHoleIndex = index;
-          }
-        }
-      });
-  
-      // Snap cursor to the specific position within the closest hole
-      if (holeRefs.current[closestHoleIndex]) {
-        const closestHoleRect = holeRefs.current[closestHoleIndex].getBoundingClientRect();
-        const cursorLeftOffset = closestHoleRect.left + window.scrollX + (closestHoleRect.width / 5);
-        const cursorTopOffset = closestHoleRect.top + window.scrollY + (verticalPos * closestHoleRect.height);
-  
-        setCursorLeft(cursorLeftOffset + 'px');
-        setCursorTop(cursorTopOffset + 'px');
-      }
-    };
   
     if (gameContainer) {
       gameContainer.addEventListener('mousemove', handleMouseMove);
@@ -115,7 +84,7 @@ const CongkakBoard = () => {
         gameContainer.removeEventListener('mousemove', handleMouseMove);
       }
     };
-  }, [isSowing, currentTurn]);  
+  }, [handleMouseMove]);  
 
   const handleHoleClick = async (index) => {
     
@@ -319,3 +288,7 @@ const CongkakBoard = () => {
 };
 
 export default CongkakBoard;
+
+
+
+
