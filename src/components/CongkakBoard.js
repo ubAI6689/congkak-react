@@ -192,6 +192,65 @@ const CongkakBoard = () => {
         newSeeds[currentIndex] = 0; // Leave no seed in the current hole
         setCurrentSeedsInHand(seedsInHand);
         setSeeds([...newSeeds]);
+      } 
+      
+      if (seedsInHand === 0 && newSeeds[currentIndex] === 1) {
+        // Determine if the row is the current's player's side
+        const isTopRowHole = index < 7;
+        const isCurrentTurnRow = (currentTurn === Players.UPPER && isTopRowHole) || 
+                                 (currentTurn === Players.LOWER && !isTopRowHole);
+
+        if (isCurrentTurnRow) {
+          // Calculate the opposite index
+          const oppositeIndex = 13 - currentIndex;
+
+          // Check if the opposite hole has seeds
+          if (newSeeds[oppositeIndex] > 0) {
+            
+            pickUpAnimation(holeRefs, currentIndex, setCursorTop);
+            await new Promise(resolve => setTimeout(resolve, 400));
+            seedsInHand = newSeeds[currentIndex];
+            setCurrentSeedsInHand(seedsInHand);
+            newSeeds[currentIndex] = 0;
+            setSeeds([...seeds]);
+
+            // Animate cursor movement from current hole to opposite hole
+            updateCursorPosition(holeRefs, oppositeIndex, setCursorLeft, setCursorTop, verticalPos)
+            await new Promise(resolve => setTimeout(resolve, 400));
+            // Capture logic: Move seeds from the opposite hole and current hole to the House
+            const capturedSeeds = newSeeds[oppositeIndex] + seedsInHand;
+            seedsInHand = capturedSeeds;
+            setCurrentSeedsInHand(seedsInHand);
+            newSeeds[oppositeIndex] = 0;
+            setSeeds([...seeds]);
+
+            if (currentTurn === Players.UPPER) {
+              // // TODO: Animate cursor movement from opposite hole to house
+              if (topHouseRef.current) {
+                const topHouseRect = topHouseRef.current.getBoundingClientRect();
+                setCursorLeft(topHouseRect.left + window.scrollX + 'px');
+                setCursorTop(topHouseRect.top + window.scrollY + (-0.1 * topHouseRect.height) + 'px');
+                await new Promise(resolve => setTimeout(resolve, 400));
+              }
+              // Add captured seeds to UPPER's house
+              setTopHouseSeeds(prevSeeds => prevSeeds + capturedSeeds);
+            } else {
+              // Animate cursor from opposite hole to lower house
+              if (lowHouseRef.current) {
+                const lowHouseRect = lowHouseRef.current.getBoundingClientRect();
+                setCursorLeft(lowHouseRect.left + window.scrollX + 'px');
+                setCursorTop(lowHouseRect.top + window.scrollY + (0.1 * lowHouseRect.height) + 'px');
+                await new Promise(resolve => setTimeout(resolve, 400));
+              }
+              // Add captured seeds to LOWER's house
+              setLowHouseSeeds(prevSeeds => prevSeeds + capturedSeeds);
+            }
+            // Update the state with the new distribution of seeds
+            seedsInHand = 0;
+            setCurrentSeedsInHand(seedsInHand);
+            setSeeds([...newSeeds]);
+          }
+        }
       }
       await new Promise(resolve => setTimeout(resolve, 200)); // 200ms delay for each sowing step
     }
