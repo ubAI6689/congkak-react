@@ -202,9 +202,7 @@ const CongkakBoard = () => {
       if (seedsInHand === 0 && newSeeds[currentIndex] === 1) {
         // Capture only if the player has passed their house at least once
         if (hasPassedHouse === 0) {
-          setCurrentSeedsInHand(0);
-          setIsSowing(false); // Indicate that sowing has finished
-          toggleTurn(setCurrentTurn, currentTurn, Players);
+          continue;
         }
         // Determine if the row is the current's player's side
         const isTopRowHole = currentIndex < 7;
