@@ -4,7 +4,7 @@ import House from './House';
 import Cursor from './Cursor';
 import Row from './Row';
 import { toggleTurn, sumOfSeedsInCurrentRow, handleCheckGameEnd } from '../utils/utils';
-import { updateCursorPosition, updateCursorToRowStart, handleMouseMovement, animateToHouse } from '../utils/animationUtils';
+import { updateCursorPosition, handleMouseMovement, animateToHouse } from '../utils/animationUtils';
 import config from '../config/config';
 
 const Players = {
@@ -46,6 +46,10 @@ const CongkakBoard = () => {
   
   const verticalPos = currentTurn === Players.UPPER ? -posMultiplier : posMultiplier;
 
+/**==============================================
+ *        useEffect implementations
+ * =============================================*/
+
   // GameOver Checker
   useEffect(() => {
     if (!isSowing) {
@@ -65,7 +69,12 @@ const CongkakBoard = () => {
 
   // Initiate cursor position in every turn
   useEffect(() => {
-    updateCursorToRowStart(currentTurn, Players, holeRefs, setCursorLeft, setCursorTop, verticalPos);
+    const startIndex = currentTurn === Players.UPPER ? 
+      Math.round((config.MIN_INDEX_UPPER + config.MAX_INDEX_UPPER) / 2) :
+      Math.round((config.MIN_INDEX_LOWER + config.MAX_INDEX_LOWER) / 2);
+
+      updateCursorPosition(holeRefs, startIndex, setCursorLeft, setCursorTop, verticalPos);
+    // updateCursorToRowStart(currentTurn, Players, holeRefs, setCursorLeft, setCursorTop, verticalPos);
   }, [currentTurn, Players]);
   
   // Handle mouse movement
@@ -86,9 +95,9 @@ const CongkakBoard = () => {
     };
   }, [handleMouseMove]);
 
-  /**==============================================
-   *        Sowing and capturing logic 
-   * =============================================*/
+/**==============================================
+ *        Sowing and capturing logic 
+ * =============================================*/
 
   const handleHoleClick = async (index) => {
     
@@ -218,7 +227,6 @@ const CongkakBoard = () => {
 
             // Animate cursor movement from current hole to opposite hole
             await updateCursorPosition(holeRefs, oppositeIndex, setCursorLeft, setCursorTop, verticalPos)
-            // await new Promise(resolve => setTimeout(resolve, 400));
             // Capture logic: Move seeds from the opposite hole and current hole to the House
             const capturedSeeds = newSeeds[oppositeIndex] + seedsInHand;
             seedsInHand = capturedSeeds;
@@ -259,7 +267,6 @@ const CongkakBoard = () => {
     setCurrentSeedsInHand(0);
     setSeeds([...newSeeds]);
     if (!getAnotherTurn) toggleTurn(setCurrentTurn, currentTurn, Players);
-    updateCursorToRowStart(currentTurn, Players, holeRefs, setCursorLeft, setCursorTop, verticalPos);
     setIsSowing(false); // Indicate that sowing has finished
   };
 

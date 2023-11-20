@@ -10,21 +10,6 @@ export const updateCursorPosition = async (holeRefs, index, setCursorLeft, setCu
     }
 };
 
-export function updateCursorToRowStart(currentTurn, Players, holeRefs, setCursorLeft, setCursorTop, verticalPos) {
-    const startIndex = currentTurn === Players.UPPER 
-      ? Math.round((config.MIN_INDEX_UPPER + config.MAX_INDEX_UPPER) / 2)
-      : Math.round((config.MIN_INDEX_LOWER + config.MAX_INDEX_LOWER) / 2); // 0 for UPPER, 7 for LOWER
-  
-    console.log('Current turn', currentTurn);
-  
-    if (holeRefs.current[startIndex]) {
-      console.log('Executing updateCursorToRowStart')
-      const holeRect = holeRefs.current[startIndex].getBoundingClientRect();
-      setCursorLeft(holeRect.left + window.scrollX + 'px');
-      setCursorTop(holeRect.top + window.scrollY + (verticalPos * holeRect.height) + 'px');
-    }
-  };  
-
 export const animateToHouse = (houseRef, setCursorLeft, setCursorTop, verticalOffset) => {
     if (houseRef.current) {
         const houseRect = houseRef.current.getBoundingClientRect();
