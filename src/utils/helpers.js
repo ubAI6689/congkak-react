@@ -1,6 +1,3 @@
-import React from "react";
-import config from "../config/config";
-
 export function toggleTurn (setCurrentTurn, currentTurn, Players) {
     setCurrentTurn(currentTurn === Players.UPPER ? Players.LOWER : Players.UPPER);
   };

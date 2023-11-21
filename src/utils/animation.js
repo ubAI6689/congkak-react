@@ -1,5 +1,4 @@
 // animationUtils.js
-import config from "../config/config";
 
 export const updateCursorPosition = async (refs, indexOrElement, setCursorLeft, setCursorTop, verticalPos) => {
   let element;
