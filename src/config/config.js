@@ -1,8 +1,9 @@
 // config.js
 
-const INIT_SEEDS_COUNT = 2;
+const INIT_SEEDS_COUNT = 7;
 const HOLE_NUMBERS = INIT_SEEDS_COUNT*2;
 const MIN_INDEX_UPPER = 0;
+const POS_MULTIPLIER = 0.55;
 
 const config = {
     PLAYER_UPPER: 'UPPER',
@@ -13,6 +14,7 @@ const config = {
     MAX_INDEX_LOWER: HOLE_NUMBERS - 1, // 13
     MIN_INDEX_UPPER: MIN_INDEX_UPPER, // 0
     MAX_INDEX_UPPER: INIT_SEEDS_COUNT - 1, // 6
+    POS_MULTIPLIER: POS_MULTIPLIER,
 }
 
 export default config;

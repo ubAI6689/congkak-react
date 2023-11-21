@@ -4,7 +4,7 @@ import House from './House';
 import Cursor from './Cursor';
 import Row from './Row';
 import { toggleTurn, sumOfSeedsInCurrentRow, handleCheckGameEnd } from '../utils/utils';
-import { updateCursorPosition, handleMouseMovement, animateToHouse } from '../utils/animationUtils';
+import { updateCursorPosition, handleMouseMovement, animateToHouseAndUpdateSeeds } from '../utils/animationUtils';
 import config from '../config/config';
 
 const Players = {
@@ -19,7 +19,7 @@ const MAX_INDEX_LOWER = config.MAX_INDEX_LOWER;
 const MIN_INDEX_UPPER = config.MIN_INDEX_UPPER;
 const MAX_INDEX_UPPER = config.MAX_INDEX_UPPER;
 
-const posMultiplier = 0.55;
+const posMultiplier = config.POS_MULTIPLIER;
 
 const CongkakBoard = () => {
   const [seeds, setSeeds] = useState(new Array(HOLE_NUMBERS).fill(INIT_SEEDS_COUNT)); // 14 holes excluding houses
@@ -31,11 +31,12 @@ const CongkakBoard = () => {
   const [cursorVisible, setCursorVisible] = useState(true); // Initialize cursor visibility
   const [cursorLeft, setCursorLeft] = useState(1200);
   const [cursorTop, setCursorTop] = useState(550);
+  const [resetCursor, setResetCursor] = useState(false);
   
-  const [isSowing, setIsSowing] = useState(false);
-  const [currentSeedsInHand, setCurrentSeedsInHand] = useState(0);
   const [currentTurn, setCurrentTurn] = useState(Players.LOWER);
-
+  const [isSowing, setIsSowing] = useState(false);
+  
+  const [currentSeedsInHand, setCurrentSeedsInHand] = useState(0);
   const [topHouseSeeds, setTopHouseSeeds] = useState(0);
   const [lowHouseSeeds, setLowHouseSeeds] = useState(0);
   
@@ -67,15 +68,14 @@ const CongkakBoard = () => {
     }
   }, [seeds, currentTurn, config, isSowing, isGameOver]);
 
-  // Initiate cursor position in every turn
+  // Reset cursor position in every turn
   useEffect(() => {
     const startIndex = currentTurn === Players.UPPER ? 
       Math.round((config.MIN_INDEX_UPPER + config.MAX_INDEX_UPPER) / 2) :
       Math.round((config.MIN_INDEX_LOWER + config.MAX_INDEX_LOWER) / 2);
 
       updateCursorPosition(holeRefs, startIndex, setCursorLeft, setCursorTop, verticalPos);
-    // updateCursorToRowStart(currentTurn, Players, holeRefs, setCursorLeft, setCursorTop, verticalPos);
-  }, [currentTurn, Players]);
+  }, [currentTurn, Players, resetCursor]);
   
   // Handle mouse movement
   const handleMouseMove = useCallback(handleMouseMovement(isSowing, holeRefs, currentTurn, verticalPos, setCursorLeft, setCursorTop, config), 
@@ -130,47 +130,63 @@ const CongkakBoard = () => {
       */
 
       // Check if the next hole is House
-      if (currentIndex === MAX_INDEX_UPPER && currentTurn === Players.UPPER) {
-        // Animate cursor to UPPER house and increment seeds
-        // Ensure topHouseRef.current is valid
+      if ((currentIndex === MAX_INDEX_UPPER && currentTurn === Players.UPPER) ||
+          (currentIndex === MAX_INDEX_LOWER && currentTurn === Players.LOWER)) {
+          
+        // Determine which house to update
+        const isUpper = currentTurn === Players.UPPER;
+        const houseRef = isUpper ? topHouseRef : lowHouseRef;
+        const setHouseSeeds = isUpper ? setTopHouseSeeds : setLowHouseSeeds;
+        const verticalAdjustment = isUpper ? -0.1 : 0.1;
+        const nextIndex = isUpper ? MIN_INDEX_LOWER : 0;
+          
+        // Animate cursor to the appropriate house and increment seeds
         hasPassedHouse++;
-        if (topHouseRef.current) {
-          const topHouseRect = topHouseRef.current.getBoundingClientRect();
-          setCursorLeft(topHouseRect.left + window.scrollX + 'px');
-          setCursorTop(topHouseRect.top + window.scrollY + (-0.1 * topHouseRect.height) + 'px');
-          await new Promise(resolve => setTimeout(resolve, 400)); // Animation delay
-        }
-        setTopHouseSeeds(prevSeeds => prevSeeds + 1);
+        await updateCursorPosition(houseRef, houseRef.current, setCursorLeft, setCursorTop, verticalAdjustment);
+        setHouseSeeds(prevSeeds => prevSeeds + 1);
         seedsInHand--;
         setCurrentSeedsInHand(seedsInHand);
+          
+        // Determine next action based on remaining seeds
         if (seedsInHand > 0) {
           justFilledHome = true;
-          currentIndex = MIN_INDEX_LOWER;
+          currentIndex = nextIndex;
         } else {
           getAnotherTurn = true;
-          continue;
-        }
-      } else if (currentIndex === MAX_INDEX_LOWER && currentTurn === Players.LOWER) {
-        // Animate cursor to LOWER house and increment seeds
-        // Ensure lowHouseRef.current is valid
-        hasPassedHouse++;
-        if (lowHouseRef.current) {
-          const lowHouseRect = lowHouseRef.current.getBoundingClientRect();
-          setCursorLeft(lowHouseRect.left + window.scrollX + 'px');
-          setCursorTop(lowHouseRect.top + window.scrollY + (0.1 * lowHouseRect.height) + 'px');
-          await new Promise(resolve => setTimeout(resolve, 400)); // Animation delay
-          setLowHouseSeeds(prevSeeds => prevSeeds + 1);
-        }
-        seedsInHand--;
-        setCurrentSeedsInHand(seedsInHand);
-        if (seedsInHand > 0) {
-          justFilledHome = true;
-          currentIndex = 0;
-        } else {
-          getAnotherTurn = true;
+          setResetCursor(prev => !prev);
           continue;
         }
       }
+
+      // if (currentIndex === MAX_INDEX_UPPER && currentTurn === Players.UPPER) {
+      //   await updateCursorPosition(topHouseRef, topHouseRef.current, setCursorLeft, setCursorTop, -0.1)
+      //   setTopHouseSeeds(prevSeeds => prevSeeds + 1);
+      //   seedsInHand--;
+      //   setCurrentSeedsInHand(seedsInHand);
+      //   if (seedsInHand > 0) {
+      //     justFilledHome = true;
+      //     currentIndex = MIN_INDEX_LOWER;
+      //   } else {
+      //     getAnotherTurn = true;
+      //     setResetCursor(prev => !prev);
+      //     continue;
+      //   }
+      // } else if (currentIndex === MAX_INDEX_LOWER && currentTurn === Players.LOWER) {
+      //   // Animate cursor to LOWER house and increment seeds
+      //   hasPassedHouse++;
+      //   await updateCursorPosition(lowHouseRef, lowHouseRef.current, setCursorLeft, setCursorTop, 0.1)
+      //   setLowHouseSeeds(prevSeeds => prevSeeds + 1);
+      //   seedsInHand--;
+      //   setCurrentSeedsInHand(seedsInHand);
+      //   if (seedsInHand > 0) {
+      //     justFilledHome = true;
+      //     currentIndex = 0;
+      //   } else {
+      //     getAnotherTurn = true;
+      //     setResetCursor(prev => !prev);
+      //     continue;
+      //   }
+      // }
 
       // Move to the next hole in a circular way
       // If it's just filled home, the index is not incremented to avoid hole skipping

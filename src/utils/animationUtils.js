@@ -1,21 +1,22 @@
 // animationUtils.js
 import config from "../config/config";
 
-export const updateCursorPosition = async (holeRefs, index, setCursorLeft, setCursorTop, verticalPos) => {
-    if (holeRefs.current[index]) {
-        const holeRect = holeRefs.current[index].getBoundingClientRect();
-        setCursorLeft(holeRect.left + window.scrollX + 'px');
-        setCursorTop(holeRect.top + window.scrollY + (verticalPos * holeRect.height) + 'px');
-        await new Promise(resolve => setTimeout(resolve, 400));
-    }
-};
+export const updateCursorPosition = async (refs, indexOrElement, setCursorLeft, setCursorTop, verticalPos) => {
+  let element;
+  
+  // Determine if indexOrElement is an index or a DOM element
+  if (typeof indexOrElement === "number") {
+    element = refs.current[indexOrElement];
+  } else {
+    element = indexOrElement;
+  }
 
-export const animateToHouse = (houseRef, setCursorLeft, setCursorTop, verticalOffset) => {
-    if (houseRef.current) {
-        const houseRect = houseRef.current.getBoundingClientRect();
-        setCursorLeft(houseRect.left + window.scrollX + 'px');
-        setCursorTop(houseRect.top + window.scrollY + (verticalOffset * houseRect.height) + 'px');
-    }
+  if (element) {
+    const rect = element.getBoundingClientRect();
+    setCursorLeft(rect.left + window.scrollX + 'px');
+    setCursorTop(rect.top + window.scrollY + (verticalPos * rect.height) + 'px');
+    await new Promise(resolve => setTimeout(resolve, 400)); // Animation delay
+  }
 };
 
 function snapToClosestHole(holeRefs, closestHoleIndex, verticalPos, setCursorLeft, setCursorTop) {
