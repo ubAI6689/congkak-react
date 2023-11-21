@@ -1,19 +1,24 @@
 // animationUtils.js
+import config from "../config/config";
 
-export const updateCursorPosition = async (refs, indexOrElement, setCursorLeft, setCursorTop, verticalPos) => {
-  let element;
-  
-  // Determine if indexOrElement is an index or a DOM element
-  if (typeof indexOrElement === "number") {
-    element = refs.current[indexOrElement];
-  } else {
-    element = indexOrElement;
+const { MIN_INDEX_LOWER } = config;
+
+// Function to update cursor position for PlayerUpper
+export const updateCursorPositionUpper = async (holeIndex, holeRefs, setCursorLeftUpper, setCursorTopUpper, verticalPosUpper) => {
+  if (holeRefs.current[holeIndex]) {
+    const rect = holeRefs.current[holeIndex].getBoundingClientRect();
+    setCursorLeftUpper(rect.left + window.scrollX + 'px');
+    setCursorTopUpper(rect.top + window.scrollY + (verticalPosUpper * rect.height) + 'px');
+    await new Promise(resolve => setTimeout(resolve, 400)); // Animation delay
   }
+};
 
-  if (element) {
-    const rect = element.getBoundingClientRect();
-    setCursorLeft(rect.left + window.scrollX + 'px');
-    setCursorTop(rect.top + window.scrollY + (verticalPos * rect.height) + 'px');
+// Function to update cursor position for PlayerLower
+export const updateCursorPositionLower = async (holeIndex, holeRefs, setCursorLeftLower, setCursorTopLower, verticalPosLower) => {
+  if (holeRefs.current[holeIndex]) {
+    const rect = holeRefs.current[holeIndex].getBoundingClientRect();
+    setCursorLeftLower(rect.left + window.scrollX + 'px');
+    setCursorTopLower(rect.top + window.scrollY + (verticalPosLower * rect.height) + 'px');
     await new Promise(resolve => setTimeout(resolve, 400)); // Animation delay
   }
 };
@@ -28,36 +33,3 @@ function snapToClosestHole(holeRefs, closestHoleIndex, verticalPos, setCursorLef
       setCursorTop(cursorTopOffset + 'px');
     }
   }
-
-export function handleMouseMovement(isSowing, holeRefs, currentTurn, verticalPos, setCursorLeft, setCursorTop, config) {
-    return (event) => {
-      if (isSowing) return; // Do not update cursor position during sowing
-
-      const mouseX = event.clientX;
-
-      let closestHoleIndex = 0;
-      let closestDistance = Infinity;
-
-      holeRefs.current.forEach((hole, index) => {
-        // console.log(`Looping, Index: ${index}, Hole: ${hole}`);
-        const isTopRowHole = index < config.MIN_INDEX_LOWER;
-        const isCurrentTurnRow = (currentTurn === config.PLAYER_UPPER && isTopRowHole) ||
-                                 (currentTurn === config.PLAYER_LOWER && !isTopRowHole);
-
-        if (hole && isCurrentTurnRow) {
-
-          const holeRect = hole.getBoundingClientRect();
-          const holeCenterX = holeRect.left + window.scrollX + (holeRect.width / 2);
-          const distance = Math.abs(mouseX - holeCenterX);
-
-          if (distance < closestDistance) {
-            closestDistance = distance;
-            closestHoleIndex = index;
-          }
-        }
-      });
-
-      // Snap cursor to the specific position within the closest hole
-      snapToClosestHole(holeRefs, closestHoleIndex, verticalPos, setCursorLeft, setCursorTop);
-    };
-}
