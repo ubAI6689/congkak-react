@@ -1,11 +1,16 @@
-export function toggleTurn (setCurrentTurn, currentTurn, Players) {
-    setCurrentTurn(currentTurn === Players.UPPER ? Players.LOWER : Players.UPPER);
+import config from "../config/config";
+
+// Constants
+const { MIN_INDEX_UPPER, MAX_INDEX_UPPER, MIN_INDEX_LOWER, MAX_INDEX_LOWER,  PLAYER_UPPER, PLAYER_LOWER } = config;
+
+export function toggleTurn (setCurrentTurn, currentTurn) {
+    setCurrentTurn(currentTurn === PLAYER_UPPER ? PLAYER_LOWER : PLAYER_UPPER);
   };
 
-export function sumOfSeedsInCurrentRow(seeds, currentTurn, config) {
+export function sumOfSeedsInCurrentRow(seeds, currentTurn) {
   let sum = 0;
-  const startIndex = currentTurn === config.PLAYER_UPPER ? config.MIN_INDEX_UPPER : config.MIN_INDEX_LOWER;
-  const endIndex = currentTurn === config.PLAYER_UPPER ? config.MAX_INDEX_UPPER : config.MAX_INDEX_LOWER;
+  const startIndex = currentTurn === PLAYER_UPPER ? MIN_INDEX_UPPER : MIN_INDEX_LOWER;
+  const endIndex = currentTurn === PLAYER_UPPER ? MAX_INDEX_UPPER : MAX_INDEX_LOWER;
 
   for (let i = startIndex; i <= endIndex; i++) {
     sum += seeds[i];
@@ -28,9 +33,9 @@ function sumOfSeedsInRow(seeds, startIndex, endIndex) {
   return sum;
 }
 
-function areBothRowsEmpty(seeds, config) {
-  const sumUpperRow = sumOfSeedsInRow(seeds, config.MIN_INDEX_UPPER, config.MAX_INDEX_UPPER);
-  const sumLowerRow = sumOfSeedsInRow(seeds, config.MIN_INDEX_LOWER, config.MAX_INDEX_LOWER);
+function areBothRowsEmpty(seeds) {
+  const sumUpperRow = sumOfSeedsInRow(seeds, MIN_INDEX_UPPER, MAX_INDEX_UPPER);
+  const sumLowerRow = sumOfSeedsInRow(seeds, MIN_INDEX_LOWER, MAX_INDEX_LOWER);
   return sumUpperRow === 0 && sumLowerRow === 0;
 }
 
@@ -44,8 +49,8 @@ function determineOutcome(topHouseSeeds, lowHouseSeeds) {
   }
 }
 
-export const handleCheckGameEnd = (seeds, config, topHouseSeeds, lowHouseSeeds, setIsGameOver, setOutcomeMessage) => {
-  if (areBothRowsEmpty(seeds, config)) {
+export const handleCheckGameEnd = (seeds, topHouseSeeds, lowHouseSeeds, setIsGameOver, setOutcomeMessage) => {
+  if (areBothRowsEmpty(seeds)) {
     setIsGameOver(true);
     const outcome = determineOutcome(topHouseSeeds, lowHouseSeeds);
     setOutcomeMessage(outcome); // Set the outcome message
