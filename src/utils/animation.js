@@ -3,25 +3,25 @@ import config from "../config/config";
 
 const { MIN_INDEX_LOWER } = config;
 
-// Function to update cursor position for PlayerUpper
-export const updateCursorPositionUpper = async (holeIndex, holeRefs, setCursorLeftUpper, setCursorTopUpper, verticalPosUpper) => {
-  if (holeRefs.current[holeIndex]) {
-    const rect = holeRefs.current[holeIndex].getBoundingClientRect();
-    setCursorLeftUpper(rect.left + window.scrollX + 'px');
-    setCursorTopUpper(rect.top + window.scrollY + (verticalPosUpper * rect.height) + 'px');
-    await new Promise(resolve => setTimeout(resolve, 400)); // Animation delay
-  }
-};
+// // Function to update cursor position for PlayerUpper
+// const updateCursorPositionUpper = async (holeIndex, holeRefs, setCursorLeftUpper, setCursorTopUpper, verticalPosUpper) => {
+//   if (holeRefs.current[holeIndex]) {
+//     const rect = holeRefs.current[holeIndex].getBoundingClientRect();
+//     setCursorLeftUpper(rect.left + window.scrollX);
+//     setCursorTopUpper(rect.top + window.scrollY + (verticalPosUpper * rect.height));
+//     await new Promise(resolve => setTimeout(resolve, 400)); // Animation delay
+//   }
+// };
 
-// Function to update cursor position for PlayerLower
-export const updateCursorPositionLower = async (holeIndex, holeRefs, setCursorLeftLower, setCursorTopLower, verticalPosLower) => {
-  if (holeRefs.current[holeIndex]) {
-    const rect = holeRefs.current[holeIndex].getBoundingClientRect();
-    setCursorLeftLower(rect.left + window.scrollX + 'px');
-    setCursorTopLower(rect.top + window.scrollY + (verticalPosLower * rect.height) + 'px');
-    await new Promise(resolve => setTimeout(resolve, 400)); // Animation delay
-  }
-};
+// // Function to update cursor position for PlayerLower
+// const updateCursorPositionLower = async (holeIndex, holeRefs, setCursorLeftLower, setCursorTopLower, verticalPosLower) => {
+//   if (holeRefs.current[holeIndex]) {
+//     const rect = holeRefs.current[holeIndex].getBoundingClientRect();
+//     setCursorLeftLower(rect.left + window.scrollX);
+//     setCursorTopLower(rect.top + window.scrollY + (verticalPosLower * rect.height));
+//     await new Promise(resolve => setTimeout(resolve, 400)); // Animation delay
+//   }
+// };
 
 function snapToClosestHole(holeRefs, closestHoleIndex, verticalPos, setCursorLeft, setCursorTop) {
     if (holeRefs.current[closestHoleIndex]) {

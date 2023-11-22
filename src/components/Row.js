@@ -2,10 +2,10 @@ import React from 'react';
 import Hole from './Hole';
 import config from '../config/config';
 
-const Row = ({ seeds, isUpper, rowType, onClick, refs }) => {
+const Row = ({ holes, isUpper, rowType, onClick, refs }) => {
   return (
     <div className="circles-row">
-      {seeds.map((seedCount, index) => {
+      {holes.map((hole, index) => {
         // Adjust the index based on the row type
         const adjustedIndex = rowType === 'upper' ? index : config.MAX_INDEX_LOWER - index;
 
@@ -15,8 +15,9 @@ const Row = ({ seeds, isUpper, rowType, onClick, refs }) => {
             ref={el => refs[adjustedIndex] = el}
             index={adjustedIndex}
             isUpper={isUpper}
-            seedCount={seedCount} 
-            onClick={onClick} 
+            seedCount={hole.seeds} 
+            setSeedCount={hole.setSeeds} // Pass the setSeeds function to each Hole
+            onClick={() => onClick(adjustedIndex)} 
           />
         );
       })}
