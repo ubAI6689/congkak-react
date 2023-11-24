@@ -91,8 +91,8 @@ const CongkakBoard = () => {
   const gameContainerRef = useRef(null);
   
   const verticalPos = currentTurn === PLAYER_UPPER ? -POS_MULTIPLIER : POS_MULTIPLIER;
-  const verticalPosUpper = -POS_MULTIPLIER;
-  const verticalPosLower = POS_MULTIPLIER;
+  const verticalPosUpper = config.VERTICAL_POS_UPPER;
+  const verticalPosLower = config.VERTICAL_POS_LOWER;
 
   // Function to update cursor position for PlayerUpper
   const updateCursorPositionUpper = async (ref, indexOrElement, verticalPosUpper) => {
@@ -147,14 +147,16 @@ const CongkakBoard = () => {
       if (holeRefs.current[startIndexUpper]) {
         const rectUpper = holeRefs.current[startIndexUpper].getBoundingClientRect();
         setCursorLeftUpper(rectUpper.left + window.scrollX);
-        setCursorTopUpper(rectUpper.top + window.scrollY + (-0.5 * rectUpper.height));
+        setCursorTopUpper(rectUpper.top + window.scrollY + (verticalPosUpper * rectUpper.height));
+        setCurrentHoleIndexUpper(startIndexUpper);
       }
 
       // Set initial position for PlayerLower cursor
       if (holeRefs.current[startIndexLower]) {
         const rectLower = holeRefs.current[startIndexLower].getBoundingClientRect();
         setCursorLeftLower(rectLower.left + window.scrollX);
-        setCursorTopLower(rectLower.top + window.scrollY + (0.5 * rectLower.height));
+        setCursorTopLower(rectLower.top + window.scrollY + (verticalPosLower * rectLower.height));
+        setCurrentHoleIndexLower(startIndexLower);
       }
     }
   }, [holeRefs, resetCursor]);
@@ -296,14 +298,14 @@ const CongkakBoard = () => {
             if (holeRefs.current[startIndexUpper]) {
               const rectUpper = holeRefs.current[startIndexUpper].getBoundingClientRect();
               setCursorLeftUpper(rectUpper.left + window.scrollX);
-              setCursorTopUpper(rectUpper.top + window.scrollY + (-0.5 * rectUpper.height));
+              setCursorTopUpper(rectUpper.top + window.scrollY + (verticalPosUpper * rectUpper.height));
             } 
           } else {
             // Set initial position for PlayerLower cursor
             if (holeRefs.current[startIndexLower]) {
               const rectLower = holeRefs.current[startIndexLower].getBoundingClientRect();
               setCursorLeftLower(rectLower.left + window.scrollX);
-              setCursorTopLower(rectLower.top + window.scrollY + (0.5 * rectLower.height));
+              setCursorTopLower(rectLower.top + window.scrollY + (verticalPosLower * rectLower.height));
             }
           }
           setIsSowing(false);

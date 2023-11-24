@@ -13,7 +13,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  border-radius: 25vh;
+  border-radius: 20vw;
   max-width: 90vw; /* Max width to avoid overflow */
   max-height: 90vh; /* Max height to avoid overflow */
   background-color: #779455;

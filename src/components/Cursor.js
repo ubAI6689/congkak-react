@@ -23,7 +23,7 @@ const Cursor = ({ top, left, visible, seedCount, isTopTurn }) => {
     left: '60%',
     transform: 'translate(-50%, -50%)',
     color: '#302E2B',
-    fontSize: '2vh',
+    fontSize: '2.5vh',
     fontWeight: 'bold'
   };
 
