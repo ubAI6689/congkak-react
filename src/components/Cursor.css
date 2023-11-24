@@ -1,6 +1,6 @@
 .hand-cursor {
     position: absolute;
-    width: 5%; /* Example size */
+    width: 4%; /* Example size */
     height: auto;
     /* background-size: ; */
     pointer-events: none; /* Ensures it doesn't interfere with clicks */

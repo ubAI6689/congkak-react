@@ -14,8 +14,8 @@ body {
   flex-direction: column;
   align-items: center;
   border-radius: 25vh;
-  max-width: 95vw; /* Max width to avoid overflow */
-  max-height: 95vh; /* Max height to avoid overflow */
+  max-width: 90vw; /* Max width to avoid overflow */
+  max-height: 90vh; /* Max height to avoid overflow */
   background-color: #779455;
 }
 
@@ -59,11 +59,11 @@ body {
 
 .circle, .house {
   position: relative;
-  width: 8vw; /* Responsive width */
-  height: 8vw; /* Responsive height, maintaining aspect ratio */
+  width: 5vw; /* Responsive width */
+  height: 5vw; /* Responsive height, maintaining aspect ratio */
   border-radius: 50%;
   background-color: #EBEBD0;
-  margin: 1vw; /* Responsive margin */
+  margin: 0.5vw; /* Responsive margin */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -82,8 +82,8 @@ body {
 
 
 .house {
-  width: 15vw; /* Larger size for houses */
-  height: 10vw;
+  width: 8vw; /* Larger size for houses */
+  height: 8vw;
   background-color: #EBEBD0; /* Different color for houses */
 }
 

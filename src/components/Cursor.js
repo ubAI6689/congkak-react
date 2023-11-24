@@ -22,8 +22,8 @@ const Cursor = ({ top, left, visible, seedCount, isTopTurn }) => {
     top: isTopTurn ? '60%' : '60%', 
     left: '60%',
     transform: 'translate(-50%, -50%)',
-    color: 'black',
-    fontSize: '3vh',
+    color: '#302E2B',
+    fontSize: '2vh',
     fontWeight: 'bold'
   };
 
