@@ -9,6 +9,29 @@ body {
   background-color: #302E2B;
 }
 
+.game-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 95vw; /* Adjust as needed */
+  height: 95vh; /* Adjust as needed */
+  padding: 20px; /* Optional */
+}
+
+.start-button {
+  height: 5%;
+  width: auto;
+  border-radius: 2vw;
+  margin-top: 10vh; /* Space above the START button */
+  font-weight: bold;
+  color: darkred;
+  background-color: gold;
+  border: 3px solid gold;
+  /* box-shadow: 0 0 10px gold; */
+  /* Add additional styling for the button */
+}
+
 .game-container {
   display: flex;
   flex-direction: column;
@@ -46,10 +69,12 @@ body {
 }
 
 .rows-container {
-  display: flex;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  background-origin: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2vw; /* Responsive gap between rows */
+  gap: 10px; /*Responsive gap between rows */
 }
 
 .circles-row {
@@ -72,6 +97,10 @@ body {
   font-weight: bold;
 }
 
+.circle.selected {
+  background-color: gold;
+}
+
 .flipped {
   transform: rotate(180deg);
   /* Ensure the text is still positioned correctly after flipping */
@@ -87,7 +116,7 @@ body {
   background-color: #EBEBD0; /* Different color for houses */
 }
 
-.circle:hover, .house:hover {
+.circle:hover, .start-button:hover {
   cursor: pointer;
 }
 
