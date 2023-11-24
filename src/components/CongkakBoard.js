@@ -472,5 +472,3 @@ const CongkakBoard = () => {
 };
 
 export default CongkakBoard;
-
-

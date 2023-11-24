@@ -1,19 +1,22 @@
 /* Centering the game container in the browser window without affecting its layout */
 body {
-  margin: 0; /* Remove default margin */
+  margin: 0;  /* Remove default margin */
   height: 100vh;
   display: flex;
   justify-content: center; /* Center horizontally */
   align-items: center; /* Center vertically */
   overflow: hidden; /* Hide overflow */
+  background-color: #302E2B;
 }
 
 .game-container {
   display: flex;
   flex-direction: column;
   align-items: center;
+  border-radius: 25vh;
   max-width: 95vw; /* Max width to avoid overflow */
   max-height: 95vh; /* Max height to avoid overflow */
+  background-color: #779455;
 }
 
 .game-container.game-over {
@@ -59,12 +62,12 @@ body {
   width: 8vw; /* Responsive width */
   height: 8vw; /* Responsive height, maintaining aspect ratio */
   border-radius: 50%;
-  background-color: #4B5563;
+  background-color: #EBEBD0;
   margin: 1vw; /* Responsive margin */
   display: flex;
   justify-content: center;
   align-items: center;
-  color: white;
+  color: #302E2B;
   font-size: 2.5vw; /* Responsive font size for seed count */
   font-weight: bold;
 }
@@ -81,11 +84,7 @@ body {
 .house {
   width: 15vw; /* Larger size for houses */
   height: 10vw;
-  background-color: #4B5563; /* Different color for houses */
-}
-
-.left-house, .right-house {
-  /* Additional styling if needed */
+  background-color: #EBEBD0; /* Different color for houses */
 }
 
 .circle:hover, .house:hover {
@@ -93,6 +92,7 @@ body {
 }
 
 .circle-index {
+  opacity: 0;
   position: absolute;
   top: 1vw;
   left: 1vw;
