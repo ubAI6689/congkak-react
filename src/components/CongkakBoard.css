@@ -121,7 +121,7 @@ body {
 }
 
 .circle-index {
-  opacity: 0;
+  opacity: 0.5;
   position: absolute;
   top: 1vw;
   left: 1vw;

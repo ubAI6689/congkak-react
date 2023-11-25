@@ -39,10 +39,6 @@ const CongkakBoard = () => {
   const [upperPlayerConfirmed, setUpperPlayerConfirmed] = useState(false);
   const [lowerPlayerConfirmed, setLowerPlayerConfirmed] = useState(false);
 
-  // Additional states for prompts and confirmations
-  const [isConfirmingUpper, setIsConfirmingUpper] = useState(false);
-  const [isConfirmingLower, setIsConfirmingLower] = useState(false);
-
   const [cursorVisibilityUpper, setCursorVisibilityUpper] = useState({ visible: true });
   const [cursorVisibilityLower, setCursorVisibilityLower] = useState({ visible: true });
 
@@ -162,7 +158,7 @@ const CongkakBoard = () => {
             handleHoleClick(newIndexUpper, PLAYER_UPPER);
           } else if (!upperPlayerConfirmed) {
             setStartingPositionUpper(newIndexUpper);
-            // setUpperPlayerConfirmed(true);
+            setUpperPlayerConfirmed(true);
           }
         }
       }
@@ -183,7 +179,7 @@ const CongkakBoard = () => {
             handleHoleClick(newIndexLower, PLAYER_LOWER);
           } else if (!lowerPlayerConfirmed) {
             setStartingPositionLower(newIndexLower);
-            // setLowerPlayerConfirmed(true);
+            setLowerPlayerConfirmed(true);
           }
         }
       }
@@ -216,6 +212,113 @@ const CongkakBoard = () => {
   //     }
   //   }
   // }, [seeds, currentTurn, isSowing, isGameOver]);
+
+  const startSimultaneousSowing = async (startingPositionUpper, startingPositionLower) => {
+    if (!upperPlayerConfirmed) {
+      console.log("Please select starting position for Player Upper")
+    } else if (!lowerPlayerConfirmed) {
+      console.log("Please select starting position for Player Lower")
+    } else {
+      console.log("Start button pressed here!")
+      
+      setIsSowingUpper(true);
+      setIsSowingLower(true);
+
+      let currentIndexUpper = startingPositionUpper;
+      let currentIndexLower = startingPositionLower;
+      console.log(`startIndexU: ${currentIndexUpper}, startIndexL: ${currentIndexLower}`)
+      let newSeeds = [...seeds];
+      // let newSeedsLower = [...seeds];
+      let seedsInHandUpper = 0;
+      let seedsInHandLower = 0;
+      let hasPassedHouseUpper = 0;
+      let hasPassedHouseLower = 0;
+      let justFilledHomeUpper = false;
+      let justFilledHomeLower = false;
+      let getAnotherTurnUpper = false;
+      let getAnotherTurnLower = false;
+
+      seedsInHandUpper = newSeeds[currentIndexUpper];
+      seedsInHandLower = newSeeds[currentIndexLower];
+      setCurrentSeedsInHandUpper(seedsInHandUpper);
+      setCurrentSeedsInHandLower(seedsInHandLower);
+
+      newSeeds[currentIndexUpper] = 0;
+      setSeeds([...newSeeds]);
+      newSeeds[currentIndexLower] = 0;
+      setSeeds([...newSeeds]);
+      
+      updateCursorPositionUpper(holeRefs, currentIndexUpper, 0);
+      updateCursorPositionLower(holeRefs, currentIndexLower, 0);
+      
+      await new Promise(resolve => setTimeout(resolve, 400)); // Animation delay       
+      
+      while (seedsInHandUpper > 0 && seedsInHandLower > 0) {
+        // Determine next moves without updating UI
+        let nextIndexUpper = getNextIndex(currentIndexUpper, justFilledHomeUpper, MAX_INDEX_UPPER, MIN_INDEX_LOWER);
+        let nextIndexLower = getNextIndex(currentIndexLower, justFilledHomeLower, MAX_INDEX_LOWER, MIN_INDEX_UPPER);
+    
+        let sowIntoHouseUpper = nextIndexUpper === MIN_INDEX_LOWER && !justFilledHomeUpper;
+        let sowIntoHouseLower = nextIndexLower === MIN_INDEX_UPPER && !justFilledHomeLower;
+
+        let sowAfterHouseUpper = nextIndexUpper === MIN_INDEX_LOWER && justFilledHomeUpper;
+        let sowAfterHouseLower = nextIndexLower === MIN_INDEX_UPPER && justFilledHomeUpper;
+    
+        // Update seeds in hand
+        seedsInHandUpper -= 1;
+        seedsInHandLower -= 1;
+    
+        // Now perform UI updates simultaneously
+        if (sowIntoHouseUpper) {
+          updateCursorPositionUpper(topHouseRef, topHouseRef.current, -0.1);
+          setTopHouseSeeds(prevSeeds => prevSeeds + 1);
+          justFilledHomeUpper = true;
+        } else if (sowAfterHouseUpper) {
+          updateCursorPositionUpper(holeRefs, nextIndexUpper, -0.5);
+          newSeeds[nextIndexUpper]++;
+          justFilledHomeUpper = false;
+          currentIndexUpper = nextIndexUpper;
+        } else {
+          updateCursorPositionUpper(holeRefs, nextIndexUpper, -0.5);
+          newSeeds[nextIndexUpper]++;
+          currentIndexUpper = nextIndexUpper;
+        }
+    
+        if (sowIntoHouseLower) {
+          updateCursorPositionLower(lowHouseRef, lowHouseRef.current, 0.1);
+          setLowHouseSeeds(prevSeeds => prevSeeds + 1);
+          justFilledHomeLower = true;
+        } else if (sowAfterHouseLower) {
+          updateCursorPositionLower(holeRefs, nextIndexLower, 0.5);
+          newSeeds[nextIndexLower]++;
+          justFilledHomeLower = false;
+          currentIndexLower = nextIndexLower;
+        } else {
+          updateCursorPositionLower(holeRefs, nextIndexLower, 0.5);
+          newSeeds[nextIndexLower]++;
+          currentIndexLower = nextIndexLower;
+        }
+    
+        setSeeds([...newSeeds]);
+    
+        // Update state for seeds in hand
+        setCurrentSeedsInHandUpper(seedsInHandUpper);
+        setCurrentSeedsInHandLower(seedsInHandLower);
+    
+        await new Promise(resolve => setTimeout(resolve, 400)); // Synchronization delay
+      }
+    }
+  }
+
+  // Helper function to get the next index
+  function getNextIndex(currentIndex, justFilledHome, maxIndex, minIndex) {
+    if (justFilledHome) {
+      return minIndex;
+    }
+    return currentIndex === maxIndex ? minIndex : (currentIndex + 1) % HOLE_NUMBERS;
+  }
+
+  
 
 /**==============================================
  *        Sowing and capturing logic 
@@ -258,7 +361,6 @@ const CongkakBoard = () => {
       await updateCursorPositionLower(holeRefs, currentIndex, 0);
     }
     
-
     while (seedsInHand > 0) {
       /** ============================================
        *              Sowing to House
@@ -440,7 +542,8 @@ const CongkakBoard = () => {
         </div>
       </div>
       {!isStartButtonPressed && isStartingPhase && (
-          <button className="start-button" onClick={() => setIsStartButtonPressed(true)}>START</button>
+          <button className="start-button" 
+          onClick={() => startSimultaneousSowing(startingPositionUpper, startingPositionLower)} >START</button>
       )}
       {isGameOver && (
         <div className="game-over-message">
