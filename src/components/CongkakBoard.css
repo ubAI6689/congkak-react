@@ -23,17 +23,27 @@ body {
   color: gold;
 }
 
-.start-button {
+.button {
   height: 5%;
   width: auto;
   border-radius: 2vw;
   margin-top: 10vh; /* Space above the START button */
+  /* box-shadow: 0 0 10px gold; */
+  /* Add additional styling for the button */
+}
+
+.start {
   font-weight: bold;
   color: darkred;
   background-color: gold;
   border: 3px solid gold;
-  /* box-shadow: 0 0 10px gold; */
-  /* Add additional styling for the button */
+}
+
+.reset {
+  font-weight: bold;
+  color: darkred;
+  background-color: gold;
+  border: 3px solid gold;
 }
 
 .game-container {
@@ -120,7 +130,7 @@ body {
   background-color: #EBEBD0; /* Different color for houses */
 }
 
-.circle:hover, .start-button:hover {
+.circle:hover, .button:hover {
   cursor: pointer;
 }
 
