@@ -226,9 +226,7 @@ const CongkakBoard = () => {
 
       let currentIndexUpper = startingPositionUpper;
       let currentIndexLower = startingPositionLower;
-      console.log(`startIndexU: ${currentIndexUpper}, startIndexL: ${currentIndexLower}`)
       let newSeeds = [...seeds];
-      // let newSeedsLower = [...seeds];
       let seedsInHandUpper = 0;
       let seedsInHandLower = 0;
       let hasPassedHouseUpper = 0;
@@ -261,38 +259,63 @@ const CongkakBoard = () => {
         let sowIntoHouseUpper = nextIndexUpper === MIN_INDEX_LOWER && !justFilledHomeUpper;
         let sowIntoHouseLower = nextIndexLower === MIN_INDEX_UPPER && !justFilledHomeLower;
     
+        // Now perform UI updates simultaneously
+        if (seedsInHandUpper > 0) {
+          if (sowIntoHouseUpper) {
+            updateCursorPositionUpper(topHouseRef, topHouseRef.current, -0.1);
+            setTopHouseSeeds(prevSeeds => prevSeeds + 1);
+            hasPassedHouseUpper++;
+            justFilledHomeUpper = true;
+          } else {
+            updateCursorPositionUpper(holeRefs, nextIndexUpper, -0.5);
+            newSeeds[nextIndexUpper]++;
+            currentIndexUpper = nextIndexUpper;
+            justFilledHomeUpper = false;
+          }
+        }
+        
+        if (seedsInHandLower > 0) {
+          if (sowIntoHouseLower) {
+            updateCursorPositionLower(lowHouseRef, lowHouseRef.current, 0.1);
+            setLowHouseSeeds(prevSeeds => prevSeeds + 1);
+            hasPassedHouseLower++;
+            justFilledHomeLower = true;
+          } else {
+            updateCursorPositionLower(holeRefs, nextIndexLower, 0.5);
+            newSeeds[nextIndexLower]++;
+            currentIndexLower = nextIndexLower;
+            justFilledHomeLower = false;
+          }
+        }
+        
+        setSeeds([...newSeeds]);
+        
         // Update seeds in hand
         seedsInHandUpper -= 1;
         seedsInHandLower -= 1;
-    
-        // Now perform UI updates simultaneously
-        if (sowIntoHouseUpper) {
-          updateCursorPositionUpper(topHouseRef, topHouseRef.current, -0.1);
-          setTopHouseSeeds(prevSeeds => prevSeeds + 1);
-          justFilledHomeUpper = true;
-        } else {
-          updateCursorPositionUpper(holeRefs, nextIndexUpper, -0.5);
-          newSeeds[nextIndexUpper]++;
-          currentIndexUpper = nextIndexUpper;
-          justFilledHomeUpper = false;
-        }
-    
-        if (sowIntoHouseLower) {
-          updateCursorPositionLower(lowHouseRef, lowHouseRef.current, 0.1);
-          setLowHouseSeeds(prevSeeds => prevSeeds + 1);
-          justFilledHomeLower = true;
-        } else {
-          updateCursorPositionLower(holeRefs, nextIndexLower, 0.5);
-          newSeeds[nextIndexLower]++;
-          currentIndexLower = nextIndexLower;
-          justFilledHomeLower = false;
-        }
-    
-        setSeeds([...newSeeds]);
-    
+
         // Update state for seeds in hand
         setCurrentSeedsInHandUpper(seedsInHandUpper);
         setCurrentSeedsInHandLower(seedsInHandLower);
+
+        // Animation delay
+        await new Promise(resolve => setTimeout(resolve, 0)); 
+
+        if (seedsInHandUpper === 0 && newSeeds[currentIndexUpper] > 1) {
+          await updateCursorPositionUpper(holeRefs, currentIndexUpper, 0);
+          seedsInHandUpper = newSeeds[currentIndexUpper];
+          setCurrentSeedsInHandUpper(seedsInHandUpper);
+          newSeeds[currentIndexUpper] = 0;
+          setSeeds([...newSeeds]);
+        }
+
+        if (seedsInHandLower === 0 && newSeeds[currentIndexLower] > 1) {
+          await updateCursorPositionLower(holeRefs, currentIndexLower, 0);
+          seedsInHandLower = newSeeds[currentIndexLower];
+          setCurrentSeedsInHandLower(seedsInHandLower);
+          newSeeds[currentIndexLower] = 0;
+          setSeeds([...newSeeds]);
+        }
     
         await new Promise(resolve => setTimeout(resolve, 400)); // Synchronization delay
       }
