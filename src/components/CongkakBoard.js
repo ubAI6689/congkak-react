@@ -260,9 +260,6 @@ const CongkakBoard = () => {
     
         let sowIntoHouseUpper = nextIndexUpper === MIN_INDEX_LOWER && !justFilledHomeUpper;
         let sowIntoHouseLower = nextIndexLower === MIN_INDEX_UPPER && !justFilledHomeLower;
-
-        let sowAfterHouseUpper = nextIndexUpper === MIN_INDEX_LOWER && justFilledHomeUpper;
-        let sowAfterHouseLower = nextIndexLower === MIN_INDEX_UPPER && justFilledHomeUpper;
     
         // Update seeds in hand
         seedsInHandUpper -= 1;
@@ -273,30 +270,22 @@ const CongkakBoard = () => {
           updateCursorPositionUpper(topHouseRef, topHouseRef.current, -0.1);
           setTopHouseSeeds(prevSeeds => prevSeeds + 1);
           justFilledHomeUpper = true;
-        } else if (sowAfterHouseUpper) {
-          updateCursorPositionUpper(holeRefs, nextIndexUpper, -0.5);
-          newSeeds[nextIndexUpper]++;
-          justFilledHomeUpper = false;
-          currentIndexUpper = nextIndexUpper;
         } else {
           updateCursorPositionUpper(holeRefs, nextIndexUpper, -0.5);
           newSeeds[nextIndexUpper]++;
           currentIndexUpper = nextIndexUpper;
+          justFilledHomeUpper = false;
         }
     
         if (sowIntoHouseLower) {
           updateCursorPositionLower(lowHouseRef, lowHouseRef.current, 0.1);
           setLowHouseSeeds(prevSeeds => prevSeeds + 1);
           justFilledHomeLower = true;
-        } else if (sowAfterHouseLower) {
-          updateCursorPositionLower(holeRefs, nextIndexLower, 0.5);
-          newSeeds[nextIndexLower]++;
-          justFilledHomeLower = false;
-          currentIndexLower = nextIndexLower;
         } else {
           updateCursorPositionLower(holeRefs, nextIndexLower, 0.5);
           newSeeds[nextIndexLower]++;
           currentIndexLower = nextIndexLower;
+          justFilledHomeLower = false;
         }
     
         setSeeds([...newSeeds]);
