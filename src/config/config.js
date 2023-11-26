@@ -1,6 +1,6 @@
 // config.js
 
-const INIT_SEEDS_COUNT = 2;
+const INIT_SEEDS_COUNT = 7;
 const HOLE_NUMBERS = INIT_SEEDS_COUNT*2;
 const MIN_INDEX_UPPER = 0;
 const POS_MULTIPLIER = 0.55;

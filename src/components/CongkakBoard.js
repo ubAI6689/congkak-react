@@ -16,7 +16,6 @@ const {
   MAX_INDEX_UPPER,
   MIN_INDEX_LOWER,
   MAX_INDEX_LOWER,
-  POS_MULTIPLIER,
 } = config;
 
 const CongkakBoard = () => {
@@ -36,8 +35,6 @@ const CongkakBoard = () => {
   // States for starting phase
   const [startingPositionUpper, setStartingPositionUpper] = useState(null);
   const [startingPositionLower, setStartingPositionLower] = useState(null);
-  const [upperPlayerConfirmed, setUpperPlayerConfirmed] = useState(false);
-  const [lowerPlayerConfirmed, setLowerPlayerConfirmed] = useState(false);
 
   const [cursorVisibilityUpper, setCursorVisibilityUpper] = useState({ visible: true });
   const [cursorVisibilityLower, setCursorVisibilityLower] = useState({ visible: true });
@@ -70,7 +67,6 @@ const CongkakBoard = () => {
 
   const gameContainerRef = useRef(null);
   
-  const verticalPos = currentTurn === PLAYER_UPPER ? -POS_MULTIPLIER : POS_MULTIPLIER;
   const verticalPosUpper = config.VERTICAL_POS_UPPER;
   const verticalPosLower = config.VERTICAL_POS_LOWER;
 
@@ -119,7 +115,7 @@ const CongkakBoard = () => {
     } else {
       console.log("START GAME!")
       setIsStartButtonPressed(true);
-      setGamePhase('SIMULTANEOUS_SOWING');
+      // setGamePhase('SIMULTANEOUS_SOWING');
       simultaneousSowing(startingPositionUpper, startingPositionLower);
     }
   }
@@ -171,7 +167,7 @@ const CongkakBoard = () => {
       let newIndexLower = currentHoleIndexLower;
       
       // Handle PlayerUpper's left and right movement
-      if (!isSowingUpper) {
+      if (!isSowingUpper && currentTurn === PLAYER_UPPER) {
         if (event.key === 'a' || event.key === 'A') {
           newIndexUpper = Math.max(0, currentHoleIndexUpper - 1); // decrease
         } else if (event.key === 'd' || event.key === 'D') {
@@ -184,16 +180,14 @@ const CongkakBoard = () => {
         if (event.key === 's' || event.key === 'S') {
           if (gamePhase === 'TURN_BASED_SELECT' && currentTurn === PLAYER_UPPER) {
             // Start sowing for PlayerUpper
-            console.log('[UPPER] S is pressed')
             turnBasedSowing(newIndexUpper, PLAYER_UPPER);
           } else if (gamePhase === 'STARTING_PHASE') {
             setStartingPositionUpper(newIndexUpper);
-            // setUpperPlayerConfirmed(true);
           }
         }
       }
       
-      if (!isSowingLower) {
+      if (!isSowingLower && currentTurn === PLAYER_LOWER) {
         // Handle PlayerLower's left and right movement (reversed)
         if (event.key === 'ArrowLeft') {
           newIndexLower = Math.min(MAX_INDEX_LOWER, currentHoleIndexLower + 1); // Increment index
@@ -209,7 +203,6 @@ const CongkakBoard = () => {
             turnBasedSowing(newIndexLower, PLAYER_LOWER);
           } else if (gamePhase === 'STARTING_PHASE') {
             setStartingPositionLower(newIndexLower);
-            // setLowerPlayerConfiramed(true);
           }
         }
       }
@@ -259,8 +252,6 @@ const CongkakBoard = () => {
     let hasPassedHouseLower = 0;
     let justFilledHomeUpper = false;
     let justFilledHomeLower = false;
-    let getAnotherTurnUpper = false;
-    let getAnotherTurnLower = false;
     
     seedsInHandUpper = newSeeds[currentIndexUpper];
     seedsInHandLower = newSeeds[currentIndexLower];
@@ -323,6 +314,9 @@ const CongkakBoard = () => {
     /** ============================================
      *            Continue sowing movement
      * ===========================================*/
+      // TODO: Implement capturing
+      // TODO: Implement the case where one or both end at house
+
       if (seedsInHandUpper === 0) {
         if (newSeeds[currentIndexUpper] > 1) {
           await updateCursorPositionUpper(holeRefs, currentIndexUpper, 0);
@@ -470,7 +464,6 @@ const CongkakBoard = () => {
         justFilledHome = false;
       } else {
         currentIndex = (currentIndex + 1) % HOLE_NUMBERS;
-        console.log(`DEBUG: Current Turn: ${currentTurn} | index: ${currentIndex}`)
       }
 
       if (isUpperPlayer) {

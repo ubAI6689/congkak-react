@@ -135,7 +135,7 @@ body {
 }
 
 .circle-index {
-  opacity: 0.5;
+  opacity: 0; /* increase this value to show index number. e.g. 0.5 */
   position: absolute;
   top: 1vw;
   left: 1vw;
