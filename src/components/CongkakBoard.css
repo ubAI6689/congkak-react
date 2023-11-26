@@ -19,6 +19,10 @@ body {
   padding: 20px; /* Optional */
 }
 
+.current-turn {
+  color: gold;
+}
+
 .start-button {
   height: 5%;
   width: auto;

@@ -53,9 +53,7 @@ const CongkakBoard = () => {
   const [cursorLeftLower, setCursorLeftLower] = useState(window.innerWidth / 2);
   const [cursorTopLower, setCursorTopLower] = useState(window.innerHeight * 2 / 3);
 
-  const [cursorVisible, setCursorVisible] = useState(true); // Initialize cursor visibility
   const [resetCursor, setResetCursor] = useState(false);
-  const [updateBoard, setUpdateBoard] = useState(false);
   
   const [currentTurn, setCurrentTurn] = useState(null);
   const [isSowingUpper, setIsSowingUpper] = useState(false);
@@ -113,7 +111,7 @@ const CongkakBoard = () => {
     }
   };
 
-  // Continue movement when SIMULTANEOUS phase end
+  // Continue sowing movement when SIMULTANEOUS phase end
   useEffect(() => {
     if (gamePhase === 'TURN_BASED') {
         // Determine which player's turn it is based on who finished moving first
@@ -233,6 +231,7 @@ const CongkakBoard = () => {
     } else {
       console.log("Start button pressed here!")
       
+      if (gamePhase !== 'SIMULTANEOUS') return;
       setIsSowingUpper(true);
       setIsSowingLower(true);
 
@@ -267,7 +266,7 @@ const CongkakBoard = () => {
         // Determine next moves without updating UI
         let nextIndexUpper = getNextIndex(currentIndexUpper, justFilledHomeUpper, MAX_INDEX_UPPER, MIN_INDEX_LOWER);
         let nextIndexLower = getNextIndex(currentIndexLower, justFilledHomeLower, MAX_INDEX_LOWER, MIN_INDEX_UPPER);
-    
+
         let sowIntoHouseUpper = nextIndexUpper === MIN_INDEX_LOWER && !justFilledHomeUpper;
         let sowIntoHouseLower = nextIndexLower === MIN_INDEX_UPPER && !justFilledHomeLower;
 
@@ -321,6 +320,18 @@ const CongkakBoard = () => {
             setSeeds([...newSeeds]);
           } else if (newSeeds[currentIndexUpper] === 1) {
               console.log("[UPPER] Check for capturing or end movement")
+              const isOwnRow = currentIndexUpper < MIN_INDEX_LOWER;
+              if (!isOwnRow) {
+                // end movement,
+                setIsSowingUpper(false);
+                // hide cursor
+                // setCursorVisibilityUpper(prev => !prev);
+                // Get the opponent position
+                setCurrentHoleIndexLower(currentIndexLower);
+                // Change game phase to TURN_BASED
+                setGamePhase('TURN_BASED');
+                return;
+              }
           }
         } 
         
@@ -337,14 +348,11 @@ const CongkakBoard = () => {
               if (!isOwnRow) {
                 // end movement,
                 setIsSowingLower(false);
-
                 // hide cursor
-                setCursorVisibilityLower(prev => !prev);
-                
+                // setCursorVisibilityLower(prev => !prev);
                 // get the opponent position
                 setCurrentHoleIndexUpper(currentIndexUpper);
-
-                // change game phase to setGamePhase(TURN_BASED)
+                // Change game phase to TURN_BASED
                 setGamePhase('TURN_BASED');
                 
                 return;
@@ -375,6 +383,7 @@ const CongkakBoard = () => {
   const turnBasedSowing = async (index, player, isContinuation = false) => {
     // Prevent picking from empty hole
     // if (seeds[index] === 0) return;
+    if (gamePhase !== 'TURN_BASED') return;
   
     // Determine player-specific states and actions
     const isUpperPlayer = player === PLAYER_UPPER;
@@ -414,10 +423,11 @@ const CongkakBoard = () => {
     }
     
     while (seedsInHand > 0) {
+
       /** ============================================
        *              Sowing to House
        * ===========================================*/
-      if (currentIndex === maxIndex && player === currentTurn) {
+      if (currentIndex === maxIndex) {
         hasPassedHouse++;
         if (isUpperPlayer) {
           await updateCursorPositionUpper(currentHouseRef, currentHouseRef.current, -0.1);
@@ -552,9 +562,8 @@ const CongkakBoard = () => {
         setCurrentSeedsInHand(seedsInHand);
       }
     }
-  
     // End of sowing
-    if (!getAnotherTurn && gamePhase !== 'SIMULTANEOUS') {
+    if (!getAnotherTurn) {
       toggleTurn(setCurrentTurn, currentTurn);
     }
     setResetCursor(prev => !prev)
@@ -563,8 +572,8 @@ const CongkakBoard = () => {
 
   return (
     <div className='game-area'>
+        <div className="current-turn">Current Turn: {currentTurn}</div>
       <div ref={gameContainerRef} className={`game-container ${isGameOver ? 'game-over' : ''}`}>
-        {/* <div className="current-turn">Current Turn: {currentTurn}</div> */}
         <div className='game-content'>
           <House position="lower" seedCount={lowHouseSeeds} ref={lowHouseRef}/>
           <div className="rows-container">
