@@ -158,25 +158,6 @@ const CongkakBoard = () => {
     }
   }, [holeRefs, resetCursor]);
 
-  useEffect(() => {
-    const handleSpaceBar = (event) => {
-      if (!startButtonPressed && gamePhase === 'STARTING_PHASE') {
-        if (event.code === 'Space' || event.key === 32) {
-          console.log("SPACE pressed")
-          startButtonPressed();
-        }
-      }
-    };
-
-    // Attach the event listener
-    window.addEventListener('keydown', handleSpaceBar);
-
-    // Clean up the event listener
-    return () => {
-      window.removeEventListener('keydown', handleSpaceBar);
-    };
-  }, [])
-
   // Event listener for keydown events
   useEffect(() => {
 
@@ -223,6 +204,13 @@ const CongkakBoard = () => {
           } else if (gamePhase === 'STARTING_PHASE') {
             setStartingPositionLower(newIndexLower);
           }
+        }
+      }
+
+      if ((!isSowingUpper || !isSowingLower) || (!startButtonPressed && gamePhase === 'STARTING_PHASE')) {
+        if (event.code === 'Space' || event.key === 32) {
+          console.log("SPACE pressed")
+          startButtonPressed();
         }
       }
     };
