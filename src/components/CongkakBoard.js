@@ -120,11 +120,13 @@ const CongkakBoard = () => {
         simultaneousSowing(startingPositionUpper, startingPositionLower);
       }
     } else if (gamePhase === 'SIMULTANEOUS_SELECT_LOWER') {
-      console.log("Sim select lower!");
-      setIsStartButtonPressed(true);
-      simultaneousSowing(null, startingPositionLower)
+      if (startingPositionLower === null || seeds[startingPositionLower] === 0) {
+        console.log("Please select starting position for Player Lower")
+      } else {
+        setIsStartButtonPressed(true);
+        simultaneousSowing(null, startingPositionLower)
+      }
     }
-    
   }
 
   // Effect to update currentTurn
