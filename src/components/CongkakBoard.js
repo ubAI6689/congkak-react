@@ -167,7 +167,7 @@ const CongkakBoard = () => {
       let newIndexLower = currentHoleIndexLower;
       
       // Handle PlayerUpper's left and right movement
-      if (!isSowingUpper && currentTurn === PLAYER_UPPER) {
+      if (!isSowingUpper) {
         if (event.key === 'a' || event.key === 'A') {
           newIndexUpper = Math.max(0, currentHoleIndexUpper - 1); // decrease
         } else if (event.key === 'd' || event.key === 'D') {
@@ -187,7 +187,7 @@ const CongkakBoard = () => {
         }
       }
       
-      if (!isSowingLower && currentTurn === PLAYER_LOWER) {
+      if (!isSowingLower) {
         // Handle PlayerLower's left and right movement (reversed)
         if (event.key === 'ArrowLeft') {
           newIndexLower = Math.min(MAX_INDEX_LOWER, currentHoleIndexLower + 1); // Increment index
@@ -274,6 +274,29 @@ const CongkakBoard = () => {
       let nextIndexLower = getNextIndex(currentIndexLower, justFilledHomeLower, MAX_INDEX_LOWER, MIN_INDEX_UPPER);
       let sowIntoHouseUpper = nextIndexUpper === MIN_INDEX_LOWER && !justFilledHomeUpper;
       let sowIntoHouseLower = nextIndexLower === MIN_INDEX_UPPER && !justFilledHomeLower;
+      
+      // TODO: Implement the case where one or both end at house
+      let endAtHouseUpper = sowIntoHouseUpper && currentSeedsInHandUpper === 1;
+      let endAtHouseLower = sowIntoHouseLower && currentSeedsInHandLower === 1;
+
+      if (endAtHouseUpper || endAtHouseLower) {
+        // if only upper end at house
+        if (!endAtHouseLower) {
+          // Animate sowing into house and update the seeds
+          updateCursorPositionUpper(topHouseRef, topHouseRef.current, -0.1);
+          setTopHouseSeeds(prevSeeds => prevSeeds + 1);
+          seedsInHandUpper -= 1;
+          // Execute the opposite move here, could be sowIntoHouseLower or normal sowing but this would be redundant (too verbose)?
+
+          // Trigger change of game phase 
+          setIsSowingUpper(false);
+          setGamePhase('SIMULTANEOUS_SELECT');
+          // Get the last position of cursors
+          setCurrentHoleIndexUpper(startIndexUpper);
+          setCurrentHoleIndexUpper(currentIndexLower);
+        }
+      }
+
       // Now perform UI updates simultaneously
       if (seedsInHandUpper > 0) {
         if (sowIntoHouseUpper) {
@@ -312,10 +335,9 @@ const CongkakBoard = () => {
       await new Promise(resolve => setTimeout(resolve, 0)); 
       
     /** ============================================
-     *            Continue sowing movement
+     *      Continue sowing movement & capturing
      * ===========================================*/
-      // TODO: Implement capturing
-      // TODO: Implement the case where one or both end at house
+      // // TODO: Implement capturing
 
       if (seedsInHandUpper === 0) {
         if (newSeeds[currentIndexUpper] > 1) {
@@ -325,46 +347,92 @@ const CongkakBoard = () => {
           newSeeds[currentIndexUpper] = 0;
           setSeeds([...newSeeds]);
         } else if (newSeeds[currentIndexUpper] === 1) {
-            console.log("[UPPER] Check for capturing or end movement")
-            const isOwnRow = currentIndexUpper < MIN_INDEX_LOWER;
-            if (!isOwnRow) {
-              // end movement,
-              setIsSowingUpper(false);
-              // hide cursor
-              // setCursorVisibilityUpper(prev => !prev);
-              // Get the opponent position
-              setCurrentHoleIndexLower(currentIndexLower);
-              // Change game phase to TURN_BASED
-              setGamePhase('TURN_BASED_SOWING');
-              return;
-            }
+          console.log("[UPPER] Check for capturing or end movement")
+          let oppositeIndex = MAX_INDEX_LOWER - currentIndexUpper;
+          const isOwnRow = currentIndexUpper < MIN_INDEX_LOWER;
+          if (isOwnRow && newSeeds[oppositeIndex] > 0 && hasPassedHouseUpper > 0) {
+            console.log('UPPER: now capturing...')
+            // // TODO : Implement capturing here
+            // // TODO : Pick up from current hole
+            await updateCursorPositionUpper(holeRefs, currentIndexUpper, 0);
+            seedsInHandUpper = newSeeds[currentIndexUpper];
+            setCurrentSeedsInHandUpper(seedsInHandUpper);
+            newSeeds[currentIndexUpper] = 0;
+            setSeeds([...newSeeds]);
+            // // TODO : Pick up from opposite hole
+            await updateCursorPositionUpper(holeRefs, oppositeIndex, 0.5);
+            let capturedSeeds = newSeeds[oppositeIndex] + seedsInHandUpper;
+            seedsInHandUpper = capturedSeeds;
+            setCurrentSeedsInHandUpper(seedsInHandUpper);
+            newSeeds[currentIndexUpper] = 0;
+            setSeeds([...newSeeds]);
+            await new Promise(resolve => setTimeout(resolve, 400));
+            // // TODO : Send captured seeds to House
+            await updateCursorPositionUpper(topHouseRef, topHouseRef.current, 0.1);
+            setLowHouseSeeds(prevSeeds => prevSeeds + capturedSeeds);
+          } 
+          // end movement,
+          setIsSowingUpper(false);
+          // hide cursor
+          // setCursorVisibilityLower(prev => !prev);
+          // get the opponent position
+          setCurrentHoleIndexLower(currentIndexLower);
+          // reset cursor index
+          setCurrentHoleIndexUpper(startIndexUpper);
+          // Change game phase to TURN_BASED
+          setGamePhase('TURN_BASED_SOWING');
+          return;
         }
       } 
       
       if (seedsInHandLower === 0) {
+        // continue sowing movement
         if (newSeeds[currentIndexLower] > 1) {
           await updateCursorPositionLower(holeRefs, currentIndexLower, 0);
           seedsInHandLower = newSeeds[currentIndexLower];
           setCurrentSeedsInHandLower(seedsInHandLower);
           newSeeds[currentIndexLower] = 0;
           setSeeds([...newSeeds]);
-        } else if (newSeeds[currentIndexLower] === 1) {
-            console.log("[LOWER] Check for capturing or end movement.")
-            const isOwnRow = currentIndexLower > MAX_INDEX_UPPER;
-            if (!isOwnRow) {
-              // end movement,
-              setIsSowingLower(false);
-              // hide cursor
-              // setCursorVisibilityLower(prev => !prev);
-              // get the opponent position
-              setCurrentHoleIndexUpper(currentIndexUpper);
-              // Change game phase to TURN_BASED
-              setGamePhase('TURN_BASED_SOWING');
-              
-              return;
-            }
+        } else if (newSeeds[currentIndexLower] === 1) { 
+          // capturing
+          console.log("[LOWER] Check for capturing or end movement.")
+          let oppositeIndex = MAX_INDEX_LOWER - currentIndexLower;
+          const isOwnRow = currentIndexLower > MAX_INDEX_UPPER;
+          if (isOwnRow && newSeeds[oppositeIndex] > 0 && hasPassedHouseLower > 0) {
+            console.log('LOWER: now capturing...')
+            // // TODO : Implement capturing here
+            // // TODO : Pick up from current hole
+            await updateCursorPositionLower(holeRefs, currentIndexLower, 0);
+            seedsInHandLower = newSeeds[currentIndexLower];
+            setCurrentSeedsInHandLower(seedsInHandLower);
+            newSeeds[currentIndexLower] = 0;
+            setSeeds([...newSeeds]);
+            // // TODO : Pick up from opposite hole
+            await updateCursorPositionLower(holeRefs, oppositeIndex, 0.5);
+            let capturedSeeds = newSeeds[oppositeIndex] + seedsInHandLower;
+            seedsInHandLower = capturedSeeds;
+            setCurrentSeedsInHandLower(seedsInHandLower);
+            newSeeds[currentIndexLower] = 0;
+            setSeeds([...newSeeds]);
+            await new Promise(resolve => setTimeout(resolve, 400));
+            // // TODO : Send captured seeds to House
+            await updateCursorPositionLower(lowHouseRef, lowHouseRef.current, 0.1);
+            setLowHouseSeeds(prevSeeds => prevSeeds + capturedSeeds);
+          } 
+          // end movement,
+          setIsSowingLower(false);
+          // hide cursor
+          // setCursorVisibilityLower(prev => !prev);
+          // get the opponent position
+          setCurrentHoleIndexUpper(currentIndexUpper);
+          // reset cursor index
+          setCurrentHoleIndexLower(startIndexLower);
+          // Change game phase to TURN_BASED
+          setGamePhase('TURN_BASED_SOWING');
+          return;
         }
       }
+      
       // Update state for seeds in hand
       setCurrentSeedsInHandUpper(seedsInHandUpper);
       setCurrentSeedsInHandLower(seedsInHandLower);
