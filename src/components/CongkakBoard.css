@@ -14,13 +14,19 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 95vw; /* Adjust as needed */
+  width: auto; /* Adjust as needed */
   height: 95vh; /* Adjust as needed */
   padding: 20px; /* Optional */
 }
 
 .current-turn {
-  color: gold;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: #f0f0f0; /* or any color you prefer */
+  padding: 10px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Optional: Adds a shadow for better visibility */
 }
 
 .button {

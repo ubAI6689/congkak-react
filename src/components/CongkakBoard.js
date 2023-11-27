@@ -356,11 +356,10 @@ const CongkakBoard = () => {
       if ((endAtHouseUpper && endAtHouseLower) || (endMoveUpper && endMoveLower)) {
         // Execute the moves for both players up to the house
         console.log("Both end simultaneously.");
-        setCurrentHoleIndexUpper(startIndexUpper);
-        setCurrentHoleIndexLower(startIndexLower);
         setIsSowingUpper(false);
         setIsSowingLower(false);
         setIsStartButtonPressed(false);
+        setResetCursor(prev => !prev);
         setGamePhase("SIMULTANEOUS_SELECT");
         break;
       }
@@ -697,15 +696,14 @@ const CongkakBoard = () => {
 
   return (
     <div className='game-area'>
-        <div className="current-turn">Current Turn: {currentTurn}</div>
       <div ref={gameContainerRef} className={`game-container ${isGameOver ? 'game-over' : ''}`}>
+      <div className="current-turn">Current Turn: {currentTurn} | Game phase: {gamePhase}</div>
         <div className='game-content'>
           <House position="lower" seedCount={lowHouseSeeds} ref={lowHouseRef}/>
           <div className="rows-container">
           {/* Update the Row for upper player */}
           <Row seeds={seeds.slice(MIN_INDEX_UPPER, MIN_INDEX_LOWER)} rowType="upper" isUpper={true} onClick={turnBasedSowing} refs={holeRefs.current} selectedHole={startingPositionUpper}/>
           <Row seeds={seeds.slice(MIN_INDEX_LOWER).reverse()} rowType="lower" onClick={turnBasedSowing} refs={holeRefs.current} selectedHole={startingPositionLower} />
-
         </div>
           <House position="upper" seedCount={topHouseSeeds} ref={topHouseRef} isUpper={true}/>
           {/* <Cursor top={cursorTop} left={cursorLeft} visible={cursorVisible} seedCount={currentSeedsInHand} isTopTurn={currentTurn===PLAYER_UPPER} /> */}
