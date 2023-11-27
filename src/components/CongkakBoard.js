@@ -158,6 +158,25 @@ const CongkakBoard = () => {
     }
   }, [holeRefs, resetCursor]);
 
+  useEffect(() => {
+    const handleSpaceBar = (event) => {
+      if (!startButtonPressed && gamePhase === 'STARTING_PHASE') {
+        if (event.code === 'Space' || event.key === 32) {
+          console.log("SPACE pressed")
+          startButtonPressed();
+        }
+      }
+    };
+
+    // Attach the event listener
+    window.addEventListener('keydown', handleSpaceBar);
+
+    // Clean up the event listener
+    return () => {
+      window.removeEventListener('keydown', handleSpaceBar);
+    };
+  }, [])
+
   // Event listener for keydown events
   useEffect(() => {
 
@@ -165,7 +184,7 @@ const CongkakBoard = () => {
       
       let newIndexUpper = currentHoleIndexUpper;
       let newIndexLower = currentHoleIndexLower;
-      
+
       // Handle PlayerUpper's left and right movement
       if (!isSowingUpper) {
         if (event.key === 'a' || event.key === 'A') {
@@ -266,73 +285,90 @@ const CongkakBoard = () => {
     updateCursorPositionUpper(holeRefs, currentIndexUpper, 0);
     updateCursorPositionLower(holeRefs, currentIndexLower, 0);
     
-    await new Promise(resolve => setTimeout(resolve, 400)); // Animation delay       
+    await new Promise(resolve => setTimeout(resolve, 400)); // Animation delay
     
-    while (seedsInHandUpper > 0 || seedsInHandLower > 0) {
-      // Determine next moves without updating UI
-      let nextIndexUpper = getNextIndex(currentIndexUpper, justFilledHomeUpper, MAX_INDEX_UPPER, MIN_INDEX_LOWER);
-      let nextIndexLower = getNextIndex(currentIndexLower, justFilledHomeLower, MAX_INDEX_LOWER, MIN_INDEX_UPPER);
-      let sowIntoHouseUpper = nextIndexUpper === MIN_INDEX_LOWER && !justFilledHomeUpper;
-      let sowIntoHouseLower = nextIndexLower === MIN_INDEX_UPPER && !justFilledHomeLower;
-      
-      // TODO: Implement the case where one or both end at house
-      let endAtHouseUpper = sowIntoHouseUpper && currentSeedsInHandUpper === 1;
-      let endAtHouseLower = sowIntoHouseLower && currentSeedsInHandLower === 1;
-
-      if (endAtHouseUpper || endAtHouseLower) {
-        // if only upper end at house
-        if (!endAtHouseLower) {
-          // Animate sowing into house and update the seeds
-          updateCursorPositionUpper(topHouseRef, topHouseRef.current, -0.1);
-          setTopHouseSeeds(prevSeeds => prevSeeds + 1);
-          seedsInHandUpper -= 1;
-          // Execute the opposite move here, could be sowIntoHouseLower or normal sowing but this would be redundant (too verbose)?
-
-          // Trigger change of game phase 
-          setIsSowingUpper(false);
-          setGamePhase('SIMULTANEOUS_SELECT');
-          // Get the last position of cursors
-          setCurrentHoleIndexUpper(startIndexUpper);
-          setCurrentHoleIndexUpper(currentIndexLower);
-        }
+    // Helper function to get the next index
+    function getNextIndex(currentIndex, justFilledHome, maxIndex, minIndex) {
+      if (justFilledHome) {
+        return minIndex;
       }
+      return currentIndex === maxIndex ? minIndex : (currentIndex + 1) % HOLE_NUMBERS;
+    }
 
-      // Now perform UI updates simultaneously
+    // Separate function to handle upper player's sowing
+    const handleUpperPlayerSowing = async () => {
       if (seedsInHandUpper > 0) {
+        let nextIndexUpper = getNextIndex(currentIndexUpper, justFilledHomeUpper, MAX_INDEX_UPPER, MIN_INDEX_LOWER);
+        let sowIntoHouseUpper = nextIndexUpper === MIN_INDEX_LOWER && !justFilledHomeUpper;
         if (sowIntoHouseUpper) {
-          updateCursorPositionUpper(topHouseRef, topHouseRef.current, -0.1);
+          hasPassedHouseUpper++;
+          await updateCursorPositionUpper(topHouseRef, topHouseRef.current, -0.1);
           setTopHouseSeeds(prevSeeds => prevSeeds + 1);
           seedsInHandUpper -= 1;
-          hasPassedHouseUpper++;
           justFilledHomeUpper = true;
         } else {
-          updateCursorPositionUpper(holeRefs, nextIndexUpper, -0.5);
-          seedsInHandUpper -= 1;
+          await updateCursorPositionUpper(holeRefs, nextIndexUpper, -0.5);
           newSeeds[nextIndexUpper]++;
+          seedsInHandUpper -= 1;
           currentIndexUpper = nextIndexUpper;
           justFilledHomeUpper = false;
         }
+        // setSeeds([...newSeeds]);
+        setCurrentSeedsInHandUpper(seedsInHandUpper);
       }
-      
+    };
+
+    // Separate function to handle lower player's sowing
+    const handleLowerPlayerSowing = async () => {
       if (seedsInHandLower > 0) {
+        let nextIndexLower = getNextIndex(currentIndexLower, justFilledHomeLower, MAX_INDEX_LOWER, MIN_INDEX_UPPER);
+        let sowIntoHouseLower = nextIndexLower === MIN_INDEX_UPPER && !justFilledHomeLower;
         if (sowIntoHouseLower) {
-          updateCursorPositionLower(lowHouseRef, lowHouseRef.current, 0.1);
+          hasPassedHouseLower++;
+          await updateCursorPositionLower(lowHouseRef, lowHouseRef.current, 0.1);
           setLowHouseSeeds(prevSeeds => prevSeeds + 1);
           seedsInHandLower -= 1;
-          hasPassedHouseLower++;
           justFilledHomeLower = true;
         } else {
-          updateCursorPositionLower(holeRefs, nextIndexLower, 0.5);
-          seedsInHandLower -= 1;
+          await updateCursorPositionLower(holeRefs, nextIndexLower, 0.5);
           newSeeds[nextIndexLower]++;
+          seedsInHandLower -= 1;
           currentIndexLower = nextIndexLower;
           justFilledHomeLower = false;
         }
+        // setSeeds([...newSeeds]);
+        console.log(`Seeds in hand: ${seedsInHandLower} | Seeds in index ${currentIndexLower} is ${newSeeds[currentIndexLower]} | Just Filled Home? ${justFilledHomeLower}`);
+        setCurrentSeedsInHandLower(seedsInHandLower);
       }
+    };
+    
+    while (seedsInHandUpper >= 0 || seedsInHandLower >= 0) {
+      let endAtHouseUpper = (seedsInHandUpper === 0) && justFilledHomeUpper;
+      let endAtHouseLower = (seedsInHandLower === 0) && justFilledHomeLower;
       
-      setSeeds([...newSeeds]);
-      // Animation delay
-      await new Promise(resolve => setTimeout(resolve, 0)); 
+      if (endAtHouseUpper || endAtHouseLower) {
+        // Execute the moves for both players up to the house
+        if (endAtHouseUpper) {
+          console.log("End at House Upper!")
+          // This will end at the house for Upper Player
+          await handleUpperPlayerSowing();
+        }
+        if (endAtHouseLower) {
+          console.log("End at House Lower!")
+          await handleLowerPlayerSowing(); // This will end at the house for Lower Player
+        }
+        
+        // Trigger phase change and position selection
+        setGamePhase('SIMULTANEOUS_SELECT');
+        // Logic for handling new position selection
+        break; // Exit the loop as the phase changes
+      } else {
+        handleUpperPlayerSowing();
+        handleLowerPlayerSowing();
+        setSeeds([...newSeeds]);
+      }
+
+      await new Promise(resolve => setTimeout(resolve, 0)); // Synchronization delay 
       
     /** ============================================
      *      Continue sowing movement & capturing
@@ -360,16 +396,18 @@ const CongkakBoard = () => {
             newSeeds[currentIndexUpper] = 0;
             setSeeds([...newSeeds]);
             // // TODO : Pick up from opposite hole
-            await updateCursorPositionUpper(holeRefs, oppositeIndex, 0.5);
+            await updateCursorPositionUpper(holeRefs, oppositeIndex, -0.5);
             let capturedSeeds = newSeeds[oppositeIndex] + seedsInHandUpper;
             seedsInHandUpper = capturedSeeds;
             setCurrentSeedsInHandUpper(seedsInHandUpper);
-            newSeeds[currentIndexUpper] = 0;
+            newSeeds[oppositeIndex] = 0;
             setSeeds([...newSeeds]);
             await new Promise(resolve => setTimeout(resolve, 400));
             // // TODO : Send captured seeds to House
-            await updateCursorPositionUpper(topHouseRef, topHouseRef.current, 0.1);
-            setLowHouseSeeds(prevSeeds => prevSeeds + capturedSeeds);
+            await updateCursorPositionUpper(topHouseRef, topHouseRef.current, -0.1);
+            setTopHouseSeeds(prevSeeds => prevSeeds + capturedSeeds);
+            seedsInHandUpper = 0;
+            setCurrentSeedsInHandUpper(seedsInHandUpper);
           } 
           // end movement,
           setIsSowingUpper(false);
@@ -412,12 +450,14 @@ const CongkakBoard = () => {
             let capturedSeeds = newSeeds[oppositeIndex] + seedsInHandLower;
             seedsInHandLower = capturedSeeds;
             setCurrentSeedsInHandLower(seedsInHandLower);
-            newSeeds[currentIndexLower] = 0;
+            newSeeds[oppositeIndex] = 0;
             setSeeds([...newSeeds]);
             await new Promise(resolve => setTimeout(resolve, 400));
             // // TODO : Send captured seeds to House
             await updateCursorPositionLower(lowHouseRef, lowHouseRef.current, 0.1);
             setLowHouseSeeds(prevSeeds => prevSeeds + capturedSeeds);
+            seedsInHandLower = 0;
+            setCurrentSeedsInHandLower(seedsInHandLower);
           } 
           // end movement,
           setIsSowingLower(false);
@@ -436,17 +476,8 @@ const CongkakBoard = () => {
       // Update state for seeds in hand
       setCurrentSeedsInHandUpper(seedsInHandUpper);
       setCurrentSeedsInHandLower(seedsInHandLower);
-      
       await new Promise(resolve => setTimeout(resolve, 400)); // Synchronization delay
     }    
-  }
-
-  // Helper function to get the next index
-  function getNextIndex(currentIndex, justFilledHome, maxIndex, minIndex) {
-    if (justFilledHome) {
-      return minIndex;
-    }
-    return currentIndex === maxIndex ? minIndex : (currentIndex + 1) % HOLE_NUMBERS;
   }
 
 /**==============================================
