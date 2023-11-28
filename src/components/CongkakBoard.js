@@ -20,11 +20,11 @@ const {
 const CongkakBoard = () => {
 
   const [seeds, setSeeds] = useState(new Array(HOLE_NUMBERS).fill(INIT_SEEDS_COUNT)); // 14 holes excluding houses
-
+  
   const holeRefs = useRef([]);
   const topHouseRef = useRef(null);
   const lowHouseRef = useRef(null);
-
+  
   const [gamePhase, setGamePhase] = useState('STARTING_PHASE'); // or 'TURN_BASED'
   
   // New states for the starting phase
@@ -106,6 +106,27 @@ const CongkakBoard = () => {
       setCursorTopLower(rect.top + window.scrollY + (verticalPosLower * rect.height));
       await new Promise(resolve => setTimeout(resolve, 400)); // Animation delay
     }
+  };
+
+  // RESET function
+  const resetGame = () => {
+    setSeeds(new Array(HOLE_NUMBERS).fill(INIT_SEEDS_COUNT));
+    setGamePhase('STARTING_PHASE');
+    setIsStartButtonPressed(false);
+    setStartingPositionUpper(null);
+    setStartingPositionLower(null);
+    setCurrentHoleIndexUpper(startIndexUpper);
+    setCurrentHoleIndexLower(startIndexLower);
+    setIsSowingUpper(false);
+    setIsSowingLower(false);
+    setCurrentSeedsInHandUpper(0);
+    setCurrentSeedsInHandLower(0);
+    setTopHouseSeeds(0);
+    setLowHouseSeeds(0);
+    setIsGameOver(false);
+    setOutcomeMessage('');
+    setCurrentTurn(null);
+    // Reset any other state variables relevant to your game
   };
 
   /**=========================================================
@@ -225,7 +246,7 @@ const CongkakBoard = () => {
   useEffect(() => {
 
     const handleKeyDown = (event) => {
-      
+
       let newIndexUpper = currentHoleIndexUpper;
       let newIndexLower = currentHoleIndexLower;
 
@@ -599,7 +620,6 @@ const CongkakBoard = () => {
     console.log("Starting turn based sowing")
     console.log("Seeds in hands: ", seedsInHand);
     while (seedsInHand > 0) {
-
       /** ============================================
        *              Sowing to House
        * ===========================================*/
@@ -753,7 +773,16 @@ const CongkakBoard = () => {
   return (
     <div className='app-wrapper'>
       <div className='game-info'>
-        <div className="current-turn">Current Turn: {currentTurn} | Game phase: {gamePhase}</div>
+        <div className="current-turn">
+          Current Turn: <strong>{
+            (gamePhase === 'STARTING_PHASE' || 
+            gamePhase === 'SIMULTANEOUS_SELECT' || 
+            gamePhase === 'SIMULTANEOUS_SELECT_LOWER' || 
+            gamePhase === 'SIMULTANEOUS_SELECT_UPPER')
+              ? "SIMULTANEOUS"
+              : currentTurn
+          }</strong>
+        </div>
       </div>
       <div className='game-area'>
         <div ref={gameContainerRef} className={`game-container ${isGameOver ? 'game-over' : ''}`}>
@@ -781,21 +810,23 @@ const CongkakBoard = () => {
             />
           </div>
         </div>
+        <div className='button-group'>
         {!isStartButtonPressed && gamePhase === 'STARTING_PHASE' && (
             <button className="button start" 
             onClick={() => startButtonPressed()}>START</button>
         )}
         {isStartButtonPressed && (
-            <button className='button reset'>RESET</button>
+            <button className='button reset' onClick={resetGame}>RESET</button>
         )}
         {!isStartButtonPressed && (gamePhase === 'SIMULTANEOUS_SELECT' || gamePhase === 'SIMULTANEOUS_SELECT_LOWER' || gamePhase === 'SIMULTANEOUS_SELECT_UPPER') && (
-            <button className='button resume' onClick={() => startButtonPressed()}>RESUME</button>
+          <button className='button resume' onClick={() => startButtonPressed()}>RESUME</button>
         )}
         {isGameOver && (
           <div className="game-over-message">
             {outcomeMessage}
           </div>
         )}
+        </div>
       </div>
     </div>
   );
