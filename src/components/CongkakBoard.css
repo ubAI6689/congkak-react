@@ -6,7 +6,27 @@ body {
   justify-content: center; /* Center horizontally */
   align-items: center; /* Center vertically */
   overflow: hidden; /* Hide overflow */
-  background-color: #302E2B;
+  background-color: rgb(190, 179, 115);
+}
+
+.app-wrapper {
+  width: 80vw; /* Adjust width as needed */
+  height: 80vh; /* Adjust height as needed */
+  margin: auto; /* Centers the box in the viewport */
+  padding: 20px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5); /* Optional: Adds shadow for depth */
+  border-radius: 15px; /* Optional: Adds rounded corners */
+  background-color: #302E2B; /* Optional: Change background color */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.game-info {
+  top: 0;
+  width: 80%;
+  /* margin-bottom: 20px; */
 }
 
 .game-area {
@@ -14,15 +34,16 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: auto; /* Adjust as needed */
+  width: 95vh; /* Adjust as needed */
   height: 95vh; /* Adjust as needed */
   padding: 20px; /* Optional */
 }
 
 .current-turn {
-  position: fixed;
   top: 0;
   width: 100%;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
   background: #f0f0f0; /* or any color you prefer */
   padding: 10px;
   text-align: center;
@@ -33,7 +54,7 @@ body {
   height: 5%;
   width: auto;
   border-radius: 2vw;
-  margin-top: 10vh; /* Space above the START button */
+  margin-top: 10%; /* Space above the START button */
   /* box-shadow: 0 0 10px gold; */
   /* Add additional styling for the button */
 }

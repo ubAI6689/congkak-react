@@ -695,51 +695,55 @@ const CongkakBoard = () => {
   };
 
   return (
-    <div className='game-area'>
-      <div ref={gameContainerRef} className={`game-container ${isGameOver ? 'game-over' : ''}`}>
-      <div className="current-turn">Current Turn: {currentTurn} | Game phase: {gamePhase}</div>
-        <div className='game-content'>
-          <House position="lower" seedCount={lowHouseSeeds} ref={lowHouseRef}/>
-          <div className="rows-container">
-          {/* Update the Row for upper player */}
-          <Row seeds={seeds.slice(MIN_INDEX_UPPER, MIN_INDEX_LOWER)} rowType="upper" isUpper={true} onClick={turnBasedSowing} refs={holeRefs.current} selectedHole={startingPositionUpper}/>
-          <Row seeds={seeds.slice(MIN_INDEX_LOWER).reverse()} rowType="lower" onClick={turnBasedSowing} refs={holeRefs.current} selectedHole={startingPositionLower} />
-        </div>
-          <House position="upper" seedCount={topHouseSeeds} ref={topHouseRef} isUpper={true}/>
-          {/* <Cursor top={cursorTop} left={cursorLeft} visible={cursorVisible} seedCount={currentSeedsInHand} isTopTurn={currentTurn===PLAYER_UPPER} /> */}
-          <Cursor 
-            top={cursorTopUpper} 
-            left={cursorLeftUpper} 
-            visible={cursorVisibilityUpper.visible} 
-            seedCount={currentSeedsInHandUpper} // Adjust based on Player 1's state
-            isTopTurn={true} // Always true for Player 1
-          />
-
-          <Cursor 
-            top={cursorTopLower} 
-            left={cursorLeftLower} 
-            visible={cursorVisibilityLower.visible} 
-            seedCount={currentSeedsInHandLower} // Adjust based on Player 2's state
-            isTopTurn={false} // Always false for Player 2
-          />
-        </div>
+    <div className='app-wrapper'>
+      <div className='game-info'>
+        <div className="current-turn">Current Turn: {currentTurn} | Game phase: {gamePhase}</div>
       </div>
-      {!isStartButtonPressed && gamePhase === 'STARTING_PHASE' && (
-          <button className="button start" 
-          // onClick={() => simultaneousSowing(startingPositionUpper, startingPositionLower)}>START</button>
-          onClick={() => startButtonPressed()}>START</button>
-      )}
-      {isStartButtonPressed && (
-          <button className='button reset'>RESET</button>
-      )}
-      {!isStartButtonPressed && (gamePhase === 'SIMULTANEOUS_SELECT' || gamePhase === 'SIMULTANEOUS_SELECT_LOWER' || gamePhase === 'SIMULTANEOUS_SELECT_UPPER') && (
-          <button className='button resume' onClick={() => startButtonPressed()}>RESUME</button>
-      )}
-      {isGameOver && (
-        <div className="game-over-message">
-          {outcomeMessage}
+      <div className='game-area'>
+        <div ref={gameContainerRef} className={`game-container ${isGameOver ? 'game-over' : ''}`}>
+          <div className='game-content'>
+            <House position="lower" seedCount={lowHouseSeeds} ref={lowHouseRef}/>
+            <div className="rows-container">
+            {/* Update the Row for upper player */}
+            <Row seeds={seeds.slice(MIN_INDEX_UPPER, MIN_INDEX_LOWER)} rowType="upper" isUpper={true} onClick={turnBasedSowing} refs={holeRefs.current} selectedHole={startingPositionUpper}/>
+            <Row seeds={seeds.slice(MIN_INDEX_LOWER).reverse()} rowType="lower" onClick={turnBasedSowing} refs={holeRefs.current} selectedHole={startingPositionLower} />
+          </div>
+            <House position="upper" seedCount={topHouseSeeds} ref={topHouseRef} isUpper={true}/>
+            {/* <Cursor top={cursorTop} left={cursorLeft} visible={cursorVisible} seedCount={currentSeedsInHand} isTopTurn={currentTurn===PLAYER_UPPER} /> */}
+            <Cursor 
+              top={cursorTopUpper} 
+              left={cursorLeftUpper} 
+              visible={cursorVisibilityUpper.visible} 
+              seedCount={currentSeedsInHandUpper} // Adjust based on Player 1's state
+              isTopTurn={true} // Always true for Player 1
+            />
+
+            <Cursor 
+              top={cursorTopLower} 
+              left={cursorLeftLower} 
+              visible={cursorVisibilityLower.visible} 
+              seedCount={currentSeedsInHandLower} // Adjust based on Player 2's state
+              isTopTurn={false} // Always false for Player 2
+            />
+          </div>
         </div>
-      )}
+        {!isStartButtonPressed && gamePhase === 'STARTING_PHASE' && (
+            <button className="button start" 
+            // onClick={() => simultaneousSowing(startingPositionUpper, startingPositionLower)}>START</button>
+            onClick={() => startButtonPressed()}>START</button>
+        )}
+        {isStartButtonPressed && (
+            <button className='button reset'>RESET</button>
+        )}
+        {!isStartButtonPressed && (gamePhase === 'SIMULTANEOUS_SELECT' || gamePhase === 'SIMULTANEOUS_SELECT_LOWER' || gamePhase === 'SIMULTANEOUS_SELECT_UPPER') && (
+            <button className='button resume' onClick={() => startButtonPressed()}>RESUME</button>
+        )}
+        {isGameOver && (
+          <div className="game-over-message">
+            {outcomeMessage}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
