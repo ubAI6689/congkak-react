@@ -1,5 +1,5 @@
 import React from 'react';
-import CongkakBoard from './components/CongkakBoard'; // Ensure the path is correct
+import CongkakBoard from './components/board/CongkakBoard'; // Ensure the path is correct
 
 const App = () => {
   return (
