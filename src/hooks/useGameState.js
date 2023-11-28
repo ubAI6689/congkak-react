@@ -159,7 +159,19 @@ export const useGameState = () => {
       if (gamePhase === TURN_BASED_SELECT && currentTurn === PLAYER_UPPER) {
         await updateCursorPositionUpper(holeRefs, index, verticalPosUpper);
         setGamePhase(TURN_BASED_SOWING);
-        turnBasedSowing(index, PLAYER_UPPER);
+        turnBasedSowing(index, PLAYER_UPPER, false, 0, {seeds, setSeeds,
+          setGamePhase, currentTurn, setCurrentTurn,
+          setIsSowingUpper, setIsSowingLower,
+          currentSeedsInHandUpper, setCurrentSeedsInHandUpper,
+          setCurrentSeedsInHandLower,
+          setTopHouseSeeds, setLowHouseSeeds,
+          setCurrentHoleIndexUpper, setCurrentHoleIndexLower,
+          toggleTurn, setShakeCursor, handleWrongSelection, 
+          updateCursorPositionUpper, updateCursorPositionLower,
+          HOLE_NUMBERS, PLAYER_UPPER, MAX_INDEX_UPPER, MIN_INDEX_LOWER, MAX_INDEX_LOWER, TURN_BASED_SELECT,
+          holeRefs, topHouseRef, lowHouseRef,
+          startIndexUpper, startIndexLower,
+          verticalPosUpper, verticalPosLower});
       } else if (gamePhase === STARTING_PHASE || gamePhase === SIMULTANEOUS_SELECT || gamePhase === SIMULTANEOUS_SELECT_UPPER) {
         await updateCursorPositionUpper(holeRefs, index, verticalPosUpper);
         setStartingPositionUpper(index);
@@ -195,7 +207,19 @@ export const useGameState = () => {
       if (gamePhase === TURN_BASED_SELECT && currentTurn === PLAYER_LOWER) {
         await updateCursorPositionLower(holeRefs, index, verticalPosLower);
         setGamePhase(TURN_BASED_SOWING);
-        turnBasedSowing(index, PLAYER_LOWER);
+        turnBasedSowing(index, PLAYER_LOWER, false, 0, {seeds, setSeeds,
+          setGamePhase, currentTurn, setCurrentTurn,
+          setIsSowingUpper, setIsSowingLower,
+          currentSeedsInHandUpper, setCurrentSeedsInHandUpper,
+          setCurrentSeedsInHandLower,
+          setTopHouseSeeds, setLowHouseSeeds,
+          setCurrentHoleIndexUpper, setCurrentHoleIndexLower,
+          toggleTurn, setShakeCursor, handleWrongSelection, 
+          updateCursorPositionUpper, updateCursorPositionLower,
+          HOLE_NUMBERS, PLAYER_UPPER, MAX_INDEX_UPPER, MIN_INDEX_LOWER, MAX_INDEX_LOWER, TURN_BASED_SELECT,
+          holeRefs, topHouseRef, lowHouseRef,
+          startIndexUpper, startIndexLower,
+          verticalPosUpper, verticalPosLower});
       } else if (gamePhase === STARTING_PHASE || gamePhase === SIMULTANEOUS_SELECT || gamePhase === SIMULTANEOUS_SELECT_LOWER) {
         await updateCursorPositionLower(holeRefs, index, verticalPosLower);
         setStartingPositionLower(index);

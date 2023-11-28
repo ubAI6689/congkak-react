@@ -1,8 +1,4 @@
 import { useState, useCallback } from "react";
-import config from "../config/config";
-
-const verticalPosUpper = config.VERTICAL_POS_UPPER;
-const verticalPosLower = config.VERTICAL_POS_LOWER;
 
 export const useCursorControl = () => {
     // cursor control states
