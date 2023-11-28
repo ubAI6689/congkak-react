@@ -108,6 +108,9 @@ const CongkakBoard = () => {
     }
   };
 
+  /**=========================================================
+  *                 start button function 
+  * ==========================================================*/
   const startButtonPressed = () => {
     // handle the logic for both START and RESUME button
     if (gamePhase === 'STARTING_PHASE' || gamePhase === 'SIMULTANEOUS_SELECT') {
@@ -138,7 +141,10 @@ const CongkakBoard = () => {
     }
   }
 
-  // Effect to update currentTurn
+  
+  /**=========================================================
+  *   Transition from SIMULTANEOUS phase to TURN_BASED phase 
+  * ==========================================================*/
   useEffect(() => {
     if (gamePhase === 'PASS_TO_TURN_BASED') {
       const nextTurn = isSowingUpper ? PLAYER_UPPER : PLAYER_LOWER;
@@ -156,7 +162,9 @@ const CongkakBoard = () => {
   }, [currentTurn, gamePhase, currentHoleIndexUpper, currentHoleIndexLower]);
 
   
-  // Reset Cursor Position
+  /**=========================================================
+  *                      Reset cursors 
+  * ==========================================================*/
   useEffect(() => {
     resetCursorPosition();
     const handleResize = () => resetCursorPosition();
@@ -188,7 +196,31 @@ const CongkakBoard = () => {
     }
   }, [holeRefs, resetCursor, isSowingUpper, isSowingLower]);
 
-  // Event listener for keydown events
+  /**=========================================================
+  *                    Cursor visibility
+  * ==========================================================*/
+  useEffect(() => {
+    // for upper player
+    if (gamePhase === 'STARTING_PHASE' || gamePhase === 'SIMULTANEOUS_SELECT' || gamePhase === 'SIMULTANEOUS_SELECT_UPPER' || gamePhase === 'SIMULTANEOUS_SELECT_LOWER') {
+      setCursorVisibilityUpper({ visible: true });
+    } else {
+      if (currentTurn === PLAYER_UPPER) setCursorVisibilityUpper({ visible:true });
+      else setCursorVisibilityUpper({ visible: false });
+    }
+
+    // for lower player
+    if (gamePhase === 'STARTING_PHASE' || gamePhase === 'SIMULTANEOUS_SELECT' || gamePhase === 'SIMULTANEOUS_SELECT_UPPER' || gamePhase === 'SIMULTANEOUS_SELECT_LOWER') {
+      setCursorVisibilityLower({ visible: true });
+    } else {
+      if (currentTurn === PLAYER_LOWER) setCursorVisibilityLower({ visible:true });
+      else setCursorVisibilityLower({ visible: false });
+    }
+  },[gamePhase, currentTurn]);
+
+
+  /**=========================================================
+  *                    Keydown listener 
+  * ==========================================================*/
   useEffect(() => {
 
     const handleKeyDown = (event) => {
@@ -275,6 +307,9 @@ const CongkakBoard = () => {
     }
   }, [seeds, currentTurn, isSowingUpper, isSowingLower, isGameOver]);
 
+/**==============================================
+ *        SIMULTANEOUS SOWING LOGIC
+ * =============================================*/
   const simultaneousSowing = async (startingPositionUpper, startingPositionLower) => {
     console.log("Start simultaneous sowing!")
     
@@ -515,7 +550,7 @@ const CongkakBoard = () => {
   }
 
 /**==============================================
- *        Sowing and capturing logic 
+ *        TURN BASED SOWING LOGIC
  * =============================================*/
   const turnBasedSowing = async (index, player, isContinuation = false, passedHouse = 0) => {
     // Determine player-specific states and actions
@@ -705,11 +740,8 @@ const CongkakBoard = () => {
       }
     }
     // End of sowing
-    console.log("Get another turn? ", getAnotherTurn);
-    console.log("Current turn: ", currentTurn);
     if (!getAnotherTurn) {
       toggleTurn(setCurrentTurn, currentTurn);
-      console.log("Turn toggled. Current turn: ", currentTurn);
     }
     setIsSowing(false);
     setGamePhase('TURN_BASED_SELECT');
