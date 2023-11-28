@@ -3,6 +3,10 @@ import config from "../config/config";
 
 const { MIN_INDEX_LOWER } = config;
 
+export const toggleSidebar = (isSidebarOpen, setSidebarOpen) => {
+  setSidebarOpen(!isSidebarOpen);
+};
+
 // Function to handle wrong selection
 export const handleWrongSelection = (setShakeCursor) => {
   console.log("Shake cursor called!")

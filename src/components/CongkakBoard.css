@@ -64,7 +64,7 @@ body {
 }
 
 .button {
-  height: 20%;
+  height: 10hv;
   width: auto;
   border-radius: 2vw;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
@@ -173,6 +173,29 @@ body {
   color: black;
   /* z-index: 2; */
 }
+
+.trademark-section {
+  position: fixed;
+  left: 1%; /* Adjust as needed */
+  bottom: 1%; /* Adjust as needed */
+  color: #888; /* Subtle text color */
+  font-size: x-small; /* Small but readable font size */
+  font-family: Arial, sans-serif; /* A simple and clean font */
+  opacity: 0.7; /* Slightly transparent for subtlety */
+}
+
+.trademark-section a {
+  color: #888; /* Same as the trademark text */
+  text-decoration: none; /* Remove underline */
+  opacity: 0.7; /* Consistent with the trademark's styling */
+}
+
+.trademark-section a:hover, .trademark-section a:focus {
+  text-decoration: underline; /* Add underline on hover for interactivity */
+  opacity: 1; /* Increase opacity for emphasis */
+}
+
+
 
 /* @media screen and (orientation: portrait) {
   body {

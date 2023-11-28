@@ -3,7 +3,8 @@ import './CongkakBoard.css';
 import House from './House';
 import Cursor from './Cursor';
 import Row from './Row';
-import { handleWrongSelection } from '../utils/animation';
+import Sidebar from './sidebar';
+import { handleWrongSelection, toggleSidebar } from '../utils/animation';
 import { toggleTurn, sumOfSeedsInCurrentRow, handleCheckGameEnd } from '../utils/helpers';
 import config from '../config/config';
 
@@ -73,6 +74,7 @@ const CongkakBoard = () => {
   const verticalPosUpper = config.VERTICAL_POS_UPPER;
   const verticalPosLower = config.VERTICAL_POS_LOWER;
 
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [shakeCursor, setShakeCursor] = useState(false);
 
   // Define the handlers for the mobile buttons
@@ -901,7 +903,14 @@ const CongkakBoard = () => {
             {outcomeMessage}
           </div>
         )}
+        <Sidebar 
+          isOpen={isSidebarOpen} 
+          onToggle={() => toggleSidebar(isSidebarOpen, setSidebarOpen)} 
+        />
         </div>
+      </div>
+      <div class="trademark-section">
+        © 2023 <a href="https://twitter.com/ubaid_rac" target="_blank">Abu Kacak</a>. All Rights Reserved.
       </div>
     </div>
   );
