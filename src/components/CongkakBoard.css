@@ -6,7 +6,8 @@ body {
   justify-content: center; /* Center horizontally */
   align-items: center; /* Center vertically */
   overflow: hidden; /* Hide overflow */
-  background-color: rgb(190, 179, 115);
+  background-color: #302E2B;
+  /* background-color: rgb(190, 179, 115); */
 }
 
 .app-wrapper {
@@ -16,7 +17,8 @@ body {
   padding: 20px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5); /* Optional: Adds shadow for depth */
   border-radius: 15px; /* Optional: Adds rounded corners */
-  background-color: #302E2B; /* Optional: Change background color */
+  /* background-color: #302E2B; Optional: Change background color */
+  background-color: rgb(144, 151, 72);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -54,23 +56,14 @@ body {
   height: 5%;
   width: auto;
   border-radius: 2vw;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
   margin-top: 10%; /* Space above the START button */
-  /* box-shadow: 0 0 10px gold; */
+  
+  font-weight: bold;
+  color: darkred;
+  background-color: gold;
+  border: solid gray;/* box-shadow: 0 0 10px gold; */
   /* Add additional styling for the button */
-}
-
-.start {
-  font-weight: bold;
-  color: darkred;
-  background-color: gold;
-  border: 3px solid gold;
-}
-
-.reset {
-  font-weight: bold;
-  color: darkred;
-  background-color: gold;
-  border: 3px solid gold;
 }
 
 .game-container {
@@ -80,7 +73,9 @@ body {
   border-radius: 20vw;
   max-width: 90vw; /* Max width to avoid overflow */
   max-height: 90vh; /* Max height to avoid overflow */
-  background-color: #779455;
+  border: solid darkgray; 
+  box-shadow: 0px 20px 20px rgba(0, 0, 0, 0.5);
+  background-color: #4d6a2b;
 }
 
 .game-container.game-over {
@@ -133,7 +128,9 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #302E2B;
+  color: #4f4c48;
+  border: solid darkgrey;
+  box-shadow: inset 0 0 0.3vw #4d6a2b;
   font-size: 2.5vw; /* Responsive font size for seed count */
   font-weight: bold;
 }
