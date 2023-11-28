@@ -1,19 +1,94 @@
 /* Centering the game container in the browser window without affecting its layout */
 body {
-  margin: 0; /* Remove default margin */
+  margin: 0;  /* Remove default margin */
   height: 100vh;
   display: flex;
   justify-content: center; /* Center horizontally */
   align-items: center; /* Center vertically */
   overflow: hidden; /* Hide overflow */
+  background-color: #302E2B;
+  /* background-color: rgb(190, 179, 115); */
+}
+
+.app-wrapper {
+  width: 80vw; /* Adjust width as needed */
+  height: 80vh; /* Adjust height as needed */
+  margin: auto; /* Centers the box in the viewport */
+  padding: 20px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5); /* Optional: Adds shadow for depth */
+  border-radius: 15px; /* Optional: Adds rounded corners */
+  /* background-color: #302E2B; Optional: Change background color */
+  background-color: rgb(144, 151, 72);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.game-info {
+  top: 0;
+  width: 50%;
+  /* margin-bottom: 20px; */
+}
+
+.game-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 95vh; /* Adjust as needed */
+  height: 95vh; /* Adjust as needed */
+  padding: 20px; /* Optional */
+}
+
+.current-turn {
+  top: 0;
+  width: 100%;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  background: #f0f0f0; /* or any color you prefer */
+  padding: 10px;
+  text-align: center;
+
+  font-weight: 400;
+  font-size: large;
+}
+
+.button-group {
+  margin-top: 5%;
+  height: 30%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px; /* Adjust the space between buttons */
+}
+
+.button {
+  height: 20%;
+  width: auto;
+  border-radius: 2vw;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+  margin-top: 10%; /* Space above the START button */
+  
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: bold;
+  font-size: large;
+  color: darkred;
+  background-color: gold;
+  border: solid gray;/* box-shadow: 0 0 10px gold; */
+  /* Add additional styling for the button */
 }
 
 .game-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 95vw; /* Max width to avoid overflow */
-  max-height: 95vh; /* Max height to avoid overflow */
+  border-radius: 20vw;
+  max-width: 90vw; /* Max width to avoid overflow */
+  max-height: 90vh; /* Max height to avoid overflow */
+  border: solid darkgray; 
+  box-shadow: 0px 20px 20px rgba(0, 0, 0, 0.5);
+  background-color: #4d6a2b;
 }
 
 .game-container.game-over {
@@ -28,13 +103,6 @@ body {
   /* Additional styling as needed */
 }
 
-
-.current-turn {
-  margin-bottom: 2vh; /* Responsive vertical spacing */
-  font-size: 2vh; /* Responsive font size */
-  /* Additional styling as needed */
-}
-
 .game-content {
   display: flex;
   justify-content: center; /* Distribute space between elements */
@@ -43,10 +111,12 @@ body {
 }
 
 .rows-container {
-  display: flex;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  background-origin: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2vw; /* Responsive gap between rows */
+  gap: 10px; /*Responsive gap between rows */
 }
 
 .circles-row {
@@ -56,17 +126,23 @@ body {
 
 .circle, .house {
   position: relative;
-  width: 8vw; /* Responsive width */
-  height: 8vw; /* Responsive height, maintaining aspect ratio */
+  width: 5vw; /* Responsive width */
+  height: 5vw; /* Responsive height, maintaining aspect ratio */
   border-radius: 50%;
-  background-color: #4B5563;
-  margin: 1vw; /* Responsive margin */
+  background-color: #EBEBD0;
+  margin: 0.5vw; /* Responsive margin */
   display: flex;
   justify-content: center;
   align-items: center;
-  color: white;
+  color: #4f4c48;
+  border: solid darkgrey;
+  box-shadow: inset 0 0 0.3vw #4d6a2b;
   font-size: 2.5vw; /* Responsive font size for seed count */
   font-weight: bold;
+}
+
+.circle.selected {
+  background-color: gold;
 }
 
 .flipped {
@@ -79,20 +155,17 @@ body {
 
 
 .house {
-  width: 15vw; /* Larger size for houses */
-  height: 10vw;
-  background-color: #4B5563; /* Different color for houses */
+  width: 8vw; /* Larger size for houses */
+  height: 8vw;
+  background-color: #EBEBD0; /* Different color for houses */
 }
 
-.left-house, .right-house {
-  /* Additional styling if needed */
-}
-
-.circle:hover, .house:hover {
+.circle:hover, .button:hover {
   cursor: pointer;
 }
 
 .circle-index {
+  opacity: 0; /* increase this value to show index number. e.g. 0.5 */
   position: absolute;
   top: 1vw;
   left: 1vw;
@@ -101,3 +174,15 @@ body {
   /* z-index: 2; */
 }
 
+/* @media screen and (orientation: portrait) {
+  body {
+    transform: rotate(90deg);
+    transform-origin: left top;
+    width: 100vh;
+    height: 100vw;
+    overflow-x: hidden;
+    position: absolute;
+    top: 100%;
+    left: 0;
+  }
+} */
