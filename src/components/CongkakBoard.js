@@ -71,30 +71,6 @@ const CongkakBoard = () => {
   const verticalPosUpper = config.VERTICAL_POS_UPPER;
   const verticalPosLower = config.VERTICAL_POS_LOWER;
 
-  // Mobile user handler
-  const isMobileDevice = /Mobi|Android/i.test(navigator.userAgent);
-
-  // Define the handlers for the mobile buttons
-  const handleSButtonPress = () => {
-    // The logic that mimics the 'S' key press
-    if (gamePhase === 'TURN_BASED_SELECT' && currentTurn === PLAYER_UPPER) {
-      setGamePhase('TURN_BASED_SOWING');
-      turnBasedSowing(currentHoleIndexUpper, PLAYER_UPPER);
-    } else if (gamePhase === 'STARTING_PHASE' || gamePhase === 'SIMULTANEOUS_SELECT' || gamePhase === 'SIMULTANEOUS_SELECT_UPPER') {
-      setStartingPositionUpper(currentHoleIndexUpper);
-    }
-  };
-
-  const handleArrowDownPress = () => {
-    // The logic that mimics the 'ArrowDown' key press
-    if (gamePhase === 'TURN_BASED_SELECT' && currentTurn === PLAYER_LOWER) {
-      setGamePhase('TURN_BASED_SOWING');
-      turnBasedSowing(currentHoleIndexLower, PLAYER_LOWER);
-    } else if (gamePhase === 'STARTING_PHASE' || gamePhase === 'SIMULTANEOUS_SELECT' || gamePhase === 'SIMULTANEOUS_SELECT_LOWER') {
-      setStartingPositionLower(currentHoleIndexLower);
-    }
-  };
-
   // Function to update cursor position for PlayerUpper
   const updateCursorPositionUpper = async (ref, indexOrElement, verticalPosUpper) => {
     let element;
@@ -872,15 +848,6 @@ const CongkakBoard = () => {
           </div>
         )}
         </div>
-        {/* the mobile control buttons */}
-        {
-          isMobileDevice && (
-            <div className="mobile-controls">
-              <button className="mobile-button" onClick={handleSButtonPress}>S</button>
-              <button className="mobile-button" onClick={handleArrowDownPress}>↓</button>
-            </div>
-          )
-        }
       </div>
     </div>
   );

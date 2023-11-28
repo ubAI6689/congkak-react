@@ -174,18 +174,3 @@ body {
   /* z-index: 2; */
 }
 
- /* Add CSS for mobile controls in your CSS file */
-@media (max-width: 768px) {
-  .mobile-controls {
-    display: flex;
-    justify-content: center;
-    padding: 10px;
-    /* // Additional styling... */
-  }
-  .mobile-button {
-    padding: 5px 10px;
-    margin: 0 5px;
-    /* // Styling for buttons... */
-  }
-}
-
