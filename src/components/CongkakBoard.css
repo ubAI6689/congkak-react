@@ -56,7 +56,7 @@ body {
 
 .button-group {
   margin-top: 5%;
-  height: 20%;
+  height: 15%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -172,5 +172,20 @@ body {
   font-size: 1.5vw; /* Smaller font size for clarity */
   color: black;
   /* z-index: 2; */
+}
+
+ /* Add CSS for mobile controls in your CSS file */
+@media (max-width: 768px) {
+  .mobile-controls {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    /* // Additional styling... */
+  }
+  .mobile-button {
+    padding: 5px 10px;
+    margin: 0 5px;
+    /* // Styling for buttons... */
+  }
 }
 

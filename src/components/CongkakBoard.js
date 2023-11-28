@@ -71,6 +71,30 @@ const CongkakBoard = () => {
   const verticalPosUpper = config.VERTICAL_POS_UPPER;
   const verticalPosLower = config.VERTICAL_POS_LOWER;
 
+  // Mobile user handler
+  const isMobileDevice = /Mobi|Android/i.test(navigator.userAgent);
+
+  // Define the handlers for the mobile buttons
+  const handleSButtonPress = () => {
+    // The logic that mimics the 'S' key press
+    if (gamePhase === 'TURN_BASED_SELECT' && currentTurn === PLAYER_UPPER) {
+      setGamePhase('TURN_BASED_SOWING');
+      turnBasedSowing(currentHoleIndexUpper, PLAYER_UPPER);
+    } else if (gamePhase === 'STARTING_PHASE' || gamePhase === 'SIMULTANEOUS_SELECT' || gamePhase === 'SIMULTANEOUS_SELECT_UPPER') {
+      setStartingPositionUpper(currentHoleIndexUpper);
+    }
+  };
+
+  const handleArrowDownPress = () => {
+    // The logic that mimics the 'ArrowDown' key press
+    if (gamePhase === 'TURN_BASED_SELECT' && currentTurn === PLAYER_LOWER) {
+      setGamePhase('TURN_BASED_SOWING');
+      turnBasedSowing(currentHoleIndexLower, PLAYER_LOWER);
+    } else if (gamePhase === 'STARTING_PHASE' || gamePhase === 'SIMULTANEOUS_SELECT' || gamePhase === 'SIMULTANEOUS_SELECT_LOWER') {
+      setStartingPositionLower(currentHoleIndexLower);
+    }
+  };
+
   // Function to update cursor position for PlayerUpper
   const updateCursorPositionUpper = async (ref, indexOrElement, verticalPosUpper) => {
     let element;
@@ -780,8 +804,9 @@ const CongkakBoard = () => {
             gamePhase === 'SIMULTANEOUS_SELECT_LOWER' || 
             gamePhase === 'SIMULTANEOUS_SELECT_UPPER')
               ? "SIMULTANEOUS"
-              : currentTurn
+              : currentTurn 
           }</strong>
+           | PHASE: {gamePhase}
         </div>
       </div>
       <div className='game-area'>
@@ -790,8 +815,28 @@ const CongkakBoard = () => {
             <House position="lower" seedCount={lowHouseSeeds} ref={lowHouseRef}/>
             <div className="rows-container">
               {/* Update the Row for upper player */}
-              <Row seeds={seeds.slice(MIN_INDEX_UPPER, MIN_INDEX_LOWER)} rowType="upper" isUpper={true} onClick={() => gamePhase === 'TURN_BASED_SELECT' && turnBasedSowing} refs={holeRefs.current} selectedHole={startingPositionUpper}/>
-              <Row seeds={seeds.slice(MIN_INDEX_LOWER).reverse()} rowType="lower" onClick={() => gamePhase === 'TURN_BASED_SELECT' && turnBasedSowing} refs={holeRefs.current} selectedHole={startingPositionLower} />
+              <Row 
+                seeds={seeds.slice(MIN_INDEX_UPPER, MIN_INDEX_LOWER)} 
+                rowType="upper" 
+                isUpper={true} 
+                onClick={(index) => {
+                  if (gamePhase === 'TURN_BASED_SELECT') {
+                    turnBasedSowing(index, PLAYER_UPPER);
+                  }
+                }} 
+                refs={holeRefs.current} 
+                selectedHole={startingPositionUpper}
+              />
+              <Row 
+                seeds={seeds.slice(MIN_INDEX_LOWER).reverse()} rowType="lower" 
+                onClick={(index) => {
+                  if (gamePhase === 'TURN_BASED_SELECT') {
+                    turnBasedSowing(index, PLAYER_LOWER);
+                  }
+                }} 
+                refs={holeRefs.current} 
+                selectedHole={startingPositionLower} 
+              />
             </div>
             <House position="upper" seedCount={topHouseSeeds} ref={topHouseRef} isUpper={true}/>
             <Cursor 
@@ -815,9 +860,9 @@ const CongkakBoard = () => {
             <button className="button start" 
             onClick={() => startButtonPressed()}>START</button>
         )}
-        {isStartButtonPressed && (
+        {/* {isStartButtonPressed && (
             <button className='button reset' onClick={resetGame}>RESET</button>
-        )}
+        )} */}
         {!isStartButtonPressed && (gamePhase === 'SIMULTANEOUS_SELECT' || gamePhase === 'SIMULTANEOUS_SELECT_LOWER' || gamePhase === 'SIMULTANEOUS_SELECT_UPPER') && (
           <button className='button resume' onClick={() => startButtonPressed()}>RESUME</button>
         )}
@@ -827,6 +872,15 @@ const CongkakBoard = () => {
           </div>
         )}
         </div>
+        {/* the mobile control buttons */}
+        {
+          isMobileDevice && (
+            <div className="mobile-controls">
+              <button className="mobile-button" onClick={handleSButtonPress}>S</button>
+              <button className="mobile-button" onClick={handleArrowDownPress}>↓</button>
+            </div>
+          )
+        }
       </div>
     </div>
   );
