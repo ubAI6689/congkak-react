@@ -1,6 +1,6 @@
 import React from 'react';
 import Hole from './Hole';
-import config from '../config/config';
+import config from '../../config/config';
 
 const Row = ({ seeds, isUpper, rowType, onClick, refs, selectedHole }) => {
   return (
