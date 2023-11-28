@@ -55,27 +55,6 @@ const CongkakBoard = () => {
     resetGame, toggleTurn, startButtonPressed, handleSButtonPress, handleArrowDownPress,
   } = useGameState();
 
-  // // game state variables
-  // const [seeds, setSeeds] = useState(new Array(HOLE_NUMBERS).fill(INIT_SEEDS_COUNT)); // 14 holes excluding houses
-  // const [gamePhase, setGamePhase] = useState('STARTING_PHASE'); // or 'TURN_BASED'
-  // const [startingPositionUpper, setStartingPositionUpper] = useState(null);
-  // const [startingPositionLower, setStartingPositionLower] = useState(null);
-  // const [currentTurn, setCurrentTurn] = useState(null);
-  // const [isSowingUpper, setIsSowingUpper] = useState(false);
-  // const [isSowingLower, setIsSowingLower] = useState(false);
-  // const [passedHouse, setPassedHouse] = useState(0);
-  // const [currentSeedsInHandUpper, setCurrentSeedsInHandUpper] = useState(0);
-  // const [currentSeedsInHandLower, setCurrentSeedsInHandLower] = useState(0);
-  // const [topHouseSeeds, setTopHouseSeeds] = useState(0);
-  // const [lowHouseSeeds, setLowHouseSeeds] = useState(0);
-  // const [isGameOver, setIsGameOver] = useState(false);
-  // const [outcomeMessage, setOutcomeMessage] = useState('');
-  // const startIndexUpper = Math.round((MIN_INDEX_UPPER + MAX_INDEX_UPPER) / 2);
-  // const startIndexLower = Math.round((MIN_INDEX_LOWER + MAX_INDEX_LOWER) / 2);
-  // const [currentHoleIndexUpper, setCurrentHoleIndexUpper] = useState(startIndexUpper); 
-  // const [currentHoleIndexLower, setCurrentHoleIndexLower] = useState(startIndexLower);
-  // const [isStartButtonPressed, setIsStartButtonPressed] = useState(false);
-
   // cursor control states
   const [cursorVisibilityUpper, setCursorVisibilityUpper] = useState({ visible: true });
   const [cursorVisibilityLower, setCursorVisibilityLower] = useState({ visible: true });
@@ -310,34 +289,6 @@ const CongkakBoard = () => {
       window.removeEventListener('keydown', handleKeyDown);
     };    
   }, [currentHoleIndexUpper, currentHoleIndexLower, holeRefs, verticalPosUpper, verticalPosLower, isSowingUpper, isSowingLower, gamePhase]);
-
-/**==============================================
- *        useEffect implementations
- * =============================================*/
-// useEffect(() => {
-//   const lockOrientation = async () => {
-//       // eslint-disable-next-line no-restricted-globals
-//       if (typeof screen !== 'undefined' && screen.orientation && typeof screen.orientation.lock === 'function') {
-//         try {
-//           // eslint-disable-next-line no-restricted-globals
-//           await screen.orientation.lock('landscape');
-//         } catch (error) {
-//           console.error('Could not lock screen orientation:', error);
-//         }
-//       }
-//     };
-
-//     lockOrientation();
-
-//     return () => {
-//       // eslint-disable-next-line no-restricted-globals
-//       if (typeof screen !== 'undefined' && screen.orientation && typeof screen.orientation.unlock === 'function') {
-//         // eslint-disable-next-line no-restricted-globals
-//         screen.orientation.unlock();
-//       }
-//     };
-//   }, []);
-
 
   // GameOver Checker
   useEffect(() => {
