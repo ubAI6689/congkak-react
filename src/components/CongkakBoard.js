@@ -5,10 +5,10 @@ import House from './House';
 import Cursor from './Cursor';
 import Row from './Row';
 import Sidebar from './sidebar';
+import { useGameState } from '../hooks/useGameState';
 import { handleWrongSelection, toggleSidebar } from '../utils/animation';
-import { toggleTurn, sumOfSeedsInCurrentRow, handleCheckGameEnd } from '../utils/helpers';
+import { sumOfSeedsInCurrentRow, handleCheckGameEnd } from '../utils/helpers';
 import config from '../config/config';
-
 
 const { 
   INIT_SEEDS_COUNT,
@@ -21,91 +21,72 @@ const {
   MAX_INDEX_LOWER,
 } = config;
 
+const startIndexUpper = Math.round((MIN_INDEX_UPPER + MAX_INDEX_UPPER) / 2);
+const startIndexLower = Math.round((MIN_INDEX_LOWER + MAX_INDEX_LOWER) / 2);
+
 const CongkakBoard = () => {
 
-  const [seeds, setSeeds] = useState(new Array(HOLE_NUMBERS).fill(INIT_SEEDS_COUNT)); // 14 holes excluding houses
+  const {
+    seeds, setSeeds,
+    gamePhase, setGamePhase,
+    startingPositionUpper, setStartingPositionUpper,
+    startingPositionLower, setStartingPositionLower,
+    currentTurn, setCurrentTurn,
+    isSowingUpper, setIsSowingUpper,
+    isSowingLower, setIsSowingLower,
+    passedHouse, setPassedHouse,
+    currentSeedsInHandUpper, setCurrentSeedsInHandUpper,
+    currentSeedsInHandLower, setCurrentSeedsInHandLower,
+    topHouseSeeds, setTopHouseSeeds,
+    lowHouseSeeds, setLowHouseSeeds,
+    isGameOver, setIsGameOver,
+    outcomeMessage, setOutcomeMessage,
+    currentHoleIndexUpper, setCurrentHoleIndexUpper,
+    currentHoleIndexLower, setCurrentHoleIndexLower,
+    isStartButtonPressed, setIsStartButtonPressed,
+    resetGame, toggleTurn, startButtonPressed, handleSButtonPress, handleArrowDownPress,
+  } = useGameState();
+
+  // // game state variables
+  // const [seeds, setSeeds] = useState(new Array(HOLE_NUMBERS).fill(INIT_SEEDS_COUNT)); // 14 holes excluding houses
+  // const [gamePhase, setGamePhase] = useState('STARTING_PHASE'); // or 'TURN_BASED'
+  // const [startingPositionUpper, setStartingPositionUpper] = useState(null);
+  // const [startingPositionLower, setStartingPositionLower] = useState(null);
+  // const [currentTurn, setCurrentTurn] = useState(null);
+  // const [isSowingUpper, setIsSowingUpper] = useState(false);
+  // const [isSowingLower, setIsSowingLower] = useState(false);
+  // const [passedHouse, setPassedHouse] = useState(0);
+  // const [currentSeedsInHandUpper, setCurrentSeedsInHandUpper] = useState(0);
+  // const [currentSeedsInHandLower, setCurrentSeedsInHandLower] = useState(0);
+  // const [topHouseSeeds, setTopHouseSeeds] = useState(0);
+  // const [lowHouseSeeds, setLowHouseSeeds] = useState(0);
+  // const [isGameOver, setIsGameOver] = useState(false);
+  // const [outcomeMessage, setOutcomeMessage] = useState('');
+  // const startIndexUpper = Math.round((MIN_INDEX_UPPER + MAX_INDEX_UPPER) / 2);
+  // const startIndexLower = Math.round((MIN_INDEX_LOWER + MAX_INDEX_LOWER) / 2);
+  // const [currentHoleIndexUpper, setCurrentHoleIndexUpper] = useState(startIndexUpper); 
+  // const [currentHoleIndexLower, setCurrentHoleIndexLower] = useState(startIndexLower);
+  // const [isStartButtonPressed, setIsStartButtonPressed] = useState(false);
+
+  // cursor control states
+  const [cursorVisibilityUpper, setCursorVisibilityUpper] = useState({ visible: true });
+  const [cursorVisibilityLower, setCursorVisibilityLower] = useState({ visible: true });
+  const [cursorLeftUpper, setCursorLeftUpper] = useState(window.innerWidth / 2);
+  const [cursorTopUpper, setCursorTopUpper] = useState(window.innerHeight / 3); const [cursorLeftLower, setCursorLeftLower] = useState(window.innerWidth / 2);
+  const [cursorTopLower, setCursorTopLower] = useState(window.innerHeight * 2 / 4);
+  const verticalPosUpper = config.VERTICAL_POS_UPPER;
+  const verticalPosLower = config.VERTICAL_POS_LOWER;
+  const [resetCursor, setResetCursor] = useState(false);
+  const [shakeCursor, setShakeCursor] = useState(false);
   
+  // Accessories UI 
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+  
+  // DOM references
+  const gameContainerRef = useRef(null);
   const holeRefs = useRef([]);
   const topHouseRef = useRef(null);
   const lowHouseRef = useRef(null);
-  
-  const [gamePhase, setGamePhase] = useState('STARTING_PHASE'); // or 'TURN_BASED'
-  
-  // New states for the starting phase
-  // const [isStartingPhase, setIsStartingPhase] = useState(true);
-  const [isStartButtonPressed, setIsStartButtonPressed] = useState(false);
-
-  // States for starting phase
-  const [startingPositionUpper, setStartingPositionUpper] = useState(null);
-  const [startingPositionLower, setStartingPositionLower] = useState(null);
-
-  const [cursorVisibilityUpper, setCursorVisibilityUpper] = useState({ visible: true });
-  const [cursorVisibilityLower, setCursorVisibilityLower] = useState({ visible: true });
-
-  const startIndexUpper = Math.round((MIN_INDEX_UPPER + MAX_INDEX_UPPER) / 2);
-  const startIndexLower = Math.round((MIN_INDEX_LOWER + MAX_INDEX_LOWER) / 2);
-
-  const [currentHoleIndexUpper, setCurrentHoleIndexUpper] = useState(startIndexUpper); 
-  const [currentHoleIndexLower, setCurrentHoleIndexLower] = useState(startIndexLower);
-
-  const [cursorLeftUpper, setCursorLeftUpper] = useState(window.innerWidth / 2);
-  const [cursorTopUpper, setCursorTopUpper] = useState(window.innerHeight / 3);
-
-  const [cursorLeftLower, setCursorLeftLower] = useState(window.innerWidth / 2);
-  const [cursorTopLower, setCursorTopLower] = useState(window.innerHeight * 2 / 4);
-
-  const [resetCursor, setResetCursor] = useState(false);
-  
-  const [currentTurn, setCurrentTurn] = useState(null);
-  const [isSowingUpper, setIsSowingUpper] = useState(false);
-  const [isSowingLower, setIsSowingLower] = useState(false);
-  
-  // const [currentSeedsInHand, setCurrentSeedsInHand] = useState(0);
-  const [passedHouse, setPassedHouse] = useState(0);
-  const [currentSeedsInHandUpper, setCurrentSeedsInHandUpper] = useState(0);
-  const [currentSeedsInHandLower, setCurrentSeedsInHandLower] = useState(0);
-  const [topHouseSeeds, setTopHouseSeeds] = useState(0);
-  const [lowHouseSeeds, setLowHouseSeeds] = useState(0);
-  
-  const [isGameOver, setIsGameOver] = useState(false);
-  const [outcomeMessage, setOutcomeMessage] = useState('');
-
-  const gameContainerRef = useRef(null);
-  
-  const verticalPosUpper = config.VERTICAL_POS_UPPER;
-  const verticalPosLower = config.VERTICAL_POS_LOWER;
-
-  const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const [shakeCursor, setShakeCursor] = useState(false);
-
-  // Define the handlers for the mobile buttons
-  const handleSButtonPress = async (index) => {
-    if (!isSowingUpper) {
-        // The logic that mimics the 'S' key press
-      if (gamePhase === 'TURN_BASED_SELECT' && currentTurn === PLAYER_UPPER) {
-        await updateCursorPositionUpper(holeRefs, index, verticalPosUpper);
-        setGamePhase('TURN_BASED_SOWING');
-        turnBasedSowing(index, PLAYER_UPPER);
-      } else if (gamePhase === 'STARTING_PHASE' || gamePhase === 'SIMULTANEOUS_SELECT' || gamePhase === 'SIMULTANEOUS_SELECT_UPPER') {
-        await updateCursorPositionUpper(holeRefs, index, verticalPosUpper);
-        setStartingPositionUpper(index);
-      }
-    }
-  };
-
-  const handleArrowDownPress = async (index) => {
-    if (!isSowingLower) {
-      // The logic that mimics the 'ArrowDown' key press
-      if (gamePhase === 'TURN_BASED_SELECT' && currentTurn === PLAYER_LOWER) {
-        await updateCursorPositionLower(holeRefs, index, verticalPosLower);
-        setGamePhase('TURN_BASED_SOWING');
-        turnBasedSowing(index, PLAYER_LOWER);
-      } else if (gamePhase === 'STARTING_PHASE' || gamePhase === 'SIMULTANEOUS_SELECT' || gamePhase === 'SIMULTANEOUS_SELECT_LOWER') {
-        await updateCursorPositionLower(holeRefs, index, verticalPosLower);
-        setStartingPositionLower(index);
-      }
-    }
-  };
 
   // Function to update cursor position for PlayerUpper
   const updateCursorPositionUpper = async (ref, indexOrElement, verticalPosUpper) => {
@@ -143,65 +124,6 @@ const CongkakBoard = () => {
       await new Promise(resolve => setTimeout(resolve, 400)); // Animation delay
     }
   };
-
-  // RESET function
-  const resetGame = () => {
-    setSeeds(new Array(HOLE_NUMBERS).fill(INIT_SEEDS_COUNT));
-    setGamePhase('STARTING_PHASE');
-    setIsStartButtonPressed(false);
-    setStartingPositionUpper(null);
-    setStartingPositionLower(null);
-    setCurrentHoleIndexUpper(startIndexUpper);
-    setCurrentHoleIndexLower(startIndexLower);
-    setIsSowingUpper(false);
-    setIsSowingLower(false);
-    setCurrentSeedsInHandUpper(0);
-    setCurrentSeedsInHandLower(0);
-    setTopHouseSeeds(0);
-    setLowHouseSeeds(0);
-    setIsGameOver(false);
-    setOutcomeMessage('');
-    setCurrentTurn(null);
-    // Reset any other state variables relevant to your game
-  };
-
-  /**=========================================================
-  *                 start button function 
-  * ==========================================================*/
-  const startButtonPressed = () => {
-    // handle the logic for both START and RESUME button
-    if (gamePhase === 'STARTING_PHASE' || gamePhase === 'SIMULTANEOUS_SELECT') {
-      if (startingPositionUpper === null || seeds[startingPositionUpper] === 0) {
-        console.log("Please select starting position for Player Upper")
-        handleWrongSelection(setShakeCursor);
-      } else if (startingPositionLower === null || seeds[startingPositionLower] === 0) {
-        handleWrongSelection(setShakeCursor);
-        console.log("Please select starting position for Player Lower")
-      } else {
-        console.log("START GAME!")
-        setIsStartButtonPressed(true);
-        simultaneousSowing(startingPositionUpper, startingPositionLower);
-      }
-    // resume button logic
-    } else if (gamePhase === 'SIMULTANEOUS_SELECT_UPPER') {
-      if (startingPositionUpper === null || seeds[startingPositionUpper] === 0 || startingPositionUpper === currentHoleIndexLower) {
-        console.log("Please select starting position for Player Upper");
-        handleWrongSelection(setShakeCursor);
-      } else {
-        setIsStartButtonPressed(true);
-        simultaneousSowing(startingPositionUpper, null);
-      }
-    } else if (gamePhase === 'SIMULTANEOUS_SELECT_LOWER') {
-      if (startingPositionLower === null || seeds[startingPositionLower] === 0 || startingPositionLower === currentHoleIndexUpper) {
-        console.log("Please select starting position for Player Lower");
-        handleWrongSelection(setShakeCursor);
-      } else {
-        setIsStartButtonPressed(true);
-        simultaneousSowing(null, startingPositionLower);
-      }
-    }
-  }
-
   
   /**=========================================================
   *   Transition from SIMULTANEOUS phase to TURN_BASED phase 
@@ -308,6 +230,7 @@ const CongkakBoard = () => {
             turnBasedSowing(newIndexUpper, PLAYER_UPPER);
           } else if (gamePhase === 'STARTING_PHASE' || gamePhase === 'SIMULTANEOUS_SELECT' || gamePhase === 'SIMULTANEOUS_SELECT_UPPER') {
             setStartingPositionUpper(newIndexUpper);
+            console.log("StartingPosU? ", startingPositionUpper);
           }
         }
       }
@@ -336,7 +259,7 @@ const CongkakBoard = () => {
       if ((!isSowingUpper || !isSowingLower) || (!startButtonPressed && gamePhase === 'STARTING_PHASE')) {
         if (event.code === 'Space' || event.key === 32) {
           console.log("SPACE pressed")
-          startButtonPressed();
+          startButtonPressed(handleWrongSelection, setShakeCursor, simultaneousSowing);
         }
       }
     };
@@ -856,13 +779,13 @@ const CongkakBoard = () => {
                 seeds={seeds.slice(MIN_INDEX_UPPER, MIN_INDEX_LOWER)} 
                 rowType="upper" 
                 isUpper={true} 
-                onClick={(index) => {handleSButtonPress(index)}} 
+                onClick={(index) => {handleSButtonPress(index, updateCursorPositionUpper, holeRefs, verticalPosUpper, turnBasedSowing)}} 
                 refs={holeRefs.current} 
                 selectedHole={startingPositionUpper}
               />
               <Row 
                 seeds={seeds.slice(MIN_INDEX_LOWER).reverse()} rowType="lower" 
-                onClick={(index) => {handleArrowDownPress(index)}} 
+                onClick={(index) => {handleArrowDownPress(index, updateCursorPositionLower, holeRefs, verticalPosLower, turnBasedSowing)}} 
                 refs={holeRefs.current} 
                 selectedHole={startingPositionLower} 
               />
@@ -891,13 +814,13 @@ const CongkakBoard = () => {
         <div className='button-group'>
         {!isStartButtonPressed && gamePhase === 'STARTING_PHASE' && (
             <button className="button start" 
-            onClick={() => startButtonPressed()}>START</button>
+            onClick={() => startButtonPressed(handleWrongSelection, setShakeCursor, simultaneousSowing)}>START</button>
         )}
         {/* {isStartButtonPressed && (
             <button className='button reset' onClick={resetGame}>RESET</button>
         )} */}
         {!isStartButtonPressed && (gamePhase === 'SIMULTANEOUS_SELECT' || gamePhase === 'SIMULTANEOUS_SELECT_LOWER' || gamePhase === 'SIMULTANEOUS_SELECT_UPPER') && (
-          <button className='button resume' onClick={() => startButtonPressed()}>RESUME</button>
+          <button className='button resume' onClick={() => startButtonPressed(handleWrongSelection, setShakeCursor, simultaneousSowing)}>RESUME</button>
         )}
         {isGameOver && (
           <div className="game-over-message">
