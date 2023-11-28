@@ -6,6 +6,7 @@ import Row from './Row';
 import { toggleTurn, sumOfSeedsInCurrentRow, handleCheckGameEnd } from '../utils/helpers';
 import config from '../config/config';
 
+
 const { 
   INIT_SEEDS_COUNT,
   HOLE_NUMBERS,
@@ -70,6 +71,35 @@ const CongkakBoard = () => {
   
   const verticalPosUpper = config.VERTICAL_POS_UPPER;
   const verticalPosLower = config.VERTICAL_POS_LOWER;
+
+  // Define the handlers for the mobile buttons
+  const handleSButtonPress = async (index) => {
+    if (!isSowingUpper) {
+        // The logic that mimics the 'S' key press
+      if (gamePhase === 'TURN_BASED_SELECT' && currentTurn === PLAYER_UPPER) {
+        await updateCursorPositionUpper(holeRefs, index, verticalPosUpper);
+        setGamePhase('TURN_BASED_SOWING');
+        turnBasedSowing(index, PLAYER_UPPER);
+      } else if (gamePhase === 'STARTING_PHASE' || gamePhase === 'SIMULTANEOUS_SELECT' || gamePhase === 'SIMULTANEOUS_SELECT_UPPER') {
+        await updateCursorPositionUpper(holeRefs, index, verticalPosUpper);
+        setStartingPositionUpper(index);
+      }
+    }
+  };
+
+  const handleArrowDownPress = async (index) => {
+    if (!isSowingLower) {
+      // The logic that mimics the 'ArrowDown' key press
+      if (gamePhase === 'TURN_BASED_SELECT' && currentTurn === PLAYER_LOWER) {
+        await updateCursorPositionLower(holeRefs, index, verticalPosLower);
+        setGamePhase('TURN_BASED_SOWING');
+        turnBasedSowing(index, PLAYER_LOWER);
+      } else if (gamePhase === 'STARTING_PHASE' || gamePhase === 'SIMULTANEOUS_SELECT' || gamePhase === 'SIMULTANEOUS_SELECT_LOWER') {
+        await updateCursorPositionLower(holeRefs, index, verticalPosLower);
+        setStartingPositionLower(index);
+      }
+    }
+  };
 
   // Function to update cursor position for PlayerUpper
   const updateCursorPositionUpper = async (ref, indexOrElement, verticalPosUpper) => {
@@ -311,6 +341,30 @@ const CongkakBoard = () => {
 /**==============================================
  *        useEffect implementations
  * =============================================*/
+// useEffect(() => {
+//   const lockOrientation = async () => {
+//       // eslint-disable-next-line no-restricted-globals
+//       if (typeof screen !== 'undefined' && screen.orientation && typeof screen.orientation.lock === 'function') {
+//         try {
+//           // eslint-disable-next-line no-restricted-globals
+//           await screen.orientation.lock('landscape');
+//         } catch (error) {
+//           console.error('Could not lock screen orientation:', error);
+//         }
+//       }
+//     };
+
+//     lockOrientation();
+
+//     return () => {
+//       // eslint-disable-next-line no-restricted-globals
+//       if (typeof screen !== 'undefined' && screen.orientation && typeof screen.orientation.unlock === 'function') {
+//         // eslint-disable-next-line no-restricted-globals
+//         screen.orientation.unlock();
+//       }
+//     };
+//   }, []);
+
 
   // GameOver Checker
   useEffect(() => {
@@ -795,21 +849,13 @@ const CongkakBoard = () => {
                 seeds={seeds.slice(MIN_INDEX_UPPER, MIN_INDEX_LOWER)} 
                 rowType="upper" 
                 isUpper={true} 
-                onClick={(index) => {
-                  if (gamePhase === 'TURN_BASED_SELECT') {
-                    turnBasedSowing(index, PLAYER_UPPER);
-                  }
-                }} 
+                onClick={(index) => {handleSButtonPress(index)}} 
                 refs={holeRefs.current} 
                 selectedHole={startingPositionUpper}
               />
               <Row 
                 seeds={seeds.slice(MIN_INDEX_LOWER).reverse()} rowType="lower" 
-                onClick={(index) => {
-                  if (gamePhase === 'TURN_BASED_SELECT') {
-                    turnBasedSowing(index, PLAYER_LOWER);
-                  }
-                }} 
+                onClick={(index) => {handleArrowDownPress(index)}} 
                 refs={holeRefs.current} 
                 selectedHole={startingPositionLower} 
               />
