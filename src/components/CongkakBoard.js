@@ -3,6 +3,7 @@ import './CongkakBoard.css';
 import House from './House';
 import Cursor from './Cursor';
 import Row from './Row';
+import { handleWrongSelection } from '../utils/animation';
 import { toggleTurn, sumOfSeedsInCurrentRow, handleCheckGameEnd } from '../utils/helpers';
 import config from '../config/config';
 
@@ -71,6 +72,8 @@ const CongkakBoard = () => {
   
   const verticalPosUpper = config.VERTICAL_POS_UPPER;
   const verticalPosLower = config.VERTICAL_POS_LOWER;
+
+  const [shakeCursor, setShakeCursor] = useState(false);
 
   // Define the handlers for the mobile buttons
   const handleSButtonPress = async (index) => {
@@ -167,7 +170,9 @@ const CongkakBoard = () => {
     if (gamePhase === 'STARTING_PHASE' || gamePhase === 'SIMULTANEOUS_SELECT') {
       if (startingPositionUpper === null || seeds[startingPositionUpper] === 0) {
         console.log("Please select starting position for Player Upper")
+        handleWrongSelection(setShakeCursor);
       } else if (startingPositionLower === null || seeds[startingPositionLower] === 0) {
+        handleWrongSelection(setShakeCursor);
         console.log("Please select starting position for Player Lower")
       } else {
         console.log("START GAME!")
@@ -862,6 +867,8 @@ const CongkakBoard = () => {
             </div>
             <House position="upper" seedCount={topHouseSeeds} ref={topHouseRef} isUpper={true}/>
             <Cursor 
+              shake={shakeCursor}
+              triggerShake={handleWrongSelection}
               top={cursorTopUpper} 
               left={cursorLeftUpper} 
               visible={cursorVisibilityUpper.visible} 
@@ -869,6 +876,8 @@ const CongkakBoard = () => {
               isTopTurn={true} // Always true for Player 1
             />
             <Cursor 
+              shake={shakeCursor}
+              triggerShake={handleWrongSelection}
               top={cursorTopLower} 
               left={cursorLeftLower} 
               visible={cursorVisibilityLower.visible} 

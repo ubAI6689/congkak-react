@@ -3,6 +3,12 @@ import config from "../config/config";
 
 const { MIN_INDEX_LOWER } = config;
 
+// Function to handle wrong selection
+export const handleWrongSelection = (setShakeCursor) => {
+  console.log("Shake cursor called!")
+  setShakeCursor(true);
+  setTimeout(() => setShakeCursor(false), 500); // Reset after animation duration
+};
 // // Function to update cursor position for PlayerUpper
 // const updateCursorPositionUpper = async (holeIndex, holeRefs, setCursorLeftUpper, setCursorTopUpper, verticalPosUpper) => {
 //   if (holeRefs.current[holeIndex]) {
