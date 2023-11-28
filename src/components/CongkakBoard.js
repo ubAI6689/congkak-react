@@ -156,6 +156,7 @@ const CongkakBoard = () => {
   useEffect(() => {
     if (gamePhase === 'PASS_TO_TURN_BASED' && currentTurn !== null) {
       const currentPosition = currentTurn === PLAYER_UPPER ? currentHoleIndexUpper : currentHoleIndexLower;
+      console.log(`Current Turn: ${currentTurn} | Current position: ${currentPosition} | Seeds: ${seeds[currentPosition]}` );
       setGamePhase('TURN_BASED_SOWING');
       turnBasedSowing(currentPosition, currentTurn, true, passedHouse);
     }
@@ -473,12 +474,12 @@ const CongkakBoard = () => {
           } 
           // end movement,
           setIsSowingUpper(false);
-          // get passed house status
-          setPassedHouse(hasPassedHouseUpper);
           // get the opponent position
           setCurrentHoleIndexLower(currentIndexLower);
-          // reset cursor index
-          setCurrentHoleIndexUpper(startIndexUpper);
+          console.log("Current lower position: ", currentIndexLower);
+          console.log("Current seeds in lower position: ", newSeeds[currentIndexLower]);
+          // get opponent's passed house status
+          setPassedHouse(hasPassedHouseLower);
           // Change game phase to TURN_BASED
           setGamePhase('PASS_TO_TURN_BASED');
           return;
@@ -529,13 +530,13 @@ const CongkakBoard = () => {
             setLowHouseSeeds(prevSeeds => prevSeeds + capturedSeeds);
             seedsInHandLower = 0;
             setCurrentSeedsInHandLower(seedsInHandLower);
-          } 
+          }
           // end movement,
           setIsSowingLower(false);
-          // get passed house status
-          setPassedHouse(hasPassedHouseLower);
           // get the opponent position
           setCurrentHoleIndexUpper(currentIndexUpper);
+          // get opponent's passed house status
+          setPassedHouse(hasPassedHouseUpper);
           // Change game phase to TURN_BASED
           setGamePhase('PASS_TO_TURN_BASED');
           return;
@@ -569,7 +570,8 @@ const CongkakBoard = () => {
     
     let currentIndex = index;
     let newSeeds = [...seeds];
-    let seedsInHand = isContinuation ? (isUpperPlayer ? currentSeedsInHandUpper : currentSeedsInHandLower) : newSeeds[index];
+    let seedsInHand = isContinuation ? (isUpperPlayer ? currentSeedsInHandUpper : newSeeds[index]) : newSeeds[index];
+    // let seedsInHand = newSeeds[index];
     let hasPassedHouse = passedHouse;
     let justFilledHome = false;
     let getAnotherTurn = false;
@@ -583,10 +585,10 @@ const CongkakBoard = () => {
         setIsSowing(false);
         return;
       }
-      setCurrentSeedsInHand(seedsInHand);
-      newSeeds[index] = 0;
-      setSeeds([...newSeeds]);
     }
+    setCurrentSeedsInHand(seedsInHand);
+    newSeeds[index] = 0;
+    setSeeds([...newSeeds]);
     
     // Pick up animation
     if (isUpperPlayer) {
@@ -594,7 +596,8 @@ const CongkakBoard = () => {
     } else {
       await updateCursorPositionLower(holeRefs, currentIndex, 0);
     }
-    
+    console.log("Starting turn based sowing")
+    console.log("Seeds in hands: ", seedsInHand);
     while (seedsInHand > 0) {
 
       /** ============================================
