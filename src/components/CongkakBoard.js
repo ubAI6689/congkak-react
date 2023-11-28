@@ -6,6 +6,7 @@ import Cursor from './Cursor';
 import Row from './Row';
 import Sidebar from './sidebar';
 import { useGameState } from '../hooks/useGameState';
+import { useCursorControl } from '../hooks/useCursorControl';
 import { handleWrongSelection, toggleSidebar } from '../utils/animation';
 import { sumOfSeedsInCurrentRow, handleCheckGameEnd } from '../utils/helpers';
 import config from '../config/config';
@@ -28,9 +29,15 @@ const {
   SIMULTANEOUS_SELECT_UPPER,
   SIMULTANEOUS_SELECT_LOWER,
   PASS_TO_TURN_BASED,
-  TURN_BASED_SELECT,
-  TURN_BASED_SOWING
-} = gamePhaseConfig;
+  TURN_BASED_SOWING,
+  TURN_BASED_SELECT
+} = gamePhaseConfig
+
+const startIndexUpper = Math.round((MIN_INDEX_UPPER + MAX_INDEX_UPPER) / 2);
+const startIndexLower = Math.round((MIN_INDEX_LOWER + MAX_INDEX_LOWER) / 2);
+
+const verticalPosUpper = config.VERTICAL_POS_UPPER;
+const verticalPosLower = config.VERTICAL_POS_LOWER;
 
 const CongkakBoard = () => {
 
@@ -55,25 +62,28 @@ const CongkakBoard = () => {
     resetGame, toggleTurn, startButtonPressed, handleSButtonPress, handleArrowDownPress,
   } = useGameState();
 
+  const {
+    cursorVisibilityUpper, setCursorVisibilityUpper,
+    cursorVisibilityLower, setCursorVisibilityLower,
+    cursorLeftUpper, setCursorLeftUpper,
+    cursorLeftLower, setCursorLeftLower,
+    cursorTopUpper, setCursorTopUpper,
+    cursorTopLower, setCursorTopLower,
+    resetCursor, setResetCursor,
+    shakeCursor, setShakeCursor,
+    updateCursorPositionUpper, updateCursorPositionLower
+  } = useCursorControl();
+
   // cursor control states
-  const [cursorVisibilityUpper, setCursorVisibilityUpper] = useState({ visible: true });
-  const [cursorVisibilityLower, setCursorVisibilityLower] = useState({ visible: true });
-
-  // const startIndexUpper = Math.round((MIN_INDEX_UPPER + MAX_INDEX_UPPER) / 2);
-  // const startIndexLower = Math.round((MIN_INDEX_LOWER + MAX_INDEX_LOWER) / 2);
-  const startIndexUpper = MIN_INDEX_UPPER;
-  const startIndexLower = MIN_INDEX_LOWER;
-
-  const [currentHoleIndexUpper, setCurrentHoleIndexUpper] = useState(startIndexUpper); 
-  const [currentHoleIndexLower, setCurrentHoleIndexLower] = useState(startIndexLower);
-
-  const [cursorLeftUpper, setCursorLeftUpper] = useState(window.innerWidth / 2);
-  const [cursorTopUpper, setCursorTopUpper] = useState(window.innerHeight / 3); const [cursorLeftLower, setCursorLeftLower] = useState(window.innerWidth / 2);
-  const [cursorTopLower, setCursorTopLower] = useState(window.innerHeight * 2 / 4);
-  const verticalPosUpper = config.VERTICAL_POS_UPPER;
-  const verticalPosLower = config.VERTICAL_POS_LOWER;
-  const [resetCursor, setResetCursor] = useState(false);
-  const [shakeCursor, setShakeCursor] = useState(false);
+  // const [cursorVisibilityUpper, setCursorVisibilityUpper] = useState({ visible: true });
+  // const [cursorVisibilityLower, setCursorVisibilityLower] = useState({ visible: true });
+  // const [cursorLeftUpper, setCursorLeftUpper] = useState(window.innerWidth / 2);
+  // const [cursorTopUpper, setCursorTopUpper] = useState(window.innerHeight / 3); const [cursorLeftLower, setCursorLeftLower] = useState(window.innerWidth / 2);
+  // const [cursorTopLower, setCursorTopLower] = useState(window.innerHeight * 2 / 4);
+  // const verticalPosUpper = config.VERTICAL_POS_UPPER;
+  // const verticalPosLower = config.VERTICAL_POS_LOWER;
+  // const [resetCursor, setResetCursor] = useState(false);
+  // const [shakeCursor, setShakeCursor] = useState(false);
   
   // Accessories UI 
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -108,41 +118,41 @@ const CongkakBoard = () => {
   };
 
   // Function to update cursor position for PlayerUpper
-  const updateCursorPositionUpper = async (ref, indexOrElement, verticalPosUpper) => {
-    let element;
+  // const updateCursorPositionUpper = async (ref, indexOrElement, verticalPosUpper) => {
+  //   let element;
     
-    // determine if indexOrElement is an index or a DOM element
-    if (typeof indexOrElement === "number") {
-      element = ref.current[indexOrElement];
-    } else {
-      element = indexOrElement;
-    }
+  //   // determine if indexOrElement is an index or a DOM element
+  //   if (typeof indexOrElement === "number") {
+  //     element = ref.current[indexOrElement];
+  //   } else {
+  //     element = indexOrElement;
+  //   }
 
-    if (element) {
-      const rect = element.getBoundingClientRect();
-      setCursorLeftUpper(rect.left + window.scrollX);
-      setCursorTopUpper(rect.top + window.scrollY + (verticalPosUpper * rect.height));
-      await new Promise(resolve => setTimeout(resolve, 400)); // Animation delay
-    }
-  };
+  //   if (element) {
+  //     const rect = element.getBoundingClientRect();
+  //     setCursorLeftUpper(rect.left + window.scrollX);
+  //     setCursorTopUpper(rect.top + window.scrollY + (verticalPosUpper * rect.height));
+  //     await new Promise(resolve => setTimeout(resolve, 400)); // Animation delay
+  //   }
+  // };
 
-  // Function to update cursor position for PlayerLower
-  const updateCursorPositionLower = async (ref, indexOrElement, verticalPosLower) => {
-    let element;
-    // determine if indexOrElement is an index or a DOM element
-    if (typeof indexOrElement === "number") {
-      element = ref.current[indexOrElement];
-    } else {
-      element = indexOrElement;
-    }
+  // // Function to update cursor position for PlayerLower
+  // const updateCursorPositionLower = async (ref, indexOrElement, verticalPosLower) => {
+  //   let element;
+  //   // determine if indexOrElement is an index or a DOM element
+  //   if (typeof indexOrElement === "number") {
+  //     element = ref.current[indexOrElement];
+  //   } else {
+  //     element = indexOrElement;
+  //   }
     
-    if (element) {
-      const rect = element.getBoundingClientRect();
-      setCursorLeftLower(rect.left + window.scrollX);
-      setCursorTopLower(rect.top + window.scrollY + (verticalPosLower * rect.height));
-      await new Promise(resolve => setTimeout(resolve, 400)); // Animation delay
-    }
-  };
+  //   if (element) {
+  //     const rect = element.getBoundingClientRect();
+  //     setCursorLeftLower(rect.left + window.scrollX);
+  //     setCursorTopLower(rect.top + window.scrollY + (verticalPosLower * rect.height));
+  //     await new Promise(resolve => setTimeout(resolve, 400)); // Animation delay
+  //   }
+  // };
   
   /**=========================================================
   *   Transition from SIMULTANEOUS phase to TURN_BASED phase 
