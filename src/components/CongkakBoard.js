@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import './CongkakBoard.css';
 import House from './House';
 import Cursor from './Cursor';
@@ -912,6 +913,7 @@ const CongkakBoard = () => {
       <div class="trademark-section">
         © 2023 <a href="https://twitter.com/ubaid_rac" target="_blank">Abu Kacak</a>. All Rights Reserved.
       </div>
+      <Analytics/>
     </div>
   );
 };
