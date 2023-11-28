@@ -181,15 +181,17 @@ const CongkakBoard = () => {
       }
     // resume button logic
     } else if (gamePhase === 'SIMULTANEOUS_SELECT_UPPER') {
-      if (startingPositionUpper === null || seeds[startingPositionUpper] === 0) {
-        console.log("Please select starting position for Player Upper")
+      if (startingPositionUpper === null || seeds[startingPositionUpper] === 0 || startingPositionUpper === currentHoleIndexLower) {
+        console.log("Please select starting position for Player Upper");
+        handleWrongSelection(setShakeCursor);
       } else {
         setIsStartButtonPressed(true);
         simultaneousSowing(startingPositionUpper, null);
       }
     } else if (gamePhase === 'SIMULTANEOUS_SELECT_LOWER') {
-      if (startingPositionLower === null || seeds[startingPositionLower] === 0) {
-        console.log("Please select starting position for Player Lower")
+      if (startingPositionLower === null || seeds[startingPositionLower] === 0 || startingPositionLower === currentHoleIndexUpper) {
+        console.log("Please select starting position for Player Lower");
+        handleWrongSelection(setShakeCursor);
       } else {
         setIsStartButtonPressed(true);
         simultaneousSowing(null, startingPositionLower);
@@ -660,6 +662,7 @@ const CongkakBoard = () => {
       // Prevent picking from empty hole
       if (seedsInHand === 0) {
         console.log("Cannot pick empty hole. Pick again.");
+        handleWrongSelection(setShakeCursor);
         setGamePhase('TURN_BASED_SELECT');
         getAnotherTurn = true;
         setIsSowing(false);
@@ -833,15 +836,11 @@ const CongkakBoard = () => {
     <div className='app-wrapper'>
       <div className='game-info'>
         <div className="current-turn">
-          Current Turn: <strong>{
-            (gamePhase === 'STARTING_PHASE' || 
-            gamePhase === 'SIMULTANEOUS_SELECT' || 
-            gamePhase === 'SIMULTANEOUS_SELECT_LOWER' || 
-            gamePhase === 'SIMULTANEOUS_SELECT_UPPER')
-              ? "SIMULTANEOUS"
-              : currentTurn 
+          <strong>{
+           gamePhase === 'SIMULTANEOUS_SELECT_LOWER' ? "SIMULTANEOUS: LOWER'S TURN" : 
+           gamePhase === 'SIMULTANEOUS_SELECT_UPPER' ? "SIMULTANEOUS: UPPER'S TURN" : 
+           (gamePhase === 'STARTING_PHASE' || gamePhase === 'SIMULTANEOUS_SELECT') ? "SIMULTANEOUS: BOTH TURN" : `TURN-BASED: ${currentTurn}'S TURN` 
           }</strong>
-           | PHASE: {gamePhase}
         </div>
       </div>
       <div className='game-area'>
