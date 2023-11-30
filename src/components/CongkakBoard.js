@@ -866,16 +866,16 @@ const CongkakBoard = () => {
 
   return (
     <div className='app-wrapper'>
-      <div className='game-info'>
-        <div className="current-turn">
-          <strong>{
-           gamePhase === SIMULTANEOUS_SELECT_LOWER ? "SIMULTANEOUS: LOWER'S TURN" : 
-           gamePhase === SIMULTANEOUS_SELECT_UPPER ? "SIMULTANEOUS: UPPER'S TURN" : 
-           (gamePhase === STARTING_PHASE || gamePhase === SIMULTANEOUS_SELECT) ? "SIMULTANEOUS: BOTH TURN" : `TURN-BASED: ${currentTurn}'S TURN` 
-          }</strong>
-        </div>
-      </div>
       <div className='game-area'>
+        <div className='game-info'>
+          <div className="current-turn">
+            <strong>{
+             gamePhase === SIMULTANEOUS_SELECT_LOWER ? "SIMULTANEOUS: LOWER'S TURN" : 
+             gamePhase === SIMULTANEOUS_SELECT_UPPER ? "SIMULTANEOUS: UPPER'S TURN" : 
+             (gamePhase === STARTING_PHASE || gamePhase === SIMULTANEOUS_SELECT) ? "SIMULTANEOUS: BOTH TURN" : `TURN-BASED: ${currentTurn}'S TURN` 
+            }</strong>
+          </div>
+        </div>
         {showSelectionMessage && (
           <div className="selection-message">
             Please select a valid position.

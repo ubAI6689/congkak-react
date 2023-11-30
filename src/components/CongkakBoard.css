@@ -25,13 +25,6 @@ body {
   align-items: center;
 }
 
-.game-info {
-  top: 0;
-  margin-top: 2vh;
-  width: 50%;
-  /* margin-bottom: 20px; */
-}
-
 .game-area {
   display: flex;
   flex-direction: column;
@@ -40,6 +33,13 @@ body {
   width: 95vh; /* Adjust as needed */
   height: 95vh; /* Adjust as needed */
   padding: 20px; /* Optional */
+}
+
+.game-area .game-info {
+  /* top: 0; */
+  margin-bottom: 7vh;
+  width: 50%;
+  /* margin-bottom: 20px; */
 }
 
 .current-turn {
