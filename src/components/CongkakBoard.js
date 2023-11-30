@@ -925,6 +925,9 @@ const CongkakBoard = () => {
         {!isStartButtonPressed && (gamePhase === SIMULTANEOUS_SELECT || gamePhase === SIMULTANEOUS_SELECT_LOWER || gamePhase === SIMULTANEOUS_SELECT_UPPER) && (
           <button className='button resume' onClick={() => startButtonPressed()}>RESUME</button>
         )}
+        {<button className="button refresh" onClick={() => window.location.reload()}>
+          RESTART
+        </button>}
         {isGameOver && (
           <div className="game-over-message">
             {outcomeMessage}
