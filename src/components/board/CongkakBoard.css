@@ -14,7 +14,7 @@ body {
   width: 80vw; /* Adjust width as needed */
   height: 80vh; /* Adjust height as needed */
   margin: auto; /* Centers the box in the viewport */
-  /* padding: 20%; */
+  /* padding: 50%; */
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5); /* Optional: Adds shadow for depth */
   border-radius: 15px; /* Optional: Adds rounded corners */
   /* background-color: #302E2B; Optional: Change background color */
@@ -58,19 +58,18 @@ body {
 
 .button-group {
   margin-top: 5%;
-  height: 30%;
+  height: 10%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 10px; /* Adjust the space between buttons */
+  justify-content: center;/* Adjust the space between buttons */
 }
 
 .button {
-  height: 10hv;
+  height: 5hv;
   width: auto;
   border-radius: 2vw;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
-  margin-top: 10%; /* Space above the START button */
+  margin-top: 5%; /* Space above the START button */
   
   opacity: 0.8;
   font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -163,8 +162,8 @@ body {
 
 .circle, .house {
   position: relative;
-  width: 5vw; /* Responsive width */
-  height: 5vw; /* Responsive height, maintaining aspect ratio */
+  width: 7vw; /* Responsive width */
+  height: 7vw; /* Responsive height, maintaining aspect ratio */
   border-radius: 50%;
   background-color: #EBEBD0;
   margin: 0.5vw; /* Responsive margin */
@@ -192,8 +191,8 @@ body {
 
 
 .house {
-  width: 8vw; /* Larger size for houses */
-  height: 8vw;
+  width: 10vw; /* Larger size for houses */
+  height: 10vw;
   background-color: #EBEBD0; /* Different color for houses */
 }
 
