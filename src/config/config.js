@@ -3,8 +3,8 @@
 const INIT_SEEDS_COUNT = 7;
 const HOLE_NUMBERS = INIT_SEEDS_COUNT*2;
 const MIN_INDEX_UPPER = 0;
-const POS_MULTIPLIER = 0.55;
-const VERTICAL_POS_UPPER = -0.8;
+const POS_MULTIPLIER = 0.6;
+const VERTICAL_POS_UPPER = -0.4;
 const VERTICAL_POS_LOWER = 0.65;
 
 const config = {

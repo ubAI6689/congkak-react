@@ -10,7 +10,7 @@
   height: 100%;
   background: #EBEBD0;
   transition: right 0.3s ease-in-out;
-  z-index: 3;
+  z-index: 20;
 }
 
 .sidebar.open {

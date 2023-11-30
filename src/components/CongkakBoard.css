@@ -11,10 +11,10 @@ body {
 }
 
 .app-wrapper {
-  width: 80vw; /* Adjust width as needed */
-  height: 80vh; /* Adjust height as needed */
+  /* position: relative; */
+  width: 90vw; /* Adjust width as needed */
+  height: 90vh; /* Adjust height as needed */
   margin: auto; /* Centers the box in the viewport */
-  /* padding: 20%; */
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5); /* Optional: Adds shadow for depth */
   border-radius: 15px; /* Optional: Adds rounded corners */
   /* background-color: #302E2B; Optional: Change background color */
@@ -25,28 +25,20 @@ body {
   align-items: center;
 }
 
-.game-area {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 95vh; /* Adjust as needed */
-  height: 95vh; /* Adjust as needed */
-  /* padding: 20%; Optional */
-}
-
-.game-area .game-info {
-  /* top: 0; */
-  margin-bottom: 7vh;
-  width: 40%;
-  /* margin-bottom: 20px; */
+.app-wrapper .game-info {
+  position: relative;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin-top: 0;
+  width: 100%;
+  z-index: 10;
 }
 
 .current-turn {
-  top: 0;
-  width: 100%;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
-  border-radius: 3vw;
+  /* width: 90%; */
+  /* box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5); */
+  border-radius: 15px;
   background: #EBEBD0; /* or any color you prefer */
   padding: 1%;
   text-align: center;
@@ -56,26 +48,39 @@ body {
   font-size: 1.5hw;
 }
 
-.button-group {
-  margin-top: 5%;
-  height: 30%;
+.game-area {
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: 10px; /* Adjust the space between buttons */
+  width: 85vh; /* Adjust as needed */
+  height: 85vh; /* Adjust as needed */
+  /* padding: 20%; Optional */
 }
 
-.button {
-  height: 10hv;
+.button-group {
+  margin-top: 5%;
+  height: 10%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;/* Adjust the space between buttons */
+}
+
+.app-wrapper .button {
+  position: absolute;
+  bottom: 10%;
+  right: 20%;
+  height: 8vh;
   width: auto;
   border-radius: 2vw;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
-  margin-top: 10%; /* Space above the START button */
+  margin-top: 20vh; /* Space above the START button */
+  margin-left: 10vh;
   
   opacity: 0.8;
   font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-weight: bold;
-  font-size: 1.5hv;
+  font-size: 3vh;
   color: darkred;
   background-color: gold;
   border: solid gray;/* box-shadow: 0 0 10px gold; */
@@ -84,19 +89,20 @@ body {
 
 .app-wrapper .button-refresh {
   position: absolute;
-  top: 75vh;
-  left: 15vw;
-  padding: 1%;
-  /* height: 10hv;
-  width: 10hv; */
-  border-radius: 0.5vw;
+  bottom: 10%;
+  left: 20%;
+  /* padding: 1%; */
+  height: 8vh;
+  width: auto;
+  border-radius: 20vh;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+  margin-right: 10vw;
   /* margin-top: 1%;  */
   
   opacity: 0.8;
   font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-weight: bold;
-  font-size: 1.5hv;
+  font-size: 3vh;
   color: black;
   background-color: #4f4c48;
   border: solid gray;/* box-shadow: 0 0 10px gold; */
@@ -104,6 +110,7 @@ body {
 }
 
 .game-container {
+  /* position: absolute; */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -163,8 +170,8 @@ body {
 
 .circle, .house {
   position: relative;
-  width: 5vw; /* Responsive width */
-  height: 5vw; /* Responsive height, maintaining aspect ratio */
+  width: 7vw; /* Responsive width */
+  height: 7vw; /* Responsive height, maintaining aspect ratio */
   border-radius: 50%;
   background-color: #EBEBD0;
   margin: 0.5vw; /* Responsive margin */
@@ -192,8 +199,8 @@ body {
 
 
 .house {
-  width: 8vw; /* Larger size for houses */
-  height: 8vw;
+  width: 10vw; /* Larger size for houses */
+  height: 10vw;
   background-color: #EBEBD0; /* Different color for houses */
 }
 

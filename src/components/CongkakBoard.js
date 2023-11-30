@@ -866,8 +866,7 @@ const CongkakBoard = () => {
 
   return (
     <div className='app-wrapper'>
-      <div className='game-area'>
-        <div className='game-info'>
+      <div className='game-info'>
           <div className="current-turn">
             <strong>{
              gamePhase === SIMULTANEOUS_SELECT_LOWER ? "SIMULTANEOUS: LOWER'S TURN" : 
@@ -876,6 +875,7 @@ const CongkakBoard = () => {
             }</strong>
           </div>
         </div>
+      <div className='game-area'>
         <div ref={gameContainerRef} className={`game-container ${isGameOver ? 'game-over' : ''}`}>
           <div className='game-content'>
             <House position="lower" seedCount={lowHouseSeeds} ref={lowHouseRef}/>
