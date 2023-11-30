@@ -34,8 +34,11 @@ const {
   TURN_BASED_SELECT
 } = gamePhaseConfig
 
-const startIndexUpper = Math.round((MIN_INDEX_UPPER + MAX_INDEX_UPPER) / 2);
-const startIndexLower = Math.round((MIN_INDEX_LOWER + MAX_INDEX_LOWER) / 2);
+// const startIndexUpper = Math.round((MIN_INDEX_UPPER + MAX_INDEX_UPPER) / 2);
+// const startIndexLower = Math.round((MIN_INDEX_LOWER + MAX_INDEX_LOWER) / 2);
+
+const startIndexUpper = MIN_INDEX_UPPER;
+const startIndexLower = MIN_INDEX_LOWER;
 
 const verticalPosUpper = config.VERTICAL_POS_UPPER;
 const verticalPosLower = config.VERTICAL_POS_LOWER;
