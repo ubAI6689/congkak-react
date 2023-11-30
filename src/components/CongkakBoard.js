@@ -922,30 +922,27 @@ const CongkakBoard = () => {
           </div>
         </div>
         <div className='button-group'>
-        {!isStartButtonPressed && gamePhase === STARTING_PHASE && (
-            <button className="button start" 
-            onClick={() => startButtonPressed()}>START</button>
-        )}
-        {/* {isStartButtonPressed && (
-            <button className='button reset' onClick={resetGame}>RESET</button>
-        )} */}
-        {!isStartButtonPressed && (gamePhase === SIMULTANEOUS_SELECT || gamePhase === SIMULTANEOUS_SELECT_LOWER || gamePhase === SIMULTANEOUS_SELECT_UPPER) && (
-          <button className='button resume' onClick={() => startButtonPressed()}>RESUME</button>
-        )}
-        {<button className="button refresh" onClick={() => window.location.reload()}>
-          RESTART
-        </button>}
-        {isGameOver && (
-          <div className="game-over-message">
-            {outcomeMessage}
-          </div>
-        )}
-        <Sidebar 
-          isOpen={isSidebarOpen} 
-          onToggle={() => toggleSidebar(isSidebarOpen, setSidebarOpen)} 
-        />
+          {!isStartButtonPressed && gamePhase === STARTING_PHASE && (
+              <button className="button start" 
+              onClick={() => startButtonPressed()}>START</button>
+          )}
+          {!isStartButtonPressed && (gamePhase === SIMULTANEOUS_SELECT || gamePhase === SIMULTANEOUS_SELECT_LOWER || gamePhase === SIMULTANEOUS_SELECT_UPPER) && (
+            <button className='button resume' onClick={() => startButtonPressed()}>RESUME</button>
+          )}
+          {isGameOver && (
+            <div className="game-over-message">
+              {outcomeMessage}
+            </div>
+          )}
         </div>
+        <Sidebar 
+            isOpen={isSidebarOpen} 
+            onToggle={() => toggleSidebar(isSidebarOpen, setSidebarOpen)} 
+          />
       </div>
+      {<button className="button-refresh" onClick={() => window.location.reload()}>
+            RESTART
+          </button>}
       <div class="trademark-section">
         © 2023 <a href="https://twitter.com/ubaid_rac" target="_blank">Abu Kacak</a>. All Rights Reserved.
       </div>
