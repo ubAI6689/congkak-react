@@ -121,13 +121,14 @@ body {
 }
 
 .selection-message {
-  position: absolute;
-  top: 20%; /* Adjust as needed */
-  left: 50%; /* Center horizontally */
-  transform: translateX(-50%); /* Adjust for exact centering */
+  /* position: absolute; */
+  /* top: 20%; /* Adjust as needed */
+  padding: 3%;
+  top: 10%;
+  left: 50%;
   z-index: 10; /* Ensure it appears above other elements */
   color: #300d0b; /* Style as needed */
-  font-size: large;
+  font-size: 1.5hv;
   font-weight: bold;
   /* ...other styles... */
 }

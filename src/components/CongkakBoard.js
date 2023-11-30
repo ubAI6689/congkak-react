@@ -876,10 +876,6 @@ const CongkakBoard = () => {
             }</strong>
           </div>
         </div>
-        {showSelectionMessage && (
-          <div className="selection-message">
-            Please select a valid position.
-          </div>)}
         <div ref={gameContainerRef} className={`game-container ${isGameOver ? 'game-over' : ''}`}>
           <div className='game-content'>
             <House position="lower" seedCount={lowHouseSeeds} ref={lowHouseRef}/>
@@ -921,6 +917,10 @@ const CongkakBoard = () => {
             />
           </div>
         </div>
+        {showSelectionMessage && (
+          <div className="selection-message">
+            Please select a valid position.
+          </div>)}
         <div className='button-group'>
           {!isStartButtonPressed && gamePhase === STARTING_PHASE && (
               <button className="button start" 
