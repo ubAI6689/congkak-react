@@ -38,7 +38,7 @@ body {
 .game-area .game-info {
   /* top: 0; */
   margin-bottom: 7vh;
-  width: 50%;
+  width: 40%;
   /* margin-bottom: 20px; */
 }
 
@@ -52,7 +52,7 @@ body {
   text-align: center;
 
   font-weight: 400;
-  font-size: large;
+  font-size: small;
 }
 
 .button-group {
