@@ -18,13 +18,10 @@ const {
   SIMULTANEOUS_SELECT,
   SIMULTANEOUS_SELECT_UPPER,
   SIMULTANEOUS_SELECT_LOWER,
-  PASS_TO_TURN_BASED,
   TURN_BASED_SOWING,
   TURN_BASED_SELECT
 } = gamePhaseConfig
 
-=======
->>>>>>> Factorized gameState variables.
 const startIndexUpper = Math.round((MIN_INDEX_UPPER + MAX_INDEX_UPPER) / 2);
 const startIndexLower = Math.round((MIN_INDEX_LOWER + MAX_INDEX_LOWER) / 2);
 
@@ -46,91 +43,46 @@ export const useGameState = () => {
   const [passedHouse, setPassedHouse] = useState(0);
   const [isGameOver, setIsGameOver] = useState(false);
   const [outcomeMessage, setOutcomeMessage] = useState('');
-
-  // RESET function
-  const resetGame = useCallback(() => {
-    setSeeds(new Array(HOLE_NUMBERS).fill(INIT_SEEDS_COUNT));
-    setGamePhase('STARTING_PHASE');
-    setIsStartButtonPressed(false);
-    setStartingPositionUpper(null);
-    setStartingPositionLower(null);
-    setCurrentHoleIndexUpper(startIndexUpper);
-    setCurrentHoleIndexLower(startIndexLower);
-    setIsSowingUpper(false);
-    setIsSowingLower(false);
-    setCurrentSeedsInHandUpper(0);
-    setCurrentSeedsInHandLower(0);
-    setTopHouseSeeds(0);
-    setLowHouseSeeds(0);
-    setCurrentTurn(null);
-    setPassedHouse(0);
-    setIsGameOver(false);
-    setOutcomeMessage('');
-  },[setSeeds, setGamePhase, setIsStartButtonPressed, setStartingPositionUpper, setStartingPositionLower, setCurrentHoleIndexUpper, setCurrentHoleIndexLower, setIsSowingUpper, setIsSowingLower, setCurrentSeedsInHandUpper, setCurrentSeedsInHandLower, setTopHouseSeeds, setLowHouseSeeds, setCurrentTurn, setPassedHouse, setIsGameOver, setOutcomeMessage]);
+  const [showSelectionMessage, setShowSelectionMessage] = useState(false);
 
   const toggleTurn = useCallback(() => {
     setCurrentTurn(prevTurn => prevTurn === PLAYER_UPPER ? PLAYER_LOWER : PLAYER_UPPER);
   }, []);
 
-<<<<<<< HEAD
-  // handle the logic for both START and RESUME button
-  const startButtonPressed = useCallback((handleWrongSelection, setShakeCursor, simultaneousSowing) => {
-    if (gamePhase === STARTING_PHASE) {
-=======
   // handle the logic for both START and RESUME button
   const startButtonPressed = useCallback((handleWrongSelection, setShakeCursor, simultaneousSowing) => {
     if (gamePhase === STARTING_PHASE) {
       if (startingPositionUpper === null || seeds[startingPositionUpper] === 0) {
         console.log("startingPosUpper: ", startingPositionUpper);
         console.log("Please select starting position for Player Upper")
-        handleWrongSelection(setShakeCursor);
+        handleWrongSelection(setShakeCursor, setShowSelectionMessage);
       } else if (startingPositionLower === null || seeds[startingPositionLower] === 0) {
-        handleWrongSelection(setShakeCursor);
+        handleWrongSelection(setShakeCursor, setShowSelectionMessage);
         console.log("Please select starting position for Player Lower")
       } else {
         console.log("START GAME!")
         setIsStartButtonPressed(true);
         simultaneousSowing(startingPositionUpper, startingPositionLower);
       }
-    }
-    else if (gamePhase === SIMULTANEOUS_SELECT) {
+    } else if (gamePhase === SIMULTANEOUS_SELECT) {
       if (startingPositionUpper === null || seeds[startingPositionUpper] === 0 || (startingPositionLower !== null && MAX_INDEX_UPPER - startingPositionUpper === MAX_INDEX_LOWER - startingPositionLower)) {
         console.log("startingPosUpper: ", startingPositionUpper);
         console.log("Please select starting position for Player Upper")
-        handleWrongSelection(setShakeCursor);
+        handleWrongSelection(setShakeCursor, setShowSelectionMessage);
       } else if (startingPositionLower === null || seeds[startingPositionLower] === 0 || 
         (startingPositionUpper !== null && MAX_INDEX_UPPER - startingPositionUpper === MAX_INDEX_LOWER - startingPositionLower)) {
-        handleWrongSelection(setShakeCursor);
+        handleWrongSelection(setShakeCursor, setShowSelectionMessage, setShowSelectionMessage);
         console.log("Please select starting position for Player Lower")
       } else {
         console.log("START GAME!")
         setIsStartButtonPressed(true);
         simultaneousSowing(startingPositionUpper, startingPositionLower);
       }
-<<<<<<< HEAD
-    }
-    else if (gamePhase === SIMULTANEOUS_SELECT) {
-      if (startingPositionUpper === null || seeds[startingPositionUpper] === 0 || (startingPositionLower !== null && MAX_INDEX_UPPER - startingPositionUpper === MAX_INDEX_LOWER - startingPositionLower)) {
-        console.log("startingPosUpper: ", startingPositionUpper);
-        console.log("Please select starting position for Player Upper")
-        handleWrongSelection(setShakeCursor);
-      } else if (startingPositionLower === null || seeds[startingPositionLower] === 0 || 
-        (startingPositionUpper !== null && MAX_INDEX_UPPER - startingPositionUpper === MAX_INDEX_LOWER - startingPositionLower)) {
-        handleWrongSelection(setShakeCursor);
-        console.log("Please select starting position for Player Lower")
-      } else {
-        console.log("START GAME!")
-        setIsStartButtonPressed(true);
-        simultaneousSowing(startingPositionUpper, startingPositionLower);
-      }
-    // resume button logic
-    } else if (gamePhase === SIMULTANEOUS_SELECT_UPPER) {
-=======
     // resume button logic
     } else if (gamePhase === SIMULTANEOUS_SELECT_UPPER) {
       if (startingPositionUpper === null || seeds[startingPositionUpper] === 0 || startingPositionUpper === currentHoleIndexLower) {
         console.log("Please select starting position for Player Upper");
-        handleWrongSelection(setShakeCursor);
+        handleWrongSelection(setShakeCursor, setShowSelectionMessage);
       } else {
         setIsStartButtonPressed(true);
         simultaneousSowing(startingPositionUpper, null);
@@ -138,7 +90,7 @@ export const useGameState = () => {
     } else if (gamePhase === SIMULTANEOUS_SELECT_LOWER) {
       if (startingPositionLower === null || seeds[startingPositionLower] === 0 || startingPositionLower === currentHoleIndexUpper) {
         console.log("Please select starting position for Player Lower");
-        handleWrongSelection(setShakeCursor);
+        handleWrongSelection(setShakeCursor, setShowSelectionMessage);
       } else {
         setIsStartButtonPressed(true);
         simultaneousSowing(null, startingPositionLower);
@@ -146,14 +98,14 @@ export const useGameState = () => {
     }
   },[gamePhase, startingPositionUpper, startingPositionLower, seeds, currentHoleIndexLower, currentHoleIndexUpper]);
 
-<<<<<<< HEAD
-  const handleSButtonPress = useCallback(async (index, updateCursorPositionUpper, updateCursorPositionLower, holeRefs, topHouseRef, lowHouseRef, verticalPosUpper, verticalPosLower, turnBasedSowing, setShakeCursor, handleWrongSelection) => {
+  const handleSButtonPress = useCallback(async (index, updateCursorPositionUpper, holeRefs, verticalPosUpper, turnBasedSowing, setShakeCursor, handleWrongSelection, updateCursorPositionLower, topHouseRef, lowHouseRef, verticalPosLower) => {
     if (!isSowingUpper) {
         // The logic that mimics the 'S' key press
       if (gamePhase === TURN_BASED_SELECT && currentTurn === PLAYER_UPPER) {
         await updateCursorPositionUpper(holeRefs, index, verticalPosUpper);
         setGamePhase(TURN_BASED_SOWING);
-        turnBasedSowing(index, PLAYER_UPPER, false, 0, {seeds, setSeeds,
+        turnBasedSowing(index, PLAYER_UPPER, false, 0, 
+          {seeds, setSeeds,
           setGamePhase, currentTurn, setCurrentTurn,
           setIsSowingUpper, setIsSowingLower,
           currentSeedsInHandUpper, setCurrentSeedsInHandUpper,
@@ -165,28 +117,9 @@ export const useGameState = () => {
           HOLE_NUMBERS, PLAYER_UPPER, MAX_INDEX_UPPER, MIN_INDEX_LOWER, MAX_INDEX_LOWER, TURN_BASED_SELECT,
           holeRefs, topHouseRef, lowHouseRef,
           startIndexUpper, startIndexLower,
-          verticalPosUpper, verticalPosLower});
-      } else if (gamePhase === STARTING_PHASE || gamePhase === SIMULTANEOUS_SELECT || gamePhase === SIMULTANEOUS_SELECT_UPPER) {
-=======
-  const handleSButtonPress = useCallback(async (index, updateCursorPositionUpper, holeRefs, verticalPosUpper, turnBasedSowing) => {
-    if (!isSowingUpper) {
-        // The logic that mimics the 'S' key press
-      if (gamePhase === TURN_BASED_SELECT && currentTurn === PLAYER_UPPER) {
-        await updateCursorPositionUpper(holeRefs, index, verticalPosUpper);
-        setGamePhase(TURN_BASED_SOWING);
-        turnBasedSowing(index, PLAYER_UPPER, false, 0, {seeds, setSeeds,
-          setGamePhase, currentTurn, setCurrentTurn,
-          setIsSowingUpper, setIsSowingLower,
-          currentSeedsInHandUpper, setCurrentSeedsInHandUpper,
-          setCurrentSeedsInHandLower,
-          setTopHouseSeeds, setLowHouseSeeds,
-          setCurrentHoleIndexUpper, setCurrentHoleIndexLower,
-          toggleTurn, setShakeCursor, handleWrongSelection, 
-          updateCursorPositionUpper, updateCursorPositionLower,
-          HOLE_NUMBERS, PLAYER_UPPER, MAX_INDEX_UPPER, MIN_INDEX_LOWER, MAX_INDEX_LOWER, TURN_BASED_SELECT,
-          holeRefs, topHouseRef, lowHouseRef,
-          startIndexUpper, startIndexLower,
-          verticalPosUpper, verticalPosLower});
+          verticalPosUpper, verticalPosLower,
+          setShowSelectionMessage}
+          );
       } else if (gamePhase === STARTING_PHASE || gamePhase === SIMULTANEOUS_SELECT || gamePhase === SIMULTANEOUS_SELECT_UPPER) {
         await updateCursorPositionUpper(holeRefs, index, verticalPosUpper);
         setStartingPositionUpper(index);
@@ -194,14 +127,14 @@ export const useGameState = () => {
     }
   },[isSowingUpper, gamePhase, currentTurn, setGamePhase, setStartingPositionUpper]);
 
-<<<<<<< HEAD
-  const handleArrowDownPress = useCallback(async (index, updateCursorPositionUpper, updateCursorPositionLower, holeRefs, topHouseRef, lowHouseRef, verticalPosUpper, verticalPosLower, turnBasedSowing, setShakeCursor, handleWrongSelection ) => {
+  const handleArrowDownPress = useCallback(async (index, updateCursorPositionLower, holeRefs, verticalPosLower, turnBasedSowing, setShakeCursor, handleWrongSelection, updateCursorPositionUpper, topHouseRef, lowHouseRef, verticalPosUpper) => {
     if (!isSowingLower) {
       // The logic that mimics the 'ArrowDown' key press
       if (gamePhase === TURN_BASED_SELECT && currentTurn === PLAYER_LOWER) {
         await updateCursorPositionLower(holeRefs, index, verticalPosLower);
         setGamePhase(TURN_BASED_SOWING);
-        turnBasedSowing(index, PLAYER_LOWER, false, 0, {seeds, setSeeds,
+        turnBasedSowing(index, PLAYER_LOWER, false, 0, 
+          {seeds, setSeeds,
           setGamePhase, currentTurn, setCurrentTurn,
           setIsSowingUpper, setIsSowingLower,
           currentSeedsInHandUpper, setCurrentSeedsInHandUpper,
@@ -213,28 +146,9 @@ export const useGameState = () => {
           HOLE_NUMBERS, PLAYER_UPPER, MAX_INDEX_UPPER, MIN_INDEX_LOWER, MAX_INDEX_LOWER, TURN_BASED_SELECT,
           holeRefs, topHouseRef, lowHouseRef,
           startIndexUpper, startIndexLower,
-          verticalPosUpper, verticalPosLower});
-      } else if (gamePhase === STARTING_PHASE || gamePhase === SIMULTANEOUS_SELECT || gamePhase === SIMULTANEOUS_SELECT_LOWER) {
-=======
-  const handleArrowDownPress = useCallback(async (index, updateCursorPositionLower, holeRefs, verticalPosLower, turnBasedSowing) => {
-    if (!isSowingLower) {
-      // The logic that mimics the 'ArrowDown' key press
-      if (gamePhase === TURN_BASED_SELECT && currentTurn === PLAYER_LOWER) {
-        await updateCursorPositionLower(holeRefs, index, verticalPosLower);
-        setGamePhase(TURN_BASED_SOWING);
-        turnBasedSowing(index, PLAYER_LOWER, false, 0, {seeds, setSeeds,
-          setGamePhase, currentTurn, setCurrentTurn,
-          setIsSowingUpper, setIsSowingLower,
-          currentSeedsInHandUpper, setCurrentSeedsInHandUpper,
-          setCurrentSeedsInHandLower,
-          setTopHouseSeeds, setLowHouseSeeds,
-          setCurrentHoleIndexUpper, setCurrentHoleIndexLower,
-          toggleTurn, setShakeCursor, handleWrongSelection, 
-          updateCursorPositionUpper, updateCursorPositionLower,
-          HOLE_NUMBERS, PLAYER_UPPER, MAX_INDEX_UPPER, MIN_INDEX_LOWER, MAX_INDEX_LOWER, TURN_BASED_SELECT,
-          holeRefs, topHouseRef, lowHouseRef,
-          startIndexUpper, startIndexLower,
-          verticalPosUpper, verticalPosLower});
+          verticalPosUpper, verticalPosLower,
+          setShowSelectionMessage}
+          );
       } else if (gamePhase === STARTING_PHASE || gamePhase === SIMULTANEOUS_SELECT || gamePhase === SIMULTANEOUS_SELECT_LOWER) {
         await updateCursorPositionLower(holeRefs, index, verticalPosLower);
         setStartingPositionLower(index);
@@ -257,9 +171,10 @@ export const useGameState = () => {
     lowHouseSeeds, setLowHouseSeeds,
     isGameOver, setIsGameOver,
     outcomeMessage, setOutcomeMessage,
+    showSelectionMessage, setShowSelectionMessage,
     currentHoleIndexUpper, setCurrentHoleIndexUpper,
     currentHoleIndexLower, setCurrentHoleIndexLower,
     isStartButtonPressed, setIsStartButtonPressed,
-    resetGame, toggleTurn, startButtonPressed, handleSButtonPress, handleArrowDownPress,
+    toggleTurn, startButtonPressed, handleSButtonPress, handleArrowDownPress
   }
 };

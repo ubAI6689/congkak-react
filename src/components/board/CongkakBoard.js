@@ -1,20 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Analytics } from '@vercel/analytics/react';
-import './CongkakBoard.css';
+
+import { useGameState } from '../../hooks/useGameState';
+import { useCursorControl } from '../../hooks/useCursorControl';
+
 import House from './House';
 import Cursor from './Cursor';
 import Row from './Row';
 import Sidebar from './sidebar';
-import { useGameState } from '../../hooks/useGameState';
-import { useCursorControl } from '../../hooks/useCursorControl';
-import { handleWrongSelection, toggleSidebar } from '../../utils/animation';
-import { sumOfSeedsInCurrentRow, handleCheckGameEnd } from '../../utils/helpers';
-import gamePhaseConfig from '../../config/gamePhaseConfig';
+
 import config from '../../config/config';
+import gamePhaseConfig from '../../config/gamePhaseConfig';
+
 import { turnBasedSowing } from '../logics/GameLogic';
+import { sumOfSeedsInCurrentRow, handleCheckGameEnd } from '../../utils/helpers';
+import { handleWrongSelection, toggleSidebar } from '../../utils/animation';
+
+import './CongkakBoard.css';
 
 const { 
-  INIT_SEEDS_COUNT,
   HOLE_NUMBERS,
   PLAYER_LOWER,
   PLAYER_UPPER,
@@ -63,16 +67,14 @@ const CongkakBoard = () => {
     currentHoleIndexUpper, setCurrentHoleIndexUpper,
     currentHoleIndexLower, setCurrentHoleIndexLower,
     isStartButtonPressed, setIsStartButtonPressed,
-    resetGame, toggleTurn, startButtonPressed, handleSButtonPress, handleArrowDownPress,
+    toggleTurn, startButtonPressed, handleSButtonPress, handleArrowDownPress,
   } = useGameState();
 
   const {
     cursorVisibilityUpper, setCursorVisibilityUpper,
     cursorVisibilityLower, setCursorVisibilityLower,
-    cursorLeftUpper, setCursorLeftUpper,
-    cursorLeftLower, setCursorLeftLower,
-    cursorTopUpper, setCursorTopUpper,
-    cursorTopLower, setCursorTopLower,
+    cursorLeftUpper, cursorLeftLower, 
+    cursorTopUpper, cursorTopLower, 
     resetCursor, setResetCursor,
     shakeCursor, setShakeCursor,
     updateCursorPositionUpper, updateCursorPositionLower
@@ -198,22 +200,11 @@ const CongkakBoard = () => {
         // Start sowing
         if (event.key === 's' || event.key === 'S') {
           if (gamePhase === TURN_BASED_SELECT && currentTurn === PLAYER_UPPER) {
-            // Start sowing for PlayerUpper
-            setGamePhase(TURN_BASED_SOWING);
-            turnBasedSowing(newIndexUpper, PLAYER_UPPER, false, 0, {seeds, setSeeds,
-              setGamePhase, currentTurn, setCurrentTurn,
-              setIsSowingUpper, setIsSowingLower,
-              currentSeedsInHandUpper, setCurrentSeedsInHandUpper,
-              setCurrentSeedsInHandLower,
-              setTopHouseSeeds, setLowHouseSeeds,
-              setCurrentHoleIndexUpper, setCurrentHoleIndexLower,
-              toggleTurn, setShakeCursor, handleWrongSelection, 
-              updateCursorPositionUpper, updateCursorPositionLower,
-              HOLE_NUMBERS, PLAYER_UPPER, MAX_INDEX_UPPER, 
-              MIN_INDEX_LOWER, MAX_INDEX_LOWER, TURN_BASED_SELECT,
-              holeRefs, topHouseRef, lowHouseRef,
-              startIndexUpper, startIndexLower,
-              verticalPosUpper, verticalPosLower});
+            handleSButtonPress(
+              newIndexUpper, updateCursorPositionUpper, holeRefs, verticalPosUpper, 
+              turnBasedSowing, setShakeCursor, handleWrongSelection, 
+              updateCursorPositionLower, topHouseRef, lowHouseRef, verticalPosLower
+              )
           } else if (gamePhase === STARTING_PHASE || gamePhase === SIMULTANEOUS_SELECT || gamePhase === SIMULTANEOUS_SELECT_UPPER) {
             setStartingPositionUpper(newIndexUpper);
             console.log("StartingPosU? ", startingPositionUpper);
@@ -233,22 +224,11 @@ const CongkakBoard = () => {
         
         if (event.key === 'ArrowDown') {
           if (gamePhase === TURN_BASED_SELECT && currentTurn === PLAYER_LOWER) {
-            // Start sowing for PlayerLower
-            setGamePhase(TURN_BASED_SOWING);
-            turnBasedSowing(newIndexLower, PLAYER_LOWER, false, 0, {seeds, setSeeds,
-              setGamePhase, currentTurn, setCurrentTurn,
-              setIsSowingUpper, setIsSowingLower,
-              currentSeedsInHandUpper, setCurrentSeedsInHandUpper,
-              setCurrentSeedsInHandLower,
-              setTopHouseSeeds, setLowHouseSeeds,
-              setCurrentHoleIndexUpper, setCurrentHoleIndexLower,
-              toggleTurn, setShakeCursor, handleWrongSelection, 
-              updateCursorPositionUpper, updateCursorPositionLower,
-              HOLE_NUMBERS, PLAYER_UPPER, MAX_INDEX_UPPER, 
-              MIN_INDEX_LOWER, MAX_INDEX_LOWER, TURN_BASED_SELECT,
-              holeRefs, topHouseRef, lowHouseRef,
-              startIndexUpper, startIndexLower,
-              verticalPosUpper, verticalPosLower});
+            handleArrowDownPress(
+              newIndexLower, updateCursorPositionLower, holeRefs, verticalPosLower, 
+              turnBasedSowing, setShakeCursor, handleWrongSelection, 
+              updateCursorPositionUpper, topHouseRef, lowHouseRef, verticalPosUpper
+              )
           } else if (gamePhase === STARTING_PHASE || gamePhase === SIMULTANEOUS_SELECT || gamePhase === SIMULTANEOUS_SELECT_LOWER) {
             setStartingPositionLower(newIndexLower);
           }
@@ -269,6 +249,10 @@ const CongkakBoard = () => {
       window.removeEventListener('keydown', handleKeyDown);
     };    
   }, [currentHoleIndexUpper, currentHoleIndexLower, holeRefs, verticalPosUpper, verticalPosLower, isSowingUpper, isSowingLower, gamePhase]);
+
+  /**=========================================================
+  *                   Game state listener 
+  * ==========================================================*/ 
 
   // GameOver Checker
   useEffect(() => {
@@ -531,16 +515,16 @@ const CongkakBoard = () => {
 
   return (
     <div className='app-wrapper'>
-      <div className='game-info'>
-        <div className="current-turn">
-          <strong>{
-           gamePhase === SIMULTANEOUS_SELECT_LOWER ? "SIMULTANEOUS: LOWER'S TURN" : 
-           gamePhase === SIMULTANEOUS_SELECT_UPPER ? "SIMULTANEOUS: UPPER'S TURN" : 
-           (gamePhase === STARTING_PHASE || gamePhase === SIMULTANEOUS_SELECT) ? "SIMULTANEOUS: BOTH TURN" : `TURN-BASED: ${currentTurn}'S TURN` 
-          }</strong>
-        </div>
-      </div>
       <div className='game-area'>
+        <div className='game-info'>
+          <div className="current-turn">
+            <strong>{
+             gamePhase === SIMULTANEOUS_SELECT_LOWER ? "SIMULTANEOUS: LOWER'S TURN" : 
+             gamePhase === SIMULTANEOUS_SELECT_UPPER ? "SIMULTANEOUS: UPPER'S TURN" : 
+             (gamePhase === STARTING_PHASE || gamePhase === SIMULTANEOUS_SELECT) ? "SIMULTANEOUS: BOTH TURN" : `TURN-BASED: ${currentTurn}'S TURN` 
+            }</strong>
+          </div>
+        </div>
         <div ref={gameContainerRef} className={`game-container ${isGameOver ? 'game-over' : ''}`}>
           <div className='game-content'>
             <House position="lower" seedCount={lowHouseSeeds} ref={lowHouseRef}/>
@@ -551,11 +535,9 @@ const CongkakBoard = () => {
                 rowType="upper" 
                 isUpper={true} 
                 onClick={(index) => {handleSButtonPress(
-                  index, updateCursorPositionUpper, 
-                  updateCursorPositionLower, holeRefs, 
-                  topHouseRef, lowHouseRef, verticalPosUpper, 
-                  verticalPosLower, turnBasedSowing, 
-                  setShakeCursor, handleWrongSelection
+                  index, updateCursorPositionUpper, holeRefs, verticalPosUpper, 
+                  turnBasedSowing, setShakeCursor, handleWrongSelection, 
+                  updateCursorPositionLower, topHouseRef, lowHouseRef, verticalPosLower
                   )}} 
                 refs={holeRefs.current} 
                 selectedHole={startingPositionUpper}
@@ -563,11 +545,9 @@ const CongkakBoard = () => {
               <Row 
                 seeds={seeds.slice(MIN_INDEX_LOWER).reverse()} rowType="lower" 
                 onClick={(index) => {handleArrowDownPress(
-                  index, updateCursorPositionUpper, 
-                  updateCursorPositionLower, holeRefs, 
-                  topHouseRef, lowHouseRef, verticalPosUpper, 
-                  verticalPosLower, turnBasedSowing, 
-                  setShakeCursor, handleWrongSelection
+                  index, updateCursorPositionLower, holeRefs, verticalPosLower, 
+                  turnBasedSowing, setShakeCursor, handleWrongSelection, 
+                  updateCursorPositionUpper, topHouseRef, lowHouseRef, verticalPosUpper
                   )}} 
                 refs={holeRefs.current} 
                 selectedHole={startingPositionLower} 
@@ -616,6 +596,9 @@ const CongkakBoard = () => {
         />
         </div>
       </div>
+      {<button className="button-refresh" onClick={() => window.location.reload(true)}>
+            RESTART
+          </button>}
       <div class="trademark-section">
         © 2023 <a href="https://twitter.com/ubaid_rac" target="_blank">Abu Kacak</a>. All Rights Reserved.
       </div>

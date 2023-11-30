@@ -11,10 +11,12 @@ export const turnBasedSowing = async (index, player, isContinuation, passedHouse
     setCurrentHoleIndexUpper, setCurrentHoleIndexLower,
     toggleTurn, setShakeCursor, handleWrongSelection, 
     updateCursorPositionUpper, updateCursorPositionLower,
-    HOLE_NUMBERS, PLAYER_UPPER, MAX_INDEX_UPPER, MIN_INDEX_LOWER, MAX_INDEX_LOWER, TURN_BASED_SELECT,
+    HOLE_NUMBERS, PLAYER_UPPER, MAX_INDEX_UPPER, 
+    MIN_INDEX_LOWER, MAX_INDEX_LOWER, TURN_BASED_SELECT,
     holeRefs, topHouseRef, lowHouseRef,
     startIndexUpper, startIndexLower,
-    verticalPosUpper, verticalPosLower
+    verticalPosUpper, verticalPosLower,
+    setShowSelectionMessage
   }) => {
     // Determine player-specific states and actions
     const isUpperPlayer = player === PLAYER_UPPER;
@@ -42,7 +44,7 @@ export const turnBasedSowing = async (index, player, isContinuation, passedHouse
       // Prevent picking from empty hole
       if (seedsInHand === 0) {
         console.log("Cannot pick empty hole. Pick again.");
-        handleWrongSelection(setShakeCursor);
+        handleWrongSelection(setShakeCursor, setShowSelectionMessage);
         setGamePhase(TURN_BASED_SELECT);
         getAnotherTurn = true;
         setIsSowing(false);
