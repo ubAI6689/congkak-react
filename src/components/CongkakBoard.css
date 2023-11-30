@@ -98,6 +98,18 @@ body {
   pointer-events: none; /* Disables all interactions */
 }
 
+.selection-message {
+  position: absolute;
+  top: 20%; /* Adjust as needed */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%); /* Adjust for exact centering */
+  z-index: 10; /* Ensure it appears above other elements */
+  color: #300d0b; /* Style as needed */
+  font-size: large;
+  font-weight: bold;
+  /* ...other styles... */
+}
+
 .game-over-message {
   color: #d9534f; /* Example color */
   font-size: 2em; /* Example font size */

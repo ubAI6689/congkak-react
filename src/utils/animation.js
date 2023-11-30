@@ -8,10 +8,15 @@ export const toggleSidebar = (isSidebarOpen, setSidebarOpen) => {
 };
 
 // Function to handle wrong selection
-export const handleWrongSelection = (setShakeCursor) => {
+export const handleWrongSelection = (setShakeCursor, setShowSelectionMessage) => {
   console.log("Shake cursor called!")
   setShakeCursor(true);
-  setTimeout(() => setShakeCursor(false), 500); // Reset after animation duration
+  setShowSelectionMessage(true);
+
+  setTimeout(() => {
+    setShakeCursor(false);
+    setShowSelectionMessage(false);
+  }, 500); // Reset after animation duration
 };
 // // Function to update cursor position for PlayerUpper
 // const updateCursorPositionUpper = async (holeIndex, holeRefs, setCursorLeftUpper, setCursorTopUpper, verticalPosUpper) => {

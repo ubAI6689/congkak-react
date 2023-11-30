@@ -52,8 +52,10 @@ const CongkakBoard = () => {
   const [cursorVisibilityUpper, setCursorVisibilityUpper] = useState({ visible: true });
   const [cursorVisibilityLower, setCursorVisibilityLower] = useState({ visible: true });
 
-  const startIndexUpper = Math.round((MIN_INDEX_UPPER + MAX_INDEX_UPPER) / 2);
-  const startIndexLower = Math.round((MIN_INDEX_LOWER + MAX_INDEX_LOWER) / 2);
+  // const startIndexUpper = Math.round((MIN_INDEX_UPPER + MAX_INDEX_UPPER) / 2);
+  // const startIndexLower = Math.round((MIN_INDEX_LOWER + MAX_INDEX_LOWER) / 2);
+  const startIndexUpper = MIN_INDEX_UPPER;
+  const startIndexLower = MIN_INDEX_LOWER;
 
   const [currentHoleIndexUpper, setCurrentHoleIndexUpper] = useState(startIndexUpper); 
   const [currentHoleIndexLower, setCurrentHoleIndexLower] = useState(startIndexLower);
@@ -87,6 +89,7 @@ const CongkakBoard = () => {
 
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [shakeCursor, setShakeCursor] = useState(false);
+  const [showSelectionMessage, setShowSelectionMessage] = useState(false);
 
   // Define the handlers for the mobile buttons
   const handleSButtonPress = async (index) => {
@@ -184,9 +187,9 @@ const CongkakBoard = () => {
       if (startingPositionUpper === null || seeds[startingPositionUpper] === 0) {
         console.log("startingPosUpper: ", startingPositionUpper);
         console.log("Please select starting position for Player Upper")
-        handleWrongSelection(setShakeCursor);
+        handleWrongSelection(setShakeCursor, setShowSelectionMessage);
       } else if (startingPositionLower === null || seeds[startingPositionLower] === 0) {
-        handleWrongSelection(setShakeCursor);
+        handleWrongSelection(setShakeCursor, setShowSelectionMessage);
         console.log("Please select starting position for Player Lower")
       } else {
         console.log("START GAME!")
@@ -198,10 +201,10 @@ const CongkakBoard = () => {
       if (startingPositionUpper === null || seeds[startingPositionUpper] === 0 || (startingPositionLower !== null && MAX_INDEX_UPPER - startingPositionUpper === MAX_INDEX_LOWER - startingPositionLower)) {
         console.log("startingPosUpper: ", startingPositionUpper);
         console.log("Please select starting position for Player Upper")
-        handleWrongSelection(setShakeCursor);
+        handleWrongSelection(setShakeCursor, setShowSelectionMessage);
       } else if (startingPositionLower === null || seeds[startingPositionLower] === 0 || 
         (startingPositionUpper !== null && MAX_INDEX_UPPER - startingPositionUpper === MAX_INDEX_LOWER - startingPositionLower)) {
-        handleWrongSelection(setShakeCursor);
+        handleWrongSelection(setShakeCursor, setShowSelectionMessage);
         console.log("Please select starting position for Player Lower")
       } else {
         console.log("START GAME!")
@@ -212,7 +215,7 @@ const CongkakBoard = () => {
     } else if (gamePhase === SIMULTANEOUS_SELECT_UPPER) {
       if (startingPositionUpper === null || seeds[startingPositionUpper] === 0 || startingPositionUpper === currentHoleIndexLower) {
         console.log("Please select starting position for Player Upper");
-        handleWrongSelection(setShakeCursor);
+        handleWrongSelection(setShakeCursor, setShowSelectionMessage);
       } else {
         setIsStartButtonPressed(true);
         simultaneousSowing(startingPositionUpper, null);
@@ -220,7 +223,7 @@ const CongkakBoard = () => {
     } else if (gamePhase === SIMULTANEOUS_SELECT_LOWER) {
       if (startingPositionLower === null || seeds[startingPositionLower] === 0 || startingPositionLower === currentHoleIndexUpper) {
         console.log("Please select starting position for Player Lower");
-        handleWrongSelection(setShakeCursor);
+        handleWrongSelection(setShakeCursor, setShowSelectionMessage);
       } else {
         setIsStartButtonPressed(true);
         simultaneousSowing(null, startingPositionLower);
@@ -691,7 +694,7 @@ const CongkakBoard = () => {
       // Prevent picking from empty hole
       if (seedsInHand === 0) {
         console.log("Cannot pick empty hole. Pick again.");
-        handleWrongSelection(setShakeCursor);
+        handleWrongSelection(setShakeCursor, setShowSelectionMessage);
         setGamePhase(TURN_BASED_SELECT);
         getAnotherTurn = true;
         setIsSowing(false);
@@ -873,6 +876,10 @@ const CongkakBoard = () => {
         </div>
       </div>
       <div className='game-area'>
+        {showSelectionMessage && (
+          <div className="selection-message">
+            Please select a valid position.
+          </div>)}
         <div ref={gameContainerRef} className={`game-container ${isGameOver ? 'game-over' : ''}`}>
           <div className='game-content'>
             <House position="lower" seedCount={lowHouseSeeds} ref={lowHouseRef}/>
