@@ -77,14 +77,29 @@ export const useGameState = () => {
   const startButtonPressed = useCallback((handleWrongSelection, setShakeCursor, simultaneousSowing) => {
     if (gamePhase === STARTING_PHASE) {
 =======
+  // handle the logic for both START and RESUME button
   const startButtonPressed = useCallback((handleWrongSelection, setShakeCursor, simultaneousSowing) => {
-    // handle the logic for both START and RESUME button
-    if (gamePhase === STARTING_PHASE || gamePhase === SIMULTANEOUS_SELECT) {
+    if (gamePhase === STARTING_PHASE) {
       if (startingPositionUpper === null || seeds[startingPositionUpper] === 0) {
         console.log("startingPosUpper: ", startingPositionUpper);
         console.log("Please select starting position for Player Upper")
         handleWrongSelection(setShakeCursor);
       } else if (startingPositionLower === null || seeds[startingPositionLower] === 0) {
+        handleWrongSelection(setShakeCursor);
+        console.log("Please select starting position for Player Lower")
+      } else {
+        console.log("START GAME!")
+        setIsStartButtonPressed(true);
+        simultaneousSowing(startingPositionUpper, startingPositionLower);
+      }
+    }
+    else if (gamePhase === SIMULTANEOUS_SELECT) {
+      if (startingPositionUpper === null || seeds[startingPositionUpper] === 0 || (startingPositionLower !== null && MAX_INDEX_UPPER - startingPositionUpper === MAX_INDEX_LOWER - startingPositionLower)) {
+        console.log("startingPosUpper: ", startingPositionUpper);
+        console.log("Please select starting position for Player Upper")
+        handleWrongSelection(setShakeCursor);
+      } else if (startingPositionLower === null || seeds[startingPositionLower] === 0 || 
+        (startingPositionUpper !== null && MAX_INDEX_UPPER - startingPositionUpper === MAX_INDEX_LOWER - startingPositionLower)) {
         handleWrongSelection(setShakeCursor);
         console.log("Please select starting position for Player Lower")
       } else {
