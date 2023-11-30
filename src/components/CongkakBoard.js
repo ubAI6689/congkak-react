@@ -940,7 +940,7 @@ const CongkakBoard = () => {
             onToggle={() => toggleSidebar(isSidebarOpen, setSidebarOpen)} 
           />
       </div>
-      {<button className="button-refresh" onClick={() => window.location.reload()}>
+      {<button className="button-refresh" onClick={() => window.location.reload(true)}>
             RESTART
           </button>}
       <div class="trademark-section">
