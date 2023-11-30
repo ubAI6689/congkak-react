@@ -64,6 +64,7 @@ const CongkakBoard = () => {
     lowHouseSeeds, setLowHouseSeeds,
     isGameOver, setIsGameOver,
     outcomeMessage, setOutcomeMessage,
+    showSelectionMessage,
     currentHoleIndexUpper, setCurrentHoleIndexUpper,
     currentHoleIndexLower, setCurrentHoleIndexLower,
     isStartButtonPressed, setIsStartButtonPressed,
@@ -515,16 +516,16 @@ const CongkakBoard = () => {
 
   return (
     <div className='app-wrapper'>
-      <div className='game-area'>
-        <div className='game-info'>
-          <div className="current-turn">
-            <strong>{
-             gamePhase === SIMULTANEOUS_SELECT_LOWER ? "SIMULTANEOUS: LOWER'S TURN" : 
-             gamePhase === SIMULTANEOUS_SELECT_UPPER ? "SIMULTANEOUS: UPPER'S TURN" : 
-             (gamePhase === STARTING_PHASE || gamePhase === SIMULTANEOUS_SELECT) ? "SIMULTANEOUS: BOTH TURN" : `TURN-BASED: ${currentTurn}'S TURN` 
-            }</strong>
-          </div>
+      <div className='game-info'>
+        <div className="current-turn">
+          <strong>{
+           gamePhase === SIMULTANEOUS_SELECT_LOWER ? "SIMULTANEOUS: LOWER'S TURN" : 
+           gamePhase === SIMULTANEOUS_SELECT_UPPER ? "SIMULTANEOUS: UPPER'S TURN" : 
+           (gamePhase === STARTING_PHASE || gamePhase === SIMULTANEOUS_SELECT) ? "SIMULTANEOUS: BOTH TURN" : `TURN-BASED: ${currentTurn}'S TURN` 
+          }</strong>
         </div>
+      </div>
+      <div className='game-area'>
         <div ref={gameContainerRef} className={`game-container ${isGameOver ? 'game-over' : ''}`}>
           <div className='game-content'>
             <House position="lower" seedCount={lowHouseSeeds} ref={lowHouseRef}/>
@@ -574,6 +575,10 @@ const CongkakBoard = () => {
             />
           </div>
         </div>
+        {showSelectionMessage && (
+          <div className="selection-message">
+            Please select a valid position.
+          </div>)}
         <div className='button-group'>
         {!isStartButtonPressed && gamePhase === STARTING_PHASE && (
             <button className="button start" 
@@ -590,10 +595,10 @@ const CongkakBoard = () => {
             {outcomeMessage}
           </div>
         )}
-        <Sidebar 
+        {/* <Sidebar 
           isOpen={isSidebarOpen} 
           onToggle={() => toggleSidebar(isSidebarOpen, setSidebarOpen)} 
-        />
+        /> */}
         </div>
       </div>
       {<button className="button-refresh" onClick={() => window.location.reload(true)}>

@@ -1,16 +1,16 @@
 @import url('https://fonts.googleapis.com/css?family=Josefin+Sans');
 
 .sidebar {
-  border: 10vw;
+  border: 10% solid black;
   border-radius: 5%;
   position: fixed;
-  right: -27%;
+  right: -25%;
   top: 0;
   width: 30%;
   height: 100%;
   background: #EBEBD0;
   transition: right 0.3s ease-in-out;
-  z-index: 3;
+  z-index: 20;
 }
 
 .sidebar.open {
@@ -19,6 +19,7 @@
 
 .sidebar button {
   border-radius: 5%;
+  border: 10%;
   height: auto;
   width: 30%;
   margin-top: 10%;
@@ -26,7 +27,7 @@
   top: 3%;
   left: -15%;
   transform: rotate(270deg);
-  font-size: xx-small;
+  font-size: small;
 }
 
 .paragraph {
@@ -35,7 +36,7 @@
   border-radius: 5%;
   background-color: #f6f8fa;
   color: #333;
-  border-left: 1wh solid #9bc53d;
+  /* border-left: 1vw solid #9bc53d; */
   font-size: small;
   font-family: 'Josefin Sans', cursive;
 }
