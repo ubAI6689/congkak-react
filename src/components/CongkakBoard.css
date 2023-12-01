@@ -11,11 +11,12 @@ body {
 }
 
 .app-wrapper {
-  /* position: relative; */
+  /* position: absolute; */
+  margin-bottom: 5vh;
   width: 90vw; /* Adjust width as needed */
   /* height: 90vh; Adjust height as needed */
   height: 70vh; 
-  margin: auto; /* Centers the box in the viewport */
+  /* margin: auto; */
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5); /* Optional: Adds shadow for depth */
   border-radius: 15px; /* Optional: Adds rounded corners */
   /* background-color: #302E2B; Optional: Change background color */
