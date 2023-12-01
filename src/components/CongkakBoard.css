@@ -60,7 +60,7 @@ body {
 }
 
 .button-group {
-  margin-top: 5%;
+  /* margin-top: 5%; */
   height: 10%;
   display: flex;
   flex-direction: column;
@@ -72,7 +72,7 @@ body {
   width: auto;
   height: 8vh;
   border-radius: 2vw;
-  margin-top: 20vh; /* Space above the START button */
+  margin-top: 15vh; /* Space above the START button */
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
   
   opacity: 0.8;
