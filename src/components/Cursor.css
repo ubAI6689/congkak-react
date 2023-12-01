@@ -4,7 +4,7 @@
     height: auto;
     /* background-size: ; */
     pointer-events: none; /* Ensures it doesn't interfere with clicks */
-    transition: top 0.3s, left 0.3s; /*Smooth transition for movement*/
+    transition: top 0.25s, left 0.25s; /*Smooth transition for movement*/
     z-index: 2;
   }
 

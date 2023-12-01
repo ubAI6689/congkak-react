@@ -141,7 +141,8 @@ body {
 }
 
 .game-over-message {
-  color: #d9534f; /* Example color */
+  font-weight: bold;
+  color: gold; /* Example color */
   font-size: 2em; /* Example font size */
   margin-top: 20px; /* Example margin */
   /* Additional styling as needed */

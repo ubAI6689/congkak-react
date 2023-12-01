@@ -41,11 +41,11 @@ function areBothRowsEmpty(seeds) {
 
 function determineOutcome(topHouseSeeds, lowHouseSeeds) {
   if (topHouseSeeds > lowHouseSeeds) {
-    return 'UPPER wins';
+    return 'DARK WINS';
   } else if (lowHouseSeeds > topHouseSeeds) {
-    return 'LOWER wins';
+    return 'WHITE WINS';
   } else {
-    return 'Draw';
+    return 'DRAW';
   }
 }
 

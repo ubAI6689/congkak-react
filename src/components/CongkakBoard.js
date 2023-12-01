@@ -87,6 +87,8 @@ const CongkakBoard = () => {
   const verticalPosUpper = config.VERTICAL_POS_UPPER;
   const verticalPosLower = config.VERTICAL_POS_LOWER;
 
+  const animationDelay = config.ANIMATION_DELAY;
+
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [shakeCursor, setShakeCursor] = useState(false);
   const [showSelectionMessage, setShowSelectionMessage] = useState(false);
@@ -135,7 +137,7 @@ const CongkakBoard = () => {
       const rect = element.getBoundingClientRect();
       setCursorLeftUpper(rect.left + window.scrollX);
       setCursorTopUpper(rect.top + window.scrollY + (verticalPosUpper * rect.height));
-      await new Promise(resolve => setTimeout(resolve, 400)); // Animation delay
+      await new Promise(resolve => setTimeout(resolve, animationDelay)); // Animation delay
     }
   };
 
@@ -153,7 +155,7 @@ const CongkakBoard = () => {
       const rect = element.getBoundingClientRect();
       setCursorLeftLower(rect.left + window.scrollX);
       setCursorTopLower(rect.top + window.scrollY + (verticalPosLower * rect.height));
-      await new Promise(resolve => setTimeout(resolve, 400)); // Animation delay
+      await new Promise(resolve => setTimeout(resolve, animationDelay)); // Animation delay
     }
   };
 
