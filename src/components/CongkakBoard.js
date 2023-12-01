@@ -900,10 +900,10 @@ const CongkakBoard = () => {
             </div>
           )}
         </div>
-        <Sidebar 
+        {/* <Sidebar 
             isOpen={isSidebarOpen} 
             onToggle={() => toggleSidebar(isSidebarOpen, setSidebarOpen)} 
-          />
+          /> */}
       </div>
       <div class="trademark-section">
         © 2023 <a href="https://twitter.com/ayuinmetaverse" target="_blank">AYU</a>. All Rights Reserved.
