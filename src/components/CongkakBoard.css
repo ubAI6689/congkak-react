@@ -13,7 +13,8 @@ body {
 .app-wrapper {
   /* position: relative; */
   width: 90vw; /* Adjust width as needed */
-  height: 90vh; /* Adjust height as needed */
+  /* height: 90vh; Adjust height as needed */
+  height: 70vh; 
   margin: auto; /* Centers the box in the viewport */
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5); /* Optional: Adds shadow for depth */
   border-radius: 15px; /* Optional: Adds rounded corners */
@@ -53,7 +54,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 85vh; /* Adjust as needed */
+  width: 80vh; /* Adjust as needed */
   height: 85vh; /* Adjust as needed */
   /* padding: 20%; Optional */
 }
@@ -66,16 +67,13 @@ body {
   justify-content: center;/* Adjust the space between buttons */
 }
 
-.app-wrapper .button {
-  position: absolute;
-  bottom: 10%;
-  right: 50%;
-  height: 8vh;
+.button {
+  /* bottom: 10%; */
   width: auto;
+  height: 8vh;
   border-radius: 2vw;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
   margin-top: 20vh; /* Space above the START button */
-  margin-left: 10vh;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
   
   opacity: 0.8;
   font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
