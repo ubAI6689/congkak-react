@@ -867,6 +867,7 @@ const CongkakBoard = () => {
               visible={cursorVisibilityUpper.visible} 
               seedCount={currentSeedsInHandUpper} // Adjust based on Player 1's state
               isTopTurn={true} // Always true for Player 1
+              color={"#575452"}
             />
             <Cursor 
               shake={shakeCursor}
@@ -876,6 +877,7 @@ const CongkakBoard = () => {
               visible={cursorVisibilityLower.visible} 
               seedCount={currentSeedsInHandLower} // Adjust based on Player 2's state
               isTopTurn={false} // Always false for Player 2
+              color={"#EBEBD0"}
             />
           </div>
         </div>
