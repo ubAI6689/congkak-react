@@ -944,7 +944,7 @@ const CongkakBoard = () => {
             RESTART
           </button>}
       <div class="trademark-section">
-        © 2023 <a href="https://twitter.com/ayuinmetaverse" target="_blank">ubAI6689</a>. All Rights Reserved.
+        © 2023 <a href="https://twitter.com/ayuinmetaverse" target="_blank">AYU</a>. All Rights Reserved.
       </div>
       <Analytics/>
     </div>
