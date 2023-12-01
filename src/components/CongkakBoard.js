@@ -867,14 +867,20 @@ const CongkakBoard = () => {
   return (
     <div className='app-wrapper'>
       <div className='game-info'>
-          <div className="current-turn">
-            <strong>{
-             gamePhase === SIMULTANEOUS_SELECT_LOWER ? "SIMULTANEOUS: LOWER'S TURN" : 
-             gamePhase === SIMULTANEOUS_SELECT_UPPER ? "SIMULTANEOUS: UPPER'S TURN" : 
-             (gamePhase === STARTING_PHASE || gamePhase === SIMULTANEOUS_SELECT) ? "SIMULTANEOUS: BOTH TURN" : `TURN-BASED: ${currentTurn}'S TURN` 
-            }</strong>
-          </div>
+        <div className="current-turn">
+          <span>{gamePhase === SIMULTANEOUS_SELECT_LOWER ? "SIMULTANEOUS ROUND: " : 
+                 gamePhase === SIMULTANEOUS_SELECT_UPPER ? "SIMULTANEOUS ROUND: " : 
+                 (gamePhase === STARTING_PHASE || gamePhase === SIMULTANEOUS_SELECT) ? "SIMULTANEOUS ROUND: " : 
+                 "TURN-BASED ROUND: "
+          }</span>
+          <strong>{
+                 gamePhase === SIMULTANEOUS_SELECT_LOWER ? "WHITE TURN" : 
+                 gamePhase === SIMULTANEOUS_SELECT_UPPER ? "DARK TURN" : 
+                 (gamePhase === STARTING_PHASE || gamePhase === SIMULTANEOUS_SELECT) ? "BOTH TURN" : 
+                 `${currentTurn === PLAYER_UPPER ? "DARK" : "WHITE" }'S TURN`
+          }</strong>
         </div>
+      </div>
       <div className='game-area'>
         <div ref={gameContainerRef} className={`game-container ${isGameOver ? 'game-over' : ''}`}>
           <div className='game-content'>
@@ -884,13 +890,14 @@ const CongkakBoard = () => {
               <Row 
                 seeds={seeds.slice(MIN_INDEX_UPPER, MIN_INDEX_LOWER)} 
                 rowType="upper" 
-                isUpper={true} 
+                isUpper={true}
                 onClick={(index) => {handleSButtonPress(index)}} 
                 refs={holeRefs.current} 
                 selectedHole={startingPositionUpper}
               />
               <Row 
-                seeds={seeds.slice(MIN_INDEX_LOWER).reverse()} rowType="lower" 
+                seeds={seeds.slice(MIN_INDEX_LOWER).reverse()} 
+                rowType="lower"
                 onClick={(index) => {handleArrowDownPress(index)}} 
                 refs={holeRefs.current} 
                 selectedHole={startingPositionLower} 
