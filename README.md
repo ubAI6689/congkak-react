@@ -1,3 +1,13 @@
+# Congkak Rules
+
+* Start simultaneously.
+* Players move seeds clockwise, dropping one seeds at a time to the next hole, from their row.
+* Landing the last seed in your house (bigger hole on the left-most) earns you another turn.
+* Landing in a non-empty hole lets you continue moving with all seeds from that hole.
+* Landing in an empty hole will end turn.
+* Landing in an empty hole in your row will capture all seeds opposite an empty hole in your row (must have passed house once) - end turn.
+* The game ends if one house reach at least half + 1 of total seeds (50). The house with higher seeds win.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
