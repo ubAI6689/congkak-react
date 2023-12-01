@@ -159,27 +159,6 @@ const CongkakBoard = () => {
     }
   };
 
-  // RESET function
-  const resetGame = () => {
-    setSeeds(new Array(HOLE_NUMBERS).fill(INIT_SEEDS_COUNT));
-    setGamePhase(STARTING_PHASE);
-    setIsStartButtonPressed(false);
-    setStartingPositionUpper(null);
-    setStartingPositionLower(null);
-    setCurrentHoleIndexUpper(startIndexUpper);
-    setCurrentHoleIndexLower(startIndexLower);
-    setIsSowingUpper(false);
-    setIsSowingLower(false);
-    setCurrentSeedsInHandUpper(0);
-    setCurrentSeedsInHandLower(0);
-    setTopHouseSeeds(0);
-    setLowHouseSeeds(0);
-    setIsGameOver(false);
-    setOutcomeMessage('');
-    setCurrentTurn(null);
-    // Reset any other state variables relevant to your game
-  };
-
   /**=========================================================
   *                 start button function 
   * ==========================================================*/
@@ -378,34 +357,6 @@ const CongkakBoard = () => {
       window.removeEventListener('keydown', handleKeyDown);
     };    
   }, [currentHoleIndexUpper, currentHoleIndexLower, holeRefs, verticalPosUpper, verticalPosLower, isSowingUpper, isSowingLower, gamePhase]);
-
-/**==============================================
- *        useEffect implementations
- * =============================================*/
-// useEffect(() => {
-//   const lockOrientation = async () => {
-//       // eslint-disable-next-line no-restricted-globals
-//       if (typeof screen !== 'undefined' && screen.orientation && typeof screen.orientation.lock === 'function') {
-//         try {
-//           // eslint-disable-next-line no-restricted-globals
-//           await screen.orientation.lock('landscape');
-//         } catch (error) {
-//           console.error('Could not lock screen orientation:', error);
-//         }
-//       }
-//     };
-
-//     lockOrientation();
-
-//     return () => {
-//       // eslint-disable-next-line no-restricted-globals
-//       if (typeof screen !== 'undefined' && screen.orientation && typeof screen.orientation.unlock === 'function') {
-//         // eslint-disable-next-line no-restricted-globals
-//         screen.orientation.unlock();
-//       }
-//     };
-//   }, []);
-
 
   // GameOver Checker
   useEffect(() => {
