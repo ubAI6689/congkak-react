@@ -22,7 +22,7 @@ const Cursor = ({ color, shake, triggerShake, top, left, visible, seedCount, isT
     top: isTopTurn ? '60%' : '60%', 
     left: '60%',
     transform: 'translate(-50%, -50%)',
-    color: isTopTurn? 'EBEBD0' : '#302E2B',
+    color: isTopTurn? '#EBEBD0' : '#302E2B',
     fontSize: '2.5vh',
     fontWeight: 'bold'
   };
