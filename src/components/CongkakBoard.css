@@ -163,9 +163,19 @@ body {
   gap: 1%; /*Responsive gap between rows */
 }
 
-.circles-row {
+.row-upper, .row-lower {
   display: flex;
   justify-content: center;
+}
+
+.row-upper .circle {
+  background-color:#575452;
+  color: #EBEBD0;
+}
+
+.row-lower .circle {
+  background-color: #EBEBD0;
+  color: #575452;
 }
 
 .circle, .house {
@@ -173,12 +183,11 @@ body {
   width: 7vw; /* Responsive width */
   height: 7vw; /* Responsive height, maintaining aspect ratio */
   border-radius: 50%;
-  background-color: #EBEBD0;
+  /* background-color: #EBEBD0; */
   margin: 0.5vw; /* Responsive margin */
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #4f4c48;
   border: solid darkgrey;
   box-shadow: inset 0 0 0.3vw #4d6a2b;
   font-size: 2.5vw; /* Responsive font size for seed count */
@@ -186,7 +195,7 @@ body {
 }
 
 .circle.selected {
-  background-color: gold;
+  background-color: darkgoldenrod;
 }
 
 .flipped {
@@ -197,11 +206,19 @@ body {
   text-align: center;
 }
 
-
 .house {
   width: 10vw; /* Larger size for houses */
   height: 10vw;
-  background-color: #EBEBD0; /* Different color for houses */
+}
+
+.upper-house {
+  background-color: #575452;
+  color: #EBEBD0;
+}
+
+.lower-house{
+  background-color: #EBEBD0;
+  color: #575452;
 }
 
 .circle:hover, .button:hover {
