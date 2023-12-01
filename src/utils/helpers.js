@@ -1,7 +1,7 @@
 import config from "../config/config";
 
 // Constants
-const { MIN_INDEX_UPPER, MAX_INDEX_UPPER, MIN_INDEX_LOWER, MAX_INDEX_LOWER,  PLAYER_UPPER, PLAYER_LOWER } = config;
+const { MIN_INDEX_UPPER, MAX_INDEX_UPPER, MIN_INDEX_LOWER, MAX_INDEX_LOWER,  PLAYER_UPPER, PLAYER_LOWER, INIT_SEEDS_COUNT } = config;
 
 export function toggleTurn (setCurrentTurn, currentTurn) {
     setCurrentTurn(currentTurn === PLAYER_UPPER ? PLAYER_LOWER : PLAYER_UPPER);
@@ -33,6 +33,11 @@ function sumOfSeedsInRow(seeds, startIndex, endIndex) {
   return sum;
 }
 
+function endGameEarly(topHouseSeeds, lowHouseSeeds) {
+  const halfTotalSeeds = INIT_SEEDS_COUNT*INIT_SEEDS_COUNT;
+  return (topHouseSeeds > halfTotalSeeds || lowHouseSeeds > halfTotalSeeds);
+}
+
 function areBothRowsEmpty(seeds) {
   const sumUpperRow = sumOfSeedsInRow(seeds, MIN_INDEX_UPPER, MAX_INDEX_UPPER);
   const sumLowerRow = sumOfSeedsInRow(seeds, MIN_INDEX_LOWER, MAX_INDEX_LOWER);
@@ -41,16 +46,16 @@ function areBothRowsEmpty(seeds) {
 
 function determineOutcome(topHouseSeeds, lowHouseSeeds) {
   if (topHouseSeeds > lowHouseSeeds) {
-    return 'UPPER wins';
+    return 'DARK WINS';
   } else if (lowHouseSeeds > topHouseSeeds) {
-    return 'LOWER wins';
+    return 'WHITE WINS';
   } else {
-    return 'Draw';
+    return 'DRAW';
   }
 }
 
 export const handleCheckGameEnd = (seeds, topHouseSeeds, lowHouseSeeds, setIsGameOver, setOutcomeMessage) => {
-  if (areBothRowsEmpty(seeds)) {
+  if (endGameEarly(topHouseSeeds, lowHouseSeeds) || areBothRowsEmpty(seeds)) {
     setIsGameOver(true);
     const outcome = determineOutcome(topHouseSeeds, lowHouseSeeds);
     setOutcomeMessage(outcome); // Set the outcome message

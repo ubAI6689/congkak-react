@@ -87,6 +87,8 @@ const CongkakBoard = () => {
   const verticalPosUpper = config.VERTICAL_POS_UPPER;
   const verticalPosLower = config.VERTICAL_POS_LOWER;
 
+  const animationDelay = config.ANIMATION_DELAY;
+
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [shakeCursor, setShakeCursor] = useState(false);
   const [showSelectionMessage, setShowSelectionMessage] = useState(false);
@@ -135,7 +137,7 @@ const CongkakBoard = () => {
       const rect = element.getBoundingClientRect();
       setCursorLeftUpper(rect.left + window.scrollX);
       setCursorTopUpper(rect.top + window.scrollY + (verticalPosUpper * rect.height));
-      await new Promise(resolve => setTimeout(resolve, 400)); // Animation delay
+      await new Promise(resolve => setTimeout(resolve, animationDelay)); // Animation delay
     }
   };
 
@@ -153,29 +155,8 @@ const CongkakBoard = () => {
       const rect = element.getBoundingClientRect();
       setCursorLeftLower(rect.left + window.scrollX);
       setCursorTopLower(rect.top + window.scrollY + (verticalPosLower * rect.height));
-      await new Promise(resolve => setTimeout(resolve, 400)); // Animation delay
+      await new Promise(resolve => setTimeout(resolve, animationDelay)); // Animation delay
     }
-  };
-
-  // RESET function
-  const resetGame = () => {
-    setSeeds(new Array(HOLE_NUMBERS).fill(INIT_SEEDS_COUNT));
-    setGamePhase(STARTING_PHASE);
-    setIsStartButtonPressed(false);
-    setStartingPositionUpper(null);
-    setStartingPositionLower(null);
-    setCurrentHoleIndexUpper(startIndexUpper);
-    setCurrentHoleIndexLower(startIndexLower);
-    setIsSowingUpper(false);
-    setIsSowingLower(false);
-    setCurrentSeedsInHandUpper(0);
-    setCurrentSeedsInHandLower(0);
-    setTopHouseSeeds(0);
-    setLowHouseSeeds(0);
-    setIsGameOver(false);
-    setOutcomeMessage('');
-    setCurrentTurn(null);
-    // Reset any other state variables relevant to your game
   };
 
   /**=========================================================
@@ -191,6 +172,8 @@ const CongkakBoard = () => {
       } else if (startingPositionLower === null || seeds[startingPositionLower] === 0) {
         handleWrongSelection(setShakeCursor, setShowSelectionMessage);
         console.log("Please select starting position for Player Lower")
+      } else if ((startingPositionLower !== MIN_INDEX_LOWER && MAX_INDEX_UPPER - startingPositionUpper === MAX_INDEX_LOWER - startingPositionLower) || (startingPositionUpper !== MIN_INDEX_UPPER && MAX_INDEX_UPPER - startingPositionUpper === MAX_INDEX_LOWER - startingPositionLower)){
+        handleWrongSelection(setShakeCursor, setShowSelectionMessage);
       } else {
         console.log("START GAME!")
         setIsStartButtonPressed(true);
@@ -376,34 +359,6 @@ const CongkakBoard = () => {
       window.removeEventListener('keydown', handleKeyDown);
     };    
   }, [currentHoleIndexUpper, currentHoleIndexLower, holeRefs, verticalPosUpper, verticalPosLower, isSowingUpper, isSowingLower, gamePhase]);
-
-/**==============================================
- *        useEffect implementations
- * =============================================*/
-// useEffect(() => {
-//   const lockOrientation = async () => {
-//       // eslint-disable-next-line no-restricted-globals
-//       if (typeof screen !== 'undefined' && screen.orientation && typeof screen.orientation.lock === 'function') {
-//         try {
-//           // eslint-disable-next-line no-restricted-globals
-//           await screen.orientation.lock('landscape');
-//         } catch (error) {
-//           console.error('Could not lock screen orientation:', error);
-//         }
-//       }
-//     };
-
-//     lockOrientation();
-
-//     return () => {
-//       // eslint-disable-next-line no-restricted-globals
-//       if (typeof screen !== 'undefined' && screen.orientation && typeof screen.orientation.unlock === 'function') {
-//         // eslint-disable-next-line no-restricted-globals
-//         screen.orientation.unlock();
-//       }
-//     };
-//   }, []);
-
 
   // GameOver Checker
   useEffect(() => {
@@ -924,18 +879,21 @@ const CongkakBoard = () => {
             />
           </div>
         </div>
-        {showSelectionMessage && (
+        {/* {showSelectionMessage && (
           <div className="selection-message">
             Please select a valid position.
-          </div>)}
+          </div>)} */}
         <div className='button-group'>
-          {!isStartButtonPressed && gamePhase === STARTING_PHASE && (
+          {!isStartButtonPressed && gamePhase === STARTING_PHASE && !isGameOver && (
               <button className="button start" 
               onClick={() => startButtonPressed()}>START</button>
           )}
           {!isStartButtonPressed && (gamePhase === SIMULTANEOUS_SELECT || gamePhase === SIMULTANEOUS_SELECT_LOWER || gamePhase === SIMULTANEOUS_SELECT_UPPER) && (
             <button className='button resume' onClick={() => startButtonPressed()}>RESUME</button>
           )}
+          {isGameOver && (<button className="button refresh" onClick={() => window.location.reload(true)}>
+            RESTART
+          </button>)}
           {isGameOver && (
             <div className="game-over-message">
               {outcomeMessage}
@@ -947,9 +905,6 @@ const CongkakBoard = () => {
             onToggle={() => toggleSidebar(isSidebarOpen, setSidebarOpen)} 
           />
       </div>
-      {<button className="button-refresh" onClick={() => window.location.reload(true)}>
-            RESTART
-          </button>}
       <div class="trademark-section">
         © 2023 <a href="https://twitter.com/ayuinmetaverse" target="_blank">AYU</a>. All Rights Reserved.
       </div>
