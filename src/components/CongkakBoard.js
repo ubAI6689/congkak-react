@@ -172,6 +172,8 @@ const CongkakBoard = () => {
       } else if (startingPositionLower === null || seeds[startingPositionLower] === 0) {
         handleWrongSelection(setShakeCursor, setShowSelectionMessage);
         console.log("Please select starting position for Player Lower")
+      } else if ((startingPositionLower !== MIN_INDEX_LOWER && MAX_INDEX_UPPER - startingPositionUpper === MAX_INDEX_LOWER - startingPositionLower) || (startingPositionUpper !== MIN_INDEX_UPPER && MAX_INDEX_UPPER - startingPositionUpper === MAX_INDEX_LOWER - startingPositionLower)){
+        handleWrongSelection(setShakeCursor, setShowSelectionMessage);
       } else {
         console.log("START GAME!")
         setIsStartButtonPressed(true);
@@ -877,18 +879,21 @@ const CongkakBoard = () => {
             />
           </div>
         </div>
-        {showSelectionMessage && (
+        {/* {showSelectionMessage && (
           <div className="selection-message">
             Please select a valid position.
-          </div>)}
+          </div>)} */}
         <div className='button-group'>
-          {!isStartButtonPressed && gamePhase === STARTING_PHASE && (
+          {!isStartButtonPressed && gamePhase === STARTING_PHASE && !isGameOver && (
               <button className="button start" 
               onClick={() => startButtonPressed()}>START</button>
           )}
           {!isStartButtonPressed && (gamePhase === SIMULTANEOUS_SELECT || gamePhase === SIMULTANEOUS_SELECT_LOWER || gamePhase === SIMULTANEOUS_SELECT_UPPER) && (
             <button className='button resume' onClick={() => startButtonPressed()}>RESUME</button>
           )}
+          {isGameOver && (<button className="button refresh" onClick={() => window.location.reload(true)}>
+            RESTART
+          </button>)}
           {isGameOver && (
             <div className="game-over-message">
               {outcomeMessage}
@@ -900,9 +905,6 @@ const CongkakBoard = () => {
             onToggle={() => toggleSidebar(isSidebarOpen, setSidebarOpen)} 
           />
       </div>
-      {<button className="button-refresh" onClick={() => window.location.reload(true)}>
-            RESTART
-          </button>}
       <div class="trademark-section">
         © 2023 <a href="https://twitter.com/ayuinmetaverse" target="_blank">AYU</a>. All Rights Reserved.
       </div>
