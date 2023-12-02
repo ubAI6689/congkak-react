@@ -1,0 +1,67 @@
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2vh;
+    background-color: #EBEBD0; /* Bright white for a clean look */
+    color: #333; /* Dark gray for text, ensures good readability */
+    border-radius: 10px; /* Slightly larger radius for a softer look */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Softer shadow for depth */
+    max-width: 80vw; /* Slightly smaller than before for better white space */
+    max-height: 80vh;
+    padding: 1em; /* Responsive padding */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  
+    display: flex;
+    flex-direction: column; /* Organizes content in a column */
+    justify-content: center; /* Centers content vertically */
+    align-items: center; /* Centers content horizontally */
+  }
+  
+  /* Style adjustments for headings and text */
+  .modal-content h2 {
+    font-size: 2.5vh; /* Slightly larger for headings */
+    margin-bottom: 1vh; /* Spacing after heading */
+  }
+  
+  .modal-content ul {
+    padding: 0;
+    list-style-type: none; /* Removes bullet points for a cleaner look */
+  }
+  
+  .modal-content li {
+    margin-bottom: 1vh; /* Spacing between list items */
+  }
+  
+  
+  .modal-links {
+    display: flex;
+    justify-content: center; /* Center the links */
+    gap: 20px; /* Creates a gap between the links */
+    /* Additional styling as needed */
+  }
+
+/* Adjust for mobile devices as needed */
+@media only screen and (max-width: 768px) {
+    .modal-content {
+      max-width: 80vw;
+      max-height: 80vh;
+    }
+  }
+  

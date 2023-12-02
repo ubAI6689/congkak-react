@@ -4,8 +4,8 @@ import './CongkakBoard.css';
 import House from './House';
 import Cursor from './Cursor';
 import Row from './Row';
-import Sidebar from './sidebar';
-import { handleWrongSelection, toggleSidebar } from '../utils/animation';
+import InfoModal from './InfoModal';
+import { handleWrongSelection } from '../utils/animation';
 import { toggleTurn, sumOfSeedsInCurrentRow, handleCheckGameEnd } from '../utils/helpers';
 import config from '../config/config';
 import gamePhaseConfig from '../config/gamePhaseConfig';
@@ -89,9 +89,13 @@ const CongkakBoard = () => {
 
   const animationDelay = config.ANIMATION_DELAY;
 
-  const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [shakeCursor, setShakeCursor] = useState(false);
   const [showSelectionMessage, setShowSelectionMessage] = useState(false);
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const toggleModal = () => {
+    setModalOpen(!isModalOpen);
+  };
 
   // Define the handlers for the mobile buttons
   const handleSButtonPress = async (index) => {
@@ -821,7 +825,13 @@ const CongkakBoard = () => {
 
   return (
     <div className='app-wrapper'>
+      {/* Modal Toggle Button */}
+      <button className='modal' onClick={toggleModal}>
+        SHOW INFO
+      </button>
+      <InfoModal isOpen={isModalOpen} toggleModal={toggleModal} />
       <div className='game-info'>
+        {/* Modal Overlay */}
         <div className="current-turn">
           <span>{gamePhase === SIMULTANEOUS_SELECT_LOWER ? "SIMULTANEOUS ROUND: " : 
                  gamePhase === SIMULTANEOUS_SELECT_UPPER ? "SIMULTANEOUS ROUND: " : 

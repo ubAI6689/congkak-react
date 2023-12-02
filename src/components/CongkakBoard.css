@@ -72,10 +72,10 @@ body {
   /* bottom: 10%; */
   width: auto;
   height: 8vh;
+  padding: 1vh;
   border-radius: 2vw;
   margin-top: 15vh; /* Space above the START button */
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
-  
   opacity: 0.8;
   font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-weight: bold;
@@ -84,6 +84,22 @@ body {
   background-color: gold;
   border: solid gray;/* box-shadow: 0 0 10px gold; */
   /* Add additional styling for the button */
+}
+
+.modal {
+  position: absolute;
+  top: 3%;
+  left: 3%;
+  width: auto;
+  height: 5vh;
+  margin-bottom: 1%;
+  border-radius: 0.5vw;
+  opacity: 0.8;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 3vh;
+  color: black;
+  background-color: #4f4c48;
+  border: solid gray;
 }
 
 .button .refresh {
