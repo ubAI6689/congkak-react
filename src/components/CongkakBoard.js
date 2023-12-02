@@ -827,23 +827,23 @@ const CongkakBoard = () => {
     <div className='app-wrapper'>
       {/* Modal Toggle Button */}
       <button className='modal' onClick={toggleModal}>
-        SHOW INFO
+        INFO <i class="fa fa-info-circle"></i>
       </button>
       <InfoModal isOpen={isModalOpen} toggleModal={toggleModal} />
       <div className='game-info'>
         {/* Modal Overlay */}
         <div className="current-turn">
-          <span>{gamePhase === SIMULTANEOUS_SELECT_LOWER ? "SIMULTANEOUS ROUND: " : 
+          <strong>{gamePhase === SIMULTANEOUS_SELECT_LOWER ? "SIMULTANEOUS ROUND: " : 
                  gamePhase === SIMULTANEOUS_SELECT_UPPER ? "SIMULTANEOUS ROUND: " : 
                  (gamePhase === STARTING_PHASE || gamePhase === SIMULTANEOUS_SELECT) ? "SIMULTANEOUS ROUND: " : 
                  "TURN-BASED ROUND: "
-          }</span>
-          <strong>{
-                 gamePhase === SIMULTANEOUS_SELECT_LOWER ? "WHITE TURN" : 
+          }</strong>
+          <span>{
+                 gamePhase === SIMULTANEOUS_SELECT_LOWER ? "LIGHT TURN" : 
                  gamePhase === SIMULTANEOUS_SELECT_UPPER ? "DARK TURN" : 
                  (gamePhase === STARTING_PHASE || gamePhase === SIMULTANEOUS_SELECT) ? "BOTH TURN" : 
-                 `${currentTurn === PLAYER_UPPER ? "DARK" : "WHITE" }'S TURN`
-          }</strong>
+                 `${currentTurn === PLAYER_UPPER ? "DARK" : "LIGHT" }'S TURN`
+          }</span>
         </div>
       </div>
       <div className='game-area'>
@@ -877,7 +877,7 @@ const CongkakBoard = () => {
               visible={cursorVisibilityUpper.visible} 
               seedCount={currentSeedsInHandUpper} // Adjust based on Player 1's state
               isTopTurn={true} // Always true for Player 1
-              color={"#575452"}
+              color={"#510400"}
             />
             <Cursor 
               shake={shakeCursor}
@@ -887,7 +887,7 @@ const CongkakBoard = () => {
               visible={cursorVisibilityLower.visible} 
               seedCount={currentSeedsInHandLower} // Adjust based on Player 2's state
               isTopTurn={false} // Always false for Player 2
-              color={"#EBEBD0"}
+              color={"yellow"}
             />
           </div>
         </div>
